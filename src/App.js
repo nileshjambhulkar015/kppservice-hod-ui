@@ -2,6 +2,7 @@ import React from "react";
 import {Route, BrowserRouter as Router, Link, Switch} from 'react-router-dom';
 import ManageHodKppComponent from "./components/HodKppComponent/ManageHodKppComponent";
 import ManageEmployeeComponent from "./components/ManageEmployeeComponent/ManageEmployeeComponent";
+import EmployeeKppComponent from "./components/EmployeeKppComponent/EmployeeKppComponent";
 
 
 
@@ -18,7 +19,7 @@ function App() {
             <li className="active"><a href="#">Home</a></li>       
             <li><Link to="/hodKpp">Employee KPP</Link></li>
             <li><Link to="/manageEmployee">View Employees</Link></li>    
-            <li><Link to="/employeekpp">Update Profile</Link></li>  
+            <li><Link to="/updateEmployeeKpp">Update Profile</Link></li>  
             <li><Link to="/employeekpp">Change Password</Link></li>         
           </ul>
           <ul className="nav navbar-nav navbar-right">
@@ -30,6 +31,7 @@ function App() {
       <Switch>     
         <Route exact path="/hodKpp" component={ManageHodKppComponent}></Route>
         <Route exact path="/manageEmployee" component={ManageEmployeeComponent}></Route>
+        <Route exact path="/updateEmployeeKpp" component={EmployeeKppComponent}></Route>
       </Switch>
     </Router>    
     );

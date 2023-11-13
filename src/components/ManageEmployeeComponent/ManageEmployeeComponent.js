@@ -2,22 +2,26 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import ManageEmployeeService from '../../services/ManageEmployeeService';
+import {Link, useHistory,useParams} from 'react-router-dom';
 
 
 export default function ManageEmployeeComponent(){
     
 
-    const [kppResponses, setKppResponses] = useState([])
+    const [empResponses, setEmpResponses] = useState([])
+
 
     useEffect(() => {
-        ManageEmployeeService.getKPPDetails().then((res) => {
-            setKppResponses(res.data);
+        ManageEmployeeService.getEmployeeDetailsByPagination().then((res) => {
+            setEmpResponses(res.data.responseData.content);
            
         });
     }, []);
 
+
+
     return(
-        <div className='container-fluid'>
+        <div className='container'>
             <div className="row">
                 <form className="form-horizontal">
                     <table className="table table-bordered">
@@ -34,31 +38,19 @@ export default function ManageEmployeeComponent(){
                        
                             {
                                  
-                                kppResponses.map(
+                                 empResponses.map(
                                     
-                                    (kppResponse, index) =>
-                                        <tr key={kppResponse.kppId} className="text-justify">
+                                    (empResponse, index) =>
+                                        <tr key={empResponse.empId} className="text-justify">
 
                                             <td>{index+1}</td>
-                                            <td>{kppResponse.kppObjective}</td>
-                                            <td>{kppResponse.kppPerformanceIndi}</td>
-                                            <td>{kppResponse.kppOverallTarget}</td>
-                                            <td>{kppResponse.kppTargetPeriod}</td>
-                                            <td>{kppResponse.kppUoM}</td>
-                                           <td>
-                                            <input type="text" className="form-control" id="deptName" placeholder="Achived Weightage"/>
-                                       </td>
-                                       <td>
-                                            <input type="text" className="form-control" id="deptName" placeholder="Over All Achive"/>
-                                       </td>
-                                       <td>
-                                            <input type="text" className="form-control" id="deptName" placeholder="Overall Weightage"/>
-                                       </td>
-                                        
-                                            <td>{kppResponse.kppOverallWeightage}</td>
-                                            <td>
-                                            <input type="file" className="form-control" id="deptName"/>
-                                       </td>
+                                            <td>{empResponse.empFirstName+' '+empResponse.empMiddleName+' '+empResponse.empLastName}</td>
+                                            <td>{empResponse.desigName}</td>                                     
+                                            <td>{empResponse.kppOverallAchivement}</td>
+                                            <td> 
+                                                   
+                                                    <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showEmployee" >View</button></td>
+                                          
                                            
                                         </tr>
                                 )
@@ -74,7 +66,7 @@ export default function ManageEmployeeComponent(){
                 </div>
                <div className="row">
                 <div className="col-sm-10"></div>
-                <div className="col-sm-2"><button type="submit" className="btn btn-success "> Submit</button>
+                <div className="col-sm-2">
                
                 </div>
                </div>

@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const BASE_URL="http://localhost:9091/employee-key-perform-parameter?roleId=2&deptId=2&desigId=3&statusCdEnum=A";
+const BASE_URL="http://localhost:9091/hod-approval/employee?statusCd=A&page=0&size=20&sort=desig.desig_name";
 
 class ManageEmployeeService{
 
-    getKPPDetails(){
+    getEmployeeDetailsByPagination(){
         return axios.get(BASE_URL)
     }
    

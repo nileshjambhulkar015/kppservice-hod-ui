@@ -7,6 +7,8 @@ import {Link, useHistory,useParams} from 'react-router-dom';
 
 export default function ManageEmployeeComponent(){
     
+    const history=useHistory();
+    const {empId}=useParams();
 
     const [empResponses, setEmpResponses] = useState([])
 
@@ -49,7 +51,7 @@ export default function ManageEmployeeComponent(){
                                             <td>{empResponse.kppOverallAchivement}</td>
                                             <td> 
                                                    
-                                                    <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showEmployee" >View</button></td>
+                                                    <button type="submit" className="btn col-sm-offset-1 btn-success" onClick={() => history.push(`/updateEmployeeKpp/${empResponse.empId}`)} >View</button></td>
                                           
                                            
                                         </tr>

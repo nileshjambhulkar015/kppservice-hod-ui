@@ -15,9 +15,10 @@ function App() {
       <nav className="navbar navbar-inverse">
         <div className="container-fluid">
           <div className="navbar-header">
-            <a className="navbar-brand" href="#">FutureBizops</a>
+            <a className="navbar-brand" href="http://localhost:3008">FutureBizops</a>
           </div>
           <ul className="nav navbar-nav">      
+           
             <li><Link to="/hodKpp">Add KPP</Link></li>
             <li><Link to="/manageEmployee">View Employees</Link></li>    
             <li><Link to="/updateHodProfile">View Profile</Link></li>  
@@ -25,11 +26,12 @@ function App() {
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li><a href="#"><span className="glyphicon glyphicon-user"></span> e1234</a></li>
-            <li><a href="#"><span className="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <li><a href="http://localhost:3008">Logout</a></li>
           </ul>
         </div>
       </nav>
-      <Routes>     
+      <Routes>   
+      <Route exact path="/" element={<ManageHodKppComponent />}></Route>  
         <Route exact path="/hodKpp" element={<ManageHodKppComponent />}></Route>
         <Route exact path="/manageEmployee" element={<ManageEmployeeComponent />}></Route>
         <Route exact path="/updateEmployeeKpp/:empId" element={<EmployeeKppComponent />}></Route>

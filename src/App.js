@@ -1,5 +1,5 @@
 import React from "react";
-import {Route, BrowserRouter as Router, Link, Switch} from 'react-router-dom';
+import {Route, BrowserRouter, Link, Routes} from 'react-router-dom';
 import ManageHodKppComponent from "./components/HodKppComponent/ManageHodKppComponent";
 import ManageEmployeeComponent from "./components/ManageEmployeeComponent/ManageEmployeeComponent";
 import EmployeeKppComponent from "./components/EmployeeKppComponent/EmployeeKppComponent";
@@ -11,7 +11,7 @@ import UpdateHodProfileComponent from "./components/UpdateHodProfileComponent/Up
 function App() {
   return (
   
-      <Router>
+      <BrowserRouter>
       <nav className="navbar navbar-inverse">
         <div className="container-fluid">
           <div className="navbar-header">
@@ -29,14 +29,14 @@ function App() {
           </ul>
         </div>
       </nav>
-      <Switch>     
-        <Route exact path="/hodKpp" component={ManageHodKppComponent}></Route>
-        <Route exact path="/manageEmployee" component={ManageEmployeeComponent}></Route>
-        <Route exact path="/updateEmployeeKpp/:empId" component={EmployeeKppComponent}></Route>
-        <Route exact path="/updateHodProfile" component={UpdateHodProfileComponent}></Route>
-        <Route exact path="/changePassword" component={ChangePasswordComponent}></Route>
-      </Switch>
-    </Router>    
+      <Routes>     
+        <Route exact path="/hodKpp" element={<ManageHodKppComponent />}></Route>
+        <Route exact path="/manageEmployee" element={<ManageEmployeeComponent />}></Route>
+        <Route exact path="/updateEmployeeKpp/:empId" element={<EmployeeKppComponent />}></Route>
+        <Route exact path="/updateHodProfile" element={<UpdateHodProfileComponent />}></Route>
+        <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
+      </Routes>
+    </BrowserRouter>    
     );
 }
 

@@ -2,12 +2,12 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import ManageEmployeeService from '../../services/ManageEmployeeService';
-import {Link, useHistory,useParams} from 'react-router-dom';
+import {useNavigate ,useParams} from 'react-router-dom';
 
 
 export default function ManageEmployeeComponent(){
     
-    const history=useHistory();
+    const navigate = useNavigate();
     const {empId}=useParams();
 
     const [empResponses, setEmpResponses] = useState([])
@@ -51,7 +51,7 @@ export default function ManageEmployeeComponent(){
                                             <td>{empResponse.kppOverallAchivement}</td>
                                             <td> 
                                                    
-                                                    <button type="submit" className="btn col-sm-offset-1 btn-success" onClick={() => history.push(`/updateEmployeeKpp/${empResponse.empId}`)} >View</button></td>
+                                                    <button type="submit" className="btn col-sm-offset-1 btn-success" onClick={() => navigate(`/updateEmployeeKpp/${empResponse.empId}`, { replace: true })} >View</button></td>
                                           
                                            
                                         </tr>

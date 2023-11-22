@@ -1,24 +1,38 @@
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 const BASE_URL = "http://localhost:9091/employee";
 
-class UpdateHodProfileService{
+class UpdateHodProfileService {
 
-  
-    getKPPDetails(){
-        return axios.get(BASE_URL)
+
+    getKPPDetails() {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL)
+        } else {
+            alert("You need to login first")
+            window.location.replace("http://localhost:3008/");
+        }
+
     }
 
     getEmployeeById(empId) {
-        console.log(empId)
-        return axios.get(BASE_URL + '/' + 1)
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL + '/' + 1)
+        } else {
+            alert("You need to login first")
+            window.location.replace("http://localhost:3008/");
+        }
     }
 
     updateEmployeeDetails(employee) {
-
-        return axios.put(BASE_URL, employee)
+        if (null != Cookies.get('empId')) {
+            return axios.put(BASE_URL, employee)
+        } else {
+            alert("You need to login first")
+            window.location.replace("http://localhost:3008/");
+        }
     }
 }
-
 
 export default new UpdateHodProfileService();

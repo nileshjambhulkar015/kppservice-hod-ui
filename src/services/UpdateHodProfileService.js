@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
+import { LOGIN_UI_BASE_URL } from "./HodConstants";
 
 const BASE_URL = "http://localhost:9091/employee";
 
@@ -11,7 +12,7 @@ class UpdateHodProfileService {
             return axios.get(BASE_URL)
         } else {
             alert("You need to login first")
-            window.location.replace("http://localhost:3008/");
+            window.location.replace(LOGIN_UI_BASE_URL);
         }
 
     }
@@ -21,7 +22,7 @@ class UpdateHodProfileService {
             return axios.get(BASE_URL + '/' + 1)
         } else {
             alert("You need to login first")
-            window.location.replace("http://localhost:3008/");
+            window.location.replace(LOGIN_UI_BASE_URL);
         }
     }
 
@@ -30,7 +31,7 @@ class UpdateHodProfileService {
             return axios.put(BASE_URL, employee)
         } else {
             alert("You need to login first")
-            window.location.replace("http://localhost:3008/");
+            window.location.replace(LOGIN_UI_BASE_URL);
         }
     }
 }

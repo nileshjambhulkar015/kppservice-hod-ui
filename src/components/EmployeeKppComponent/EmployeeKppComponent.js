@@ -3,57 +3,90 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import Cookies from 'js-cookie';
 import EmployeeKppService from '../../services/EmployeeKppService';
-
+import { useParams } from 'react-router-dom';
+import { useNavigate } from "react-router-dom"
 
 export default function EmployeeKppComponent() {
-    const [kppEmpStatus, setKppEmpStatus] = useState('Male');
+    const navigate = useNavigate();
+    
+   const {empId}=useParams();
+console.log("psram empId=", empId)
+    const [ekppMonth, setEkppMonth] = useState('');
+    const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('100');
+    const [totalOverAllAchive, setTotalOverAllAchive] = useState('100');
+    const [totalOverallTaskCompleted, setTotalOverallTaskCompleted] = useState('100');
+    const [ekppStatus, setEkppStatus] = useState('');
     const [remark, setRemark] = useState('');
-    const [kppResponses, setKppResponses] = useState([])
-    const [todos, setTodos] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "", ekppAppliedDate: "", ekppEvidence: "", ekppStatus: "Pending" }]);
-    useEffect(() => {
-        EmployeeKppService.getKPPDetails().then((res) => {
-            setKppResponses(res.data);
+    const [evidence, setEvidence] = useState('');
 
+    const [kppResponses, setKppResponses] = useState([])
+    const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "",ekkpMonth:"" }]);
+   
+    useEffect(() => {
+        console.log("empId=", empId)
+        EmployeeKppService.getKPPDetails(empId).then((res) => {
+            setKppResponses(res.data);
         });
-    }, []);
+    }, [empId]);
 
     const handleTodoChange = (e, i, kppId, kppOverallTarget) => {
         const field = e.target.name;
-        const newTodos = [...todos];
+        const empKpps = [...employeeKpps];
 
-        newTodos[i] = {
-            ...newTodos[i],
+        empKpps[i] = {
+            ...empKpps[i],
             "kppId": kppId,
             "empId": Cookies.get('empId'),
             "empEId": Cookies.get('empEId'),
             "roleId": Cookies.get('roleId'),
             "deptId": Cookies.get('deptId'),
             "desigId": Cookies.get('desigId'),
-            "ekppStatus": "Pending",  // NEED TO MAKE IT DYNAMIC
+           // "ekppStatus": "Pending",  // NEED TO MAKE IT DYNAMIC
             "ekppOverallTaskComp": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
             "ekppAchivedWeight": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
+            "ekkpMonth":ekppMonth,
             [field]: e.target.value || 0,
         }
-        setTodos(newTodos);
-    };
+        setEmployeeKpps(empKpps);
+    };   
 
+  
     const saveEmployeeKpp = (e) => {
         e.preventDefault()
-
-        EmployeeKppService.saveEmployeeKppDetails(todos).then(res => {
-            console.log("KPP added");
+        let ekppStatus = "In-Progress";
+        let evidence = "evidence";
+        /*let totalAchivedWeightage="totalAchivedWeightage";
+        let totalOverAllAchive="totalOverAllAchive";
+        let totalOverallTaskCompleted="totalOverallTaskCompleted";
+         
+         let remark="remark";
+         let evidence="evidence";*/
+        const payLoad = { "kppUpdateRequests": employeeKpps, totalAchivedWeightage, totalOverAllAchive, totalOverallTaskCompleted, ekppStatus, remark, evidence };
+        console.log(payLoad)
+        EmployeeKppService.saveEmployeeKppDetails(payLoad).then(res => {
+            console.log("Employee KPP added");
         }
         );
     }
-
     return (
         <div className='container-fluid'>
+            <div className='row'>
+            <form className="form-horizontal">
+            <div className="form-group">
+                        <label className="control-label col-sm-1 text-right" htmlFor="reamrk">Employee Name:</label>
+                       <div style={{}}>Nilesh Sambhaji Jambhulkar</div>
+                    </div>
+                    </form>
+            </div>
             <div className="row">
+
                 <form className="form-horizontal">
+               
                     <table className="table table-bordered">
                         <thead>
                             <tr className="text-center">
-                                <th>Sr No</th>
+
+                            <th>Sr No</th>
                                 <th>Objective</th>
                                 <th>Key Performance Indicator</th>
                                 <th>Overall Target</th>
@@ -66,18 +99,16 @@ export default function EmployeeKppComponent() {
                                 <th>Achived Weightage</th>
                                 <th>Over All Achive</th>
                                 <th>Overall Task Completed</th>
+
+                             
                             </tr>
                         </thead>
                         <tbody>
-
                             {
-
                                 kppResponses.map(
-
                                     (kppResponse, index) =>
                                         <tr key={kppResponse.kppId} className="text-justify">
-
-                                            <td>{index + 1}</td>
+                                           <td>{index + 1}</td>
                                             <td className='col-md-2'>{kppResponse.kppObjective}</td>
                                             <td>{kppResponse.kppPerformanceIndi}</td>
                                             <td>{kppResponse.kppOverallTarget}</td>
@@ -89,50 +120,45 @@ export default function EmployeeKppComponent() {
                                             <td>{kppResponse.kppOverallWeightage}</td>
 
                                             <td>
-                                                <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={0} value={todos[index]?.ekppAchivedWeight} disabled />
+                                                <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={0} value={employeeKpps[index]?.ekppAchivedWeight} disabled />
                                             </td>
                                             <td>
-                                                <input type="number" className="form-control" name="ekppOverallAchieve" defaultValue={0} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
+                                                <input type="number" className="form-control" min="0" name="ekppOverallAchieve" defaultValue={0} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
                                             </td>
                                             <td>
-                                                <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={0} value={todos[index]?.ekppOverallTaskComp} disabled />
+                                                <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={0} value={employeeKpps[index]?.ekppOverallTaskComp} disabled />
                                             </td>
                                         </tr>
                                 )
-
                             }
+                            <tr className="text-justify">
+                                <td></td>
+                                <td></td>
+                                <td className='text-right'> <label className="control-label text-right" htmlFor="reamrk">Total</label></td>
+                                <td className='text-center'></td>
+                                <td className='text-center'> </td>
+                                <td></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}>100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>100</label></td>
+                                <td className='text-center'></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}>100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>100</label></td>
+
+                            </tr>
                         </tbody>
                     </table>
-                    <div className="form-group">
-                        <label className="control-label col-sm-4" htmlFor="reamrk">Upload Evidence:</label>
-                        <div className="col-sm-3">
-                            <input type="file" className="form-control" id="deptName" />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="control-label col-sm-4" htmlFor="reamrk">Enter Remark:</label>
-                        <div className="col-sm-6">
-                            <textarea row="5" className="form-control" id="remark" placeholder="Enter Remark here" value={remark} onChange={(e) => setRemark(e.target.value)} />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                                    <div className="row">
-                                        <label className="control-label col-sm-4" htmlFor="kppEmpStatus">Status:</label>
-                                        <div className="col-sm-3">
-                                            <select className="form-control" id="kppEmpStatus" onChange={(e) => setKppEmpStatus(e.target.value)} value={kppEmpStatus} >
-                                                <option value={'Approve'}>Approve</option>
-                                                <option value={'Reject'}>Reject</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
+
+                   
+          
                 </form>
 
             </div>
             <div className="row">
                 <div className="col-sm-8"></div>
                 <div className="col-sm-4"><button type="submit" className="btn btn-success col-sm-offset-1" > Submit</button>
-                    <button type="submit" className="btn btn-info col-sm-offset-1 "> Back</button>
+                    <button type="submit" className="btn btn-info col-sm-offset-1 "  onClick={() => navigate(`/manageEmployee`, { replace: true })}> Back</button>
                  
 
                 </div>

@@ -28,6 +28,16 @@ class EmployeeKppService {
         }  
     }
 
+    updateEmpArroveOrRejectByHod(todos){
+     
+        if (null != Cookies.get('empId')) {
+            return axios.put(KPP_API_BASE_URL+"/hod-approval",todos)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }  
+    }
+
 }
 
 

@@ -26,9 +26,9 @@ export default function ManageEmployeeComponent() {
         setEmpKppStatus(event);
     };
 
-    const searchByEKpp = (data) => {
-        console.log("data=", data)
-        ManageEmployeeService.getEmployeeByStatusByPagination(data).then((res) => {
+    const searchByEKpp = (e) => {
+        console.log("data=", empKppStatus)
+        ManageEmployeeService.getEmployeeByStatusByPagination(empKppStatus).then((res) => {
           
             setEmpResponses(res.data.responseData.content);
             console.log(res.data)

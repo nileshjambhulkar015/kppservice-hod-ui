@@ -20,7 +20,7 @@ console.log("psram empId=", empId)
     const [evidence, setEvidence] = useState('');
 
     const [kppResponses, setKppResponses] = useState([])
-    const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "",ekkpMonth:"" }]);
+    const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "",empId:"",empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "",ekkpMonth:"" }]);
    
     useEffect(() => {
         console.log("empId=", empId)
@@ -36,11 +36,11 @@ console.log("psram empId=", empId)
         empKpps[i] = {
             ...empKpps[i],
             "kppId": kppId,
-            "empId": Cookies.get('empId'),
-            "empEId": Cookies.get('empEId'),
+            "empId": empId,
+           /* "empEId": Cookies.get('empEId'),
             "roleId": Cookies.get('roleId'),
             "deptId": Cookies.get('deptId'),
-            "desigId": Cookies.get('desigId'),
+            "desigId": Cookies.get('desigId'),*/
            // "ekppStatus": "Pending",  // NEED TO MAKE IT DYNAMIC
             "ekppOverallTaskComp": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
             "ekppAchivedWeight": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
@@ -53,18 +53,18 @@ console.log("psram empId=", empId)
   
     const saveEmployeeKpp = (e) => {
         e.preventDefault()
-        let ekppStatus = "In-Progress";
-        let evidence = "evidence";
+        let ekppStatus = "Approved";
+       
         /*let totalAchivedWeightage="totalAchivedWeightage";
         let totalOverAllAchive="totalOverAllAchive";
         let totalOverallTaskCompleted="totalOverallTaskCompleted";
          
          let remark="remark";
          let evidence="evidence";*/
-        const payLoad = { "kppUpdateRequests": employeeKpps, totalAchivedWeightage, totalOverAllAchive, totalOverallTaskCompleted, ekppStatus, remark, evidence };
+        const payLoad = { "kppUpdateRequests": employeeKpps, totalAchivedWeightage, totalOverAllAchive, totalOverallTaskCompleted, ekppStatus, remark };
         console.log(payLoad)
-        EmployeeKppService.saveEmployeeKppDetails(payLoad).then(res => {
-            console.log("Employee KPP added");
+        EmployeeKppService.updateEmpArroveOrRejectByHod(payLoad).then(res => {
+           alert("Hod Approved")
         }
         );
     }
@@ -142,9 +142,9 @@ console.log("psram empId=", empId)
                                 <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>100</label></td>
                                 <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>100</label></td>
                                 <td className='text-center'></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}>100</label></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>100</label></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}>50</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>50</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>50</label></td>
 
                             </tr>
                         </tbody>
@@ -157,7 +157,7 @@ console.log("psram empId=", empId)
             </div>
             <div className="row">
                 <div className="col-sm-8"></div>
-                <div className="col-sm-4"><button type="submit" className="btn btn-success col-sm-offset-1" > Submit</button>
+                <div className="col-sm-4"><button type="submit" className="btn btn-success col-sm-offset-1" onClick={(e) => saveEmployeeKpp(e)} > Submit</button>
                     <button type="submit" className="btn btn-info col-sm-offset-1 "  onClick={() => navigate(`/manageEmployee`, { replace: true })}> Back</button>
                  
 

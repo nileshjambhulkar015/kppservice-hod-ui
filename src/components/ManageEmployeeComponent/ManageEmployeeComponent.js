@@ -10,7 +10,7 @@ export default function ManageEmployeeComponent() {
     const navigate = useNavigate();
     const { empId } = useParams();
 
-    const [empKppStatus, setEmpKppStatus] = useState('Pending')
+    const [empKppStatus, setEmpKppStatus] = useState('All')
     const [empResponses, setEmpResponses] = useState([])
 
 
@@ -49,8 +49,9 @@ export default function ManageEmployeeComponent() {
                             <select className="form-control" name="empKppStatus" id="empKppStatus"  value={empKppStatus} onChange={(e)=>onOptionChangeHandler(e.target.value)} defaultValue={empKppStatus} >
                                 <option value="All">All</option>
                                 <option value="Pending">Pending</option>
-                                <option value="In-Prgress">In-Prgress</option>
-                                <option value="Completed">Completed</option>
+                                <option value="In-Progress">In-Progress</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Reject">Reject</option>
                             </select>  
                         </div>
                         </form>
@@ -66,6 +67,7 @@ export default function ManageEmployeeComponent() {
                                 <th className='text-center'>Employee Name</th>
                                 <th className='text-center'>Employee Id</th>
                                 <th className='text-center'>Designation Name</th>
+                                <th className='text-center'>Mobile No</th>
                                 <th className='text-center'>Overall Achivement</th>
                                 <th className='text-center'>Status</th>
                                 <th className='text-center'>Action</th>
@@ -84,6 +86,7 @@ export default function ManageEmployeeComponent() {
                                             <td>{empResponse.empFirstName + ' ' + empResponse.empMiddleName + ' ' + empResponse.empLastName}</td>
                                             <td className='text-center'>{empResponse.empEId}</td>
                                             <td className='text-center'>{empResponse.desigName}</td>
+                                            <td className='text-center'>{empResponse.empMobileNo}</td>
                                             <td className='text-center'>{empResponse.kppOverallAchivement}</td>
                                             <td className='text-center'>{empResponse.empEKppStatus}</td>
 

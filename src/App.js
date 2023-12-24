@@ -35,7 +35,7 @@ function App() {
           <ul className="nav navbar-nav">
 
             <li><Link to="/hodKpp">Add KPP</Link></li>
-            <li><Link to="/manageEmployee">View Employees</Link></li>
+            <li><Link to="/manageEmployee">Employees KPP Status</Link></li>
             <li><Link to="/updateHodProfile">View Profile</Link></li>
             <li><Link to="/changePassword">Change Password</Link></li>
           </ul>

@@ -11,6 +11,7 @@ export default function EmployeeKppComponent() {
     
    const {empId}=useParams();
 console.log("psram empId=", empId)
+
     const [ekppMonth, setEkppMonth] = useState('');
     const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('100');
     const [totalOverAllAchive, setTotalOverAllAchive] = useState('100');
@@ -18,6 +19,7 @@ console.log("psram empId=", empId)
     const [ekppStatus, setEkppStatus] = useState('');
     const [remark, setRemark] = useState('');
     const [evidence, setEvidence] = useState('');
+    const [empKppStatus, setEmpKppStatus] = useState('Approved')
 
     const [kppResponses, setKppResponses] = useState([])
     const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "",empId:"",empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "",ekkpMonth:"" }]);
@@ -28,6 +30,11 @@ console.log("psram empId=", empId)
             setKppResponses(res.data);
         });
     }, [empId]);
+
+    const onOptionChangeHandler = (event) => {
+        console.log("event=", event)
+        setEmpKppStatus(event);
+    };
 
     const handleTodoChange = (e, i, kppId, kppOverallTarget) => {
         const field = e.target.name;
@@ -53,7 +60,7 @@ console.log("psram empId=", empId)
   
     const saveEmployeeKpp = (e) => {
         e.preventDefault()
-        let ekppStatus = "Approved";
+        let ekppStatus = empKppStatus;
        
         /*let totalAchivedWeightage="totalAchivedWeightage";
         let totalOverAllAchive="totalOverAllAchive";
@@ -74,8 +81,18 @@ console.log("psram empId=", empId)
             <form className="form-horizontal">
             <div className="form-group">
                         <label className="control-label col-sm-1 text-right" htmlFor="reamrk">Employee Name:</label>
-                       <div style={{}}>Nilesh Sambhaji Jambhulkar</div>
+                       <div>Nilesh Sambhaji Jambhulkar</div>
                     </div>
+
+                    <div className="form-group">
+                        <label className="control-label col-sm-1 text-right" htmlFor="reamrk">Employee Id:</label>
+                       <div>e14533</div>
+                    </div>
+
+                    <div className="form-group">
+                        <label className="control-label col-sm-1 text-right" htmlFor="reamrk">Designantion:</label>
+                       <div>Senior Software Developer</div>
+                    </div>        
                     </form>
             </div>
             <div className="row">
@@ -149,8 +166,33 @@ console.log("psram empId=", empId)
                             </tr>
                         </tbody>
                     </table>
+                    <div className="form-group">
+                        <label className="control-label col-sm-4" htmlFor="reamrk">View Evidence:</label>
+                        <div className="col-sm-3">
+                            click here..
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className="control-label col-sm-4" htmlFor="reamrk">Enter Remark:</label>
+                        <div className="col-sm-6">
+                            <textarea row="5" className="form-control" id="remark" placeholder="Enter Remark here" value={remark} onChange={(e) => setRemark(e.target.value)} />
+                        </div>
+                    </div>
 
+                    <div className="form-group">
+                        <label className="control-label col-sm-4" htmlFor="reamrk">Kpp Status:</label>
+                        <div className="col-sm-3">
+                        <select className="form-control" name="empKppStatus" id="empKppStatus"  value={empKppStatus} onChange={(e)=>onOptionChangeHandler(e.target.value)} defaultValue={empKppStatus} >
+                            <option value="Approved">Approved</option>
+                            <option value="Reject">Reject</option>
+                        </select>  
+                        </div>
+                    </div>
                    
+                    <div className="form-group">
+                
+         
+            </div>
           
                 </form>
 

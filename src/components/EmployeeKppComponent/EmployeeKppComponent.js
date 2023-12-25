@@ -27,6 +27,7 @@ console.log("psram empId=", empId)
     useEffect(() => {
         console.log("empId=", empId)
         EmployeeKppService.getKPPDetails(empId).then((res) => {
+            console.log(res.data)
             setKppResponses(res.data);
         });
     }, [empId]);
@@ -86,12 +87,12 @@ console.log("psram empId=", empId)
 
                     <div className="form-group">
                         <label className="control-label col-sm-1 text-right" htmlFor="reamrk">Employee Id:</label>
-                       <div>e14533</div>
+                       <div>{kppResponses?.[0]?.empEId}</div>
                     </div>
 
                     <div className="form-group">
                         <label className="control-label col-sm-1 text-right" htmlFor="reamrk">Designantion:</label>
-                       <div>Senior Software Developer</div>
+                       <div>{kppResponses?.[0]?.desigName}</div>
                     </div>        
                     </form>
             </div>

@@ -35,7 +35,12 @@ export default function ManageEmployeeComponent() {
         });
     }
 
-   
+ /* const  handleNavigation=(empId,kppStatus)=>{
+    if(kppStatus=="Pending")
+    {alert("Please fill KPP first")}
+    else{navigate(`/updateEmployeeKpp/${empId}`, { replace: true })}
+  }*/
+
     return (
         <div className='container'>
             <div className="row">
@@ -91,10 +96,7 @@ export default function ManageEmployeeComponent() {
                                             <td className='text-center'>{empResponse.empEKppStatus}</td>
 
                                             <td>
-
-                                                <button type="submit" className="btn col-sm-offset-1 btn-success" onClick={() => navigate(`/updateEmployeeKpp/${empResponse.empId}`, { replace: true })} >View</button></td>
-
-
+                                                <button type="submit" className="btn col-sm-offset-1 btn-success" disabled={empResponse.empEKppStatus=="Pending"} onClick={() => navigate(`/updateEmployeeKpp/${empResponse.empId}`, { replace: true })} >View</button></td>
                                         </tr>
                                 )
 

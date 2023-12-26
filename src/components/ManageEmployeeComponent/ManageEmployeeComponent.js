@@ -10,7 +10,7 @@ export default function ManageEmployeeComponent() {
     const navigate = useNavigate();
     const { empId } = useParams();
 
-    const [empKppStatus, setEmpKppStatus] = useState('All')
+    const [empKppStatus, setEmpKppStatus] = useState('In-Progress')
     const [empResponses, setEmpResponses] = useState([])
 
 

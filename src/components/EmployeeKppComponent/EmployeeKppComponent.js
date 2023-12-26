@@ -13,9 +13,9 @@ export default function EmployeeKppComponent() {
 console.log("psram empId=", empId)
 
     const [ekppMonth, setEkppMonth] = useState('');
-    const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('100');
-    const [totalOverAllAchive, setTotalOverAllAchive] = useState('100');
-    const [totalOverallTaskCompleted, setTotalOverallTaskCompleted] = useState('100');
+    const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('0');
+    const [totalOverAllAchive, setTotalOverAllAchive] = useState('0');
+    const [totalOverallTaskCompleted, setTotalOverallTaskCompleted] = useState('0');
     const [ekppStatus, setEkppStatus] = useState('');
     const [remark, setRemark] = useState('');
     const [evidence, setEvidence] = useState('');
@@ -37,6 +37,22 @@ console.log("psram empId=", empId)
         setEmpKppStatus(event);
     };
 
+
+    const totalOverallTaskComp = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + currentValue.ekppOverallTaskComp, 0);
+        setTotalAchivedWeightage(sum)
+    }
+
+    const totalOverallAchieve = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + currentValue.ekppOverallAchieve, 0);
+        setTotalOverAllAchive(sum)
+    }
+
+    const totalAchivedWeight = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + currentValue.ekppAchivedWeight, 0);
+        setTotalOverallTaskCompleted(sum)
+    }
+
     const handleTodoChange = (e, i, kppId, kppOverallTarget) => {
         const field = e.target.name;
         const empKpps = [...employeeKpps];
@@ -55,6 +71,9 @@ console.log("psram empId=", empId)
             "ekkpMonth":ekppMonth,
             [field]: e.target.value || 0,
         }
+        totalOverallTaskComp(empKpps)
+        totalOverallAchieve(empKpps)
+        totalAchivedWeight(empKpps)
         setEmployeeKpps(empKpps);
     };   
 
@@ -72,7 +91,7 @@ console.log("psram empId=", empId)
         const payLoad = { "kppUpdateRequests": employeeKpps, totalAchivedWeightage, totalOverAllAchive, totalOverallTaskCompleted, ekppStatus, remark };
         console.log(payLoad)
         EmployeeKppService.updateEmpArroveOrRejectByHod(payLoad).then(res => {
-           alert("Hod Approved")
+            navigate(`/manageEmployee`, { replace: true })
         }
         );
     }
@@ -156,13 +175,13 @@ console.log("psram empId=", empId)
                                 <td className='text-center'></td>
                                 <td className='text-center'> </td>
                                 <td></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}>100</label></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>100</label></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}></label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}></label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}></label></td>
                                 <td className='text-center'></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}>50</label></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>50</label></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>50</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}>{totalAchivedWeightage}</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>{totalOverAllAchive}</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>{totalOverallTaskCompleted}</label></td>
 
                             </tr>
                         </tbody>

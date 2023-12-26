@@ -101,7 +101,7 @@ console.log("psram empId=", empId)
             <form className="form-horizontal">
             <div className="form-group">
                         <label className="control-label col-sm-1 text-right" htmlFor="reamrk">Employee Name:</label>
-                       <div>Nilesh Sambhaji Jambhulkar</div>
+                       <div>{kppResponses?.[0]?.empName}</div>
                     </div>
 
                     <div className="form-group">

@@ -4,7 +4,7 @@ import { LOGIN_UI_BASE_URL } from "./HodConstants";
 
 const BASE_URL = `http://localhost:9091/employee/employee-kpp-status?reportingEmployee=${Cookies.get('empId')}&empKppStatus=In-Progress&page=0&size=20&sort=desig.desig_name`;
 
-class ManageEmployeeService {
+class AllEmployeeKppStatusService {
 
     getEmployeeDetailsByPagination() {
         if (null != Cookies.get('empId')) {
@@ -30,4 +30,4 @@ class ManageEmployeeService {
 }
 
 
-export default new ManageEmployeeService();
+export default new AllEmployeeKppStatusService();

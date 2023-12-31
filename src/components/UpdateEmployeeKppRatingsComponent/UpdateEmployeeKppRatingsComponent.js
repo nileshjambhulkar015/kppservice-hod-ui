@@ -2,11 +2,11 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import EmployeeKppService from '../../services/EmployeeKppService';
+import UpdateEmployeeKppRatingsService from '../../services/UpdateEmployeeKppRatingsService';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom"
 
-export default function EmployeeKppComponent() {
+export default function UpdateEmployeeKppRatingsComponent() {
     const navigate = useNavigate();
     
    const {empId}=useParams();
@@ -26,7 +26,7 @@ console.log("psram empId=", empId)
    
     useEffect(() => {
         console.log("empId=", empId)
-        EmployeeKppService.getKPPDetails(empId).then((res) => {
+        UpdateEmployeeKppRatingsService.getKPPDetails(empId).then((res) => {
             console.log(res.data)
             setKppResponses(res.data);
         });
@@ -90,8 +90,8 @@ console.log("psram empId=", empId)
          let evidence="evidence";*/
         const payLoad = { "kppUpdateRequests": employeeKpps, totalAchivedWeightage, totalOverAllAchive, totalOverallTaskCompleted, ekppStatus, remark };
         console.log(payLoad)
-        EmployeeKppService.updateEmpArroveOrRejectByHod(payLoad).then(res => {
-            navigate(`/manageEmployee`, { replace: true })
+        UpdateEmployeeKppRatingsService.updateEmpArroveOrRejectByHod(payLoad).then(res => {
+            navigate(`/allEmployeeKppStatus`, { replace: true })
         }
         );
     }
@@ -220,7 +220,7 @@ console.log("psram empId=", empId)
             <div className="row">
                 <div className="col-sm-8"></div>
                 <div className="col-sm-4"><button type="submit" className="btn btn-success col-sm-offset-1" onClick={(e) => saveEmployeeKpp(e)} > Submit</button>
-                    <button type="submit" className="btn btn-info col-sm-offset-1 "  onClick={() => navigate(`/manageEmployee`, { replace: true })}> Back</button>
+                    <button type="submit" className="btn btn-info col-sm-offset-1 "  onClick={() => navigate(`/allEmployeeKppStatus`, { replace: true })}> Back</button>
                  
 
                 </div>

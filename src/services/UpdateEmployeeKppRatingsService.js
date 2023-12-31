@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { KPP_API_BASE_URL, LOGIN_UI_BASE_URL } from "./HodConstants";
 //const BASE_URL = `http://localhost:9091/hod-approval/employee-kpp?empId=${}&statusCd=A`;
 
-class EmployeeKppService {
+class UpdateEmployeeKppRatingsService {
 
 
     getKPPDetails(empId) {
@@ -41,4 +41,4 @@ class EmployeeKppService {
 }
 
 
-export default new EmployeeKppService();
+export default new UpdateEmployeeKppRatingsService

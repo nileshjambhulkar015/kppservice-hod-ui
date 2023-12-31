@@ -1,24 +1,24 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import ManageHodKppsService from '../../services/ManageHodKppsService';
+import AddHodKppRatingsService from '../../services/AddHodKppRatingsService';
 import Cookies from 'js-cookie';
 
 
-export default function ManageHodKppComponent() {
+export default function AddHodKppRatingsComponent() {
 
     const [ekppMonth, setEkppMonth] = useState('');
     const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('0');
     const [totalOverAllAchive, setTotalOverAllAchive] = useState('0');
     const [totalOverallTaskCompleted, setTotalOverallTaskCompleted] = useState('0');
-    const [ekppStatus, setEkppStatus] = useState('');
+
     const [remark, setRemark] = useState('');
     const [evidence, setEvidence] = useState('');
 
     const [kppResponses, setKppResponses] = useState([])
     const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "",ekkpMonth:"" }]);
     useEffect(() => {
-        ManageHodKppsService.getKPPDetails().then((res) => {
+        AddHodKppRatingsService.getKPPDetails().then((res) => {
             setKppResponses(res.data);
         });
     }, []);
@@ -75,7 +75,7 @@ export default function ManageHodKppComponent() {
          let evidence="evidence";*/
         const payLoad = { "kppUpdateRequests": employeeKpps, totalAchivedWeightage, totalOverAllAchive, totalOverallTaskCompleted, ekppStatus, remark, evidence };
         console.log(payLoad)
-        ManageHodKppsService.saveEmployeeKppDetails(payLoad).then(res => {
+        AddHodKppRatingsService.saveEmployeeKppDetails(payLoad).then(res => {
             console.log("Employee KPP added");
         }
         );
@@ -150,7 +150,7 @@ export default function ManageHodKppComponent() {
                     <div className="form-group">
                         <label className="control-label col-sm-4" htmlFor="reamrk">Upload Evidence:</label>
                         <div className="col-sm-3">
-                            <input type="file" className="form-control" id="deptName" />
+                            <input type="file" className="form-control" id="evidence" />
                         </div>
                     </div>
                     <div className="form-group">

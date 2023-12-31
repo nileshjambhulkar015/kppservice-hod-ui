@@ -1,10 +1,10 @@
 import React from "react";
 import { Route, BrowserRouter, Link, Routes } from 'react-router-dom';
-import ManageHodKppComponent from "./components/HodKppComponent/ManageHodKppComponent";
-import ManageEmployeeComponent from "./components/ManageEmployeeComponent/ManageEmployeeComponent";
-import EmployeeKppComponent from "./components/EmployeeKppComponent/EmployeeKppComponent";
+import AddHodKppRatingsComponent from "./components/AddHodKppRatingsComponent/AddHodKppRatingsComponent";
+import AllEmployeeKppStatusComponent from "./components/AllEmployeeKppStatusComponent/AllEmployeeKppStatusComponent";
+import UpdateEmployeeKppRatingsComponent from "./components/UpdateEmployeeKppRatingsComponent/UpdateEmployeeKppRatingsComponent";
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
-import UpdateHodProfileComponent from "./components/UpdateHodProfileComponent/UpdateHodProfileComponent";
+import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
 import Cookies from 'js-cookie';
 
 
@@ -34,9 +34,9 @@ function App() {
           </div>
           <ul className="nav navbar-nav">
 
-            <li><Link to="/hodKpp">Add KPP</Link></li>
-            <li><Link to="/manageEmployee">Employees KPP Status</Link></li>
-            <li><Link to="/updateHodProfile">View Profile</Link></li>
+            <li><Link to="/addHodKpp">Add Hod KPP</Link></li>
+            <li><Link to="/allEmployeeKppStatus">Employees KPP Status</Link></li>
+            <li><Link to="/viewProfile">View Profile</Link></li>
             <li><Link to="/changePassword">Change Password</Link></li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
@@ -46,11 +46,11 @@ function App() {
         </div>
       </nav>
       <Routes>
-        <Route exact path="/" element={<ManageHodKppComponent />}></Route>
-        <Route exact path="/hodKpp" element={<ManageHodKppComponent />}></Route>
-        <Route exact path="/manageEmployee" element={<ManageEmployeeComponent />}></Route>
-        <Route exact path="/updateEmployeeKpp/:empId" element={<EmployeeKppComponent />}></Route>
-        <Route exact path="/updateHodProfile" element={<UpdateHodProfileComponent />}></Route>
+        <Route exact path="/" element={<AddHodKppRatingsComponent />}></Route>
+        <Route exact path="/addHodKpp" element={<AddHodKppRatingsComponent />}></Route>
+        <Route exact path="/allEmployeeKppStatus" element={<AllEmployeeKppStatusComponent />}></Route>
+        <Route exact path="/updateEmployeeKpp/:empId" element={<UpdateEmployeeKppRatingsComponent />}></Route>
+        <Route exact path="/viewProfile" element={<ViewProfileComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
       </Routes>
     </BrowserRouter>

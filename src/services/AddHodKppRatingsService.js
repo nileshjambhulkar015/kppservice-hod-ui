@@ -4,7 +4,7 @@ import { KPP_API_BASE_URL, LOGIN_UI_BASE_URL } from "./HodConstants";
 
 //const BASE_URL = `http://localhost:9091/employee-key-perform-parameter/kpp?roleId=${Cookies.get('roleId')}&deptId=${Cookies.get('deptId')}&desigId=${Cookies.get('desigId')}&statusCdEnum=A`;
 const BASE_URL = KPP_API_BASE_URL+`/employee-key-perform-parameter/kpp?roleId=${Cookies.get('roleId')}&deptId=${Cookies.get('deptId')}&desigId=${Cookies.get('desigId')}&statusCdEnum=A`;
-class ManageHodKppsService {
+class AddHodKppRatingsService {
 
     getKPPDetails() {
         if (null != Cookies.get('empId')) {
@@ -30,4 +30,4 @@ class ManageHodKppsService {
 }
 
 
-export default new ManageHodKppsService();
+export default new AddHodKppRatingsService();

@@ -59,7 +59,8 @@ export default function ManageEmployeeComponent() {
                                 <th className='text-center'>Employee Id</th>
                                 <th className='text-center'>Designation Name</th>
                                 <th className='text-center'>Mobile No</th>
-                                <th className='text-center'>Overall Achivement</th>
+                                <th className='text-center'>Employee Ratings</th>
+                                <th className='text-center'>Hod Ratings</th>
                                 <th className='text-center'>Status</th>
                                 <th className='text-center'>Action</th>
                             </tr>
@@ -76,7 +77,8 @@ export default function ManageEmployeeComponent() {
                                             <td className='text-center'>{empResponse.desigName}</td>
                                             <td className='text-center'>{empResponse.empMobileNo}</td>
                                             <td className='text-center'>{empResponse.kppOverallAchivement}</td>
-                                            <td className='text-center'>{empResponse.empEKppStatus}</td>
+                                            <td className='text-center'>{empResponse.hodOverallAchieve}</td>
+                                            <td className='text-center'>{empResponse.hodKppStatus}</td>
                                             <td>
                                                 <button type="submit" className="btn col-sm-offset-1 btn-success" disabled={empResponse.empEKppStatus === "Pending"} onClick={() => navigate(`/updateEmployeeKpp/${empResponse.empId}`, { replace: true })} >View</button></td>
                                         </tr>

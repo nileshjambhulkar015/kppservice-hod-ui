@@ -157,14 +157,17 @@ console.log("psram empId=", empId)
                                             <td>{kppResponse.kppOverallWeightage}</td>
 
                                             <td>
-                                                <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={0} value={employeeKpps[index]?.ekppAchivedWeight} disabled />
+                                                <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={kppResponse.hodAchivedWeight}  disabled />
                                             </td>
                                             <td>
-                                                <input type="number" className="form-control" min="0" name="ekppOverallAchieve" defaultValue={0} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
+                                                <input type="number" className="form-control" min="0" name="ekppOverallAchieve" defaultValue={kppResponse.hodOverallAchieve} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
                                             </td>
                                             <td>
-                                                <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={0} value={employeeKpps[index]?.ekppOverallTaskComp} disabled />
+                                                <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={kppResponse.hodOverallTaskComp} disabled />
                                             </td>
+
+
+                                         
                                         </tr>
                                 )
                             }

@@ -8,7 +8,8 @@ class AddHodKppRatingsService {
 
     getKPPDetails() {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL)
+            return axios.get(`http://localhost:9091/hod-approval/employee-kpp?empEId=${Cookies.get('empEId')}&statusCd=A`)
+          //  return axios.get(BASE_URL)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

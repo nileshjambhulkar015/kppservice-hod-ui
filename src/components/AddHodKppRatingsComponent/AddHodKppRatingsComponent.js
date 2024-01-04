@@ -89,7 +89,7 @@ export default function AddHodKppRatingsComponent() {
                     <div className="form-group">
                         <label className="control-label col-sm-1 col-sm-offset-4"  >Select Month:</label>
                         <div className="col-sm-2">
-                            <input type="date" className="form-control" id="theDate" name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)}/>
+                            <input type="date" className="form-control" name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)}/>
                         </div>
                     </div>
                     <table className="table table-bordered">

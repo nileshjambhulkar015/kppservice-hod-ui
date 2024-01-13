@@ -21,14 +21,17 @@ console.log("psram empId=", empId)
     const [evidence, setEvidence] = useState('');
     const [empKppStatus, setEmpKppStatus] = useState('Approved')
 
-    const [kppResponses, setKppResponses] = useState([])
+    const [kppMasterResponses, setKppMasterResponses] = useState()
+    const [kppDetailsResponses, setKppDetailsResponses] = useState([])
     const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "",empId:"",empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "",ekkpMonth:"" }]);
    
     useEffect(() => {
         console.log("empId=", empId)
         UpdateEmployeeKppRatingsService.getKPPDetails(empId).then((res) => {
-            console.log(res.data)
-            setKppResponses(res.data);
+            
+            setKppMasterResponses(res.data);
+           
+            setKppDetailsResponses(res.data.kppStatusDetails)
         });
     }, [empId]);
 
@@ -101,17 +104,17 @@ console.log("psram empId=", empId)
             <form className="form-horizontal">
             <div className="form-group">
                         <label className="control-label col-sm-1 text-right" htmlFor="reamrk">Employee Name:</label>
-                       <div>{kppResponses?.[0]?.empName}</div>
+                       <div>{kppMasterResponses?.[0]?.empName}</div>
                     </div>
 
                     <div className="form-group">
                         <label className="control-label col-sm-1 text-right" htmlFor="reamrk">Employee Id:</label>
-                       <div>{kppResponses?.[0]?.empEId}</div>
+                       <div>{kppMasterResponses?.[0]?.empEId}</div>
                     </div>
 
                     <div className="form-group">
                         <label className="control-label col-sm-1 text-right" htmlFor="reamrk">Designantion:</label>
-                       <div>{kppResponses?.[0]?.desigName}</div>
+                       <div>{kppMasterResponses?.[0]?.desigName}</div>
                     </div>        
                     </form>
             </div>
@@ -129,9 +132,10 @@ console.log("psram empId=", empId)
                                 <th>Overall Target</th>
                                 <th>Target Period</th>
                                 <th>UOM</th>
-                                <th>Achived Weightage</th>
-                                <th>Over All Achive</th>
-                                <th>Overall Task Completed</th>
+                                <th>Employee Over All Achive</th>
+                                <th>Employee Achived Weightage</th>
+                              
+                                <th>Employee Overall Task Completed</th>
                                 <th>Overall Weightage</th>
                                 <th>Achived Weightage</th>
                                 <th>Over All Achive</th>
@@ -142,7 +146,7 @@ console.log("psram empId=", empId)
                         </thead>
                         <tbody>
                             {
-                                kppResponses.map(
+                                kppDetailsResponses.map(
                                     (kppResponse, index) =>
                                         <tr key={kppResponse.kppId} className="text-justify">
                                            <td>{index + 1}</td>
@@ -151,9 +155,9 @@ console.log("psram empId=", empId)
                                             <td>{kppResponse.kppOverallTarget}</td>
                                             <td>{kppResponse.kppTargetPeriod}</td>
                                             <td>{kppResponse.kppUoM}</td>
-                                            <td>{kppResponse.ekppAchivedWeight}</td>
-                                            <td>{kppResponse.ekppOverallAchieve}</td>
-                                            <td>{kppResponse.ekppOverallTaskComp}</td>
+                                            <td>{kppResponse.empAchivedWeight}</td>
+                                            <td>{kppResponse.empOverallAchieve}</td>    
+                                            <td>{kppResponse.empOverallTaskComp}</td>
                                             <td>{kppResponse.kppOverallWeightage}</td>
 
                                             <td>
@@ -247,7 +251,7 @@ console.log("psram empId=", empId)
 
                             {
 
-                                kppResponses.map(
+                                kppDetailsResponses.map(
                                     (kppResponse, index) =>
 
                                         <tr className="text-center">

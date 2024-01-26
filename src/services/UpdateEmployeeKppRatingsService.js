@@ -7,7 +7,7 @@ class UpdateEmployeeKppRatingsService {
 
 
     getKPPDetails(empId) {
-        console.log("new emop Id : ", empId)
+       
         if (null != Cookies.get('empId')) {
 
             return axios.get(`http://localhost:9091/employee-kpp-status?empId=${empId}`)

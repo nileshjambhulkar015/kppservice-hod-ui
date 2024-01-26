@@ -76,8 +76,8 @@ export default function ManageEmployeeComponent() {
                                             <td className='text-center'>{empResponse.empEId}</td>
                                             <td className='text-center'>{empResponse.desigName}</td>
                                             <td className='text-center'>{empResponse.empMobileNo}</td>
-                                            <td className='text-center'>{empResponse.totalEmpOverallAchieve}</td>
-                                            <td className='text-center'>{empResponse.totalHodOverallAchieve}</td>
+                                            <td className='text-center'>{empResponse.empOverallAchive}</td>
+                                            <td className='text-center'>{empResponse.hodOverallAchieve}</td>
                                             <td className='text-center'>{empResponse.hodKppStatus}</td>
                                             <td>
                                                 <button type="submit" className="btn col-sm-offset-1 btn-success" disabled={empResponse.empEKppStatus === "Pending"} onClick={() => navigate(`/updateEmployeeKpp/${empResponse.empId}`, { replace: true })} >View</button></td>

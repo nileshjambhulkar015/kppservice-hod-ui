@@ -6,6 +6,8 @@ import UpdateEmployeeKppRatingsComponent from "./components/UpdateEmployeeKppRat
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
 import Cookies from 'js-cookie';
+import HodKppRatingsComponent from "./components/AddHodKppRatingsComponent/AddHodKppRatingsComponent";
+import EmplyeeKppRatingsComponent from "./components/UpdateEmployeeKppRatingsComponent/UpdateEmployeeKppRatingsComponent";
 
 
 function App() {

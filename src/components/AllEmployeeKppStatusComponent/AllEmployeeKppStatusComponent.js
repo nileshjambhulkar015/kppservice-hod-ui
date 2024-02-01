@@ -27,6 +27,7 @@ export default function ManageEmployeeComponent() {
         });
     }
 
+
     return (
         <div className='container'>
             <div className="row">

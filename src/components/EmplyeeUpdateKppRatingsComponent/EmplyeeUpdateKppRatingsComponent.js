@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Form, Formik } from 'formik'
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -8,29 +8,25 @@ import EmployeeKppsService from '../../services/EmployeeKppsService';
 
 const EmplyeeUpdateKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
+
+    const [hodTotalAchivedWeight, setHodTotalAchivedWeight] = useState('');
+    const [hodTotalOverallAchieve, setHodTotalOverallAchieve] = useState('');
+    const [hodTotalOverallTaskComp, setHodTotalOverallTaskComp] = useState('');
+
     const [hodRemark, setHodRemark] = useState('');
     const [hodKppStatus, setHodKppStatus] = useState('Approved');
 
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
-    const hodTotalAchivedWeight = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodAchivedWeight), 0);
-        return sum;
-    }
 
-        //for hod approved or reject status selection
-        const onHodStatusChangeHandler = (event) => {
-            setHodKppStatus(event);
-        };
+    const formikRef = useRef(null);
 
-    const hodTotalOverallAchieve = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodOverallAchieve), 0);
-        return sum;
-    }
-    const hodTotalOverallTaskComp = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodOverallTaskComp), 0);
-        return sum;
-    }
+       //for hod approved or reject status selection
+       const onHodStatusChangeHandler = (event) => {
+        setHodKppStatus(event);
+    };
+
+  
     useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
             setKppMasterResponses(res.data);
@@ -44,6 +40,25 @@ const EmplyeeUpdateKppRatingsComponent = () => {
             alert("Report generated");
         });
     }
+
+    const sumHodTotalAchivedWeight = (empKpps) => {
+
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodAchivedWeight), 0);
+        setHodTotalAchivedWeight(sum)
+        return sum;
+    }     
+
+    const sumHodTotalOverallAchieve = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodOverallAchieve), 0);
+        setHodTotalOverallAchieve(sum)
+        return sum;
+    }
+    const sumHodTotalOverallTaskComp = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodOverallTaskComp), 0);
+        setHodTotalOverallTaskComp(sum)
+        return sum;
+    }
+
     return (
         <div className='container-fluid'>
             <div className="row">
@@ -54,15 +69,18 @@ const EmplyeeUpdateKppRatingsComponent = () => {
                     totalHodOverallTaskComp: 0
                 }}
                     enableReinitialize={true}
+                   
                     onSubmit={(values) => {
                         
                         
-                        const payload = { "kppUpdateRequests": values?.fields, "hodTotalAchivedWeight": values?.totalHodAchivedWeight, "hodTotalOverallAchieve": values?.totalHodOverallAchieve, "hodTotalOverallTaskComp": values?.totalHodOverallTaskComp, hodKppStatus, hodRemark };
+                        const payload = { "kppUpdateRequests": values?.fields, "hodTotalAchivedWeight": hodTotalAchivedWeight, "hodTotalOverallAchieve": hodTotalOverallAchieve, "hodTotalOverallTaskComp": hodTotalOverallTaskComp, hodKppStatus, hodRemark };
                         EmployeeKppsService.saveEmployeeKppRatingByHod(payload).then(res => {
                             alert("Employee KPP added");
                         });
                     }}>
                     {({ values, setFieldValue }) => {
+
+                      console.log("values=", values.totalHodAchivedWeight)
 
                         const handleTodoChange = (e, i, kppId, kppOverallWeightage, hodOverallTaskComp, kppRating1) => {
                             console.log("e.target.value : ", e.target.value)
@@ -82,9 +100,10 @@ const EmplyeeUpdateKppRatingsComponent = () => {
                                 "ekppMonth": ekppMonth,
                                 [field]: parseInt(e.target.value || 0),
                             }
-                            setFieldValue("totalOverallTaskCompleted",hodTotalOverallTaskComp(kppDetailsResponses));
-                            setFieldValue("totalOverAllAchive", hodTotalOverallAchieve(kppDetailsResponses));
-                            setFieldValue("totalAchivedWeightage",hodTotalAchivedWeight(kppDetailsResponses));
+                            console.log("kppDetailsResponses = ", kppDetailsResponses)
+                            setFieldValue("totalOverallTaskCompleted",sumHodTotalOverallTaskComp(kppDetailsResponses));
+                            setFieldValue("totalOverAllAchive", sumHodTotalOverallAchieve(kppDetailsResponses));
+                            setFieldValue("totalAchivedWeightage",sumHodTotalAchivedWeight(kppDetailsResponses));
                             setFieldValue("fields", kppDetailsResponses)
                         };
                         return (
@@ -188,9 +207,9 @@ const EmplyeeUpdateKppRatingsComponent = () => {
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalEmpOverallAchieve}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalEmpOverallTaskComp}</label></td>
                                            
-                                            <td className='text-center'> <label className="control-label text-right">{values?.totalHodAchivedWeight === 0 ? hodTotalAchivedWeight(values?.fields) : values?.totalHodAchivedWeight}</label></td>
-                                            <td className='text-center'> <label className="control-label text-right">{values?.totalHodOverallAchieve === 0 ? hodTotalOverallAchieve(values?.fields) : values?.totalHodOverallAchieve}</label></td>
-                                            <td className='text-center'> <label className="control-label text-right">{values?.totalHodOverallTaskComp === 0 ? hodTotalOverallTaskComp(values?.fields) : values?.totalHodOverallTaskComp}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalHodAchivedWeight === 0 ? sumHodTotalAchivedWeight(values?.fields) : values?.totalHodAchivedWeight}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalHodOverallAchieve === 0 ? sumHodTotalOverallAchieve(values?.fields) : values?.totalHodOverallAchieve}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalHodOverallTaskComp === 0 ? sumHodTotalOverallTaskComp(values?.fields) : values?.totalHodOverallTaskComp}</label></td>
 
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmAchivedWeight}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmOverallAchieve}</label></td>

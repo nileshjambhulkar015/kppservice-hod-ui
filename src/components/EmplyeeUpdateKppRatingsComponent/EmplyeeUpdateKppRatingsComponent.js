@@ -2,57 +2,45 @@ import React from 'react';
 import { Form, Formik } from 'formik'
 import { useEffect } from 'react';
 import { useState } from 'react';
-import UpdateEmployeeKppRatingsService from '../../services/UpdateEmployeeKppRatingsService';
+
 import Cookies from 'js-cookie';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from "react-router-dom"
+import EmployeeKppsService from '../../services/EmployeeKppsService';
 
-const UpdateEmployeeKppRatingsComponent = () => {
-
-    const navigate = useNavigate();
-    
-  // const {empId}=useParams();
-
-   let empId=Cookies.get('empIdForKppRatings');
-   
+const EmplyeeUpdateKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
-    const [empRemark, setEmpRemark] = useState('');
+    const [hodRemark, setHodRemark] = useState('');
+    const [hodKppStatus, setHodKppStatus] = useState('Approved');
 
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
-    const totalAchivedWeight = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empAchivedWeight), 0);
+    const hodTotalAchivedWeight = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodAchivedWeight), 0);
         return sum;
     }
 
-    const totalOverAllAchive = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallAchieve), 0);
+        //for hod approved or reject status selection
+        const onHodStatusChangeHandler = (event) => {
+            setHodKppStatus(event);
+        };
+
+    const hodTotalOverallAchieve = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodOverallAchieve), 0);
         return sum;
     }
-    const totalOverallTaskComp = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallTaskComp), 0);
+    const hodTotalOverallTaskComp = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodOverallTaskComp), 0);
         return sum;
     }
-  /*  useEffect(() => {
+    useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
             setKppMasterResponses(res.data);
-            setEmpRemark(res.data.empRemark)
+            setHodRemark(res.data.hodRemark)
             setKppDetailsResponses(res.data.kppStatusDetails)
         });
-    }, []);*/
-    
-    useEffect(() => {
-        console.log("empId=", empId)
-        UpdateEmployeeKppRatingsService.getKPPDetails(empId).then((res) => {
-            
-            setKppMasterResponses(res.data);
-           
-            setKppDetailsResponses(res.data.kppStatusDetails)
-        });
-    }, [empId]);
+    }, []);
 
     const handleExcel=()=>{
-        UpdateEmployeeKppRatingsService.getEmployeeKPPReport(Cookies.get('empId')).then(res => {
+        EmployeeKppsService.getEmployeeKPPReport(Cookies.get('empId')).then(res => {
             alert("Report generated");
         });
     }
@@ -61,25 +49,25 @@ const UpdateEmployeeKppRatingsComponent = () => {
             <div className="row">
                 <Formik initialValues={{
                     fields: kppDetailsResponses,
-                    totalAchivedWeightage: 0,
-                    totalOverAllAchive: 0,
-                    totalOverallTaskCompleted: 0
+                    totalHodAchivedWeight: 0,
+                    totalHodOverallAchieve: 0,
+                    totalHodOverallTaskComp: 0
                 }}
                     enableReinitialize={true}
                     onSubmit={(values) => {
-                        let ekppStatus = "In-Progress";
-                        let evidence = "evidence";
-                        const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": values?.totalAchivedWeightage, "totalOverAllAchive": values?.totalOverAllAchive, "totalOverallTaskCompleted": values?.totalOverallTaskCompleted, ekppStatus, empRemark, evidence };
-                        UpdateEmployeeKppRatingsService.saveEmployeeKppDetails(payload).then(res => {
+                        
+                        
+                        const payload = { "kppUpdateRequests": values?.fields, "hodTotalAchivedWeight": values?.totalHodAchivedWeight, "hodTotalOverallAchieve": values?.totalHodOverallAchieve, "hodTotalOverallTaskComp": values?.totalHodOverallTaskComp, hodKppStatus, hodRemark };
+                        EmployeeKppsService.saveEmployeeKppRatingByHod(payload).then(res => {
                             alert("Employee KPP added");
                         });
                     }}>
                     {({ values, setFieldValue }) => {
 
-                        const handleTodoChange = (e, i, kppId, kppOverallWeightage, empOverallTaskComp, kppRating1) => {
+                        const handleTodoChange = (e, i, kppId, kppOverallWeightage, hodOverallTaskComp, kppRating1) => {
                             console.log("e.target.value : ", e.target.value)
                             const field = e.target.name?.split(".")[1];
-                            console.log("kppDetailsResponses[i].empOverallTaskComp =", empOverallTaskComp)
+                            console.log("kppDetailsResponses[i].hodOverallTaskComp =", hodOverallTaskComp)
 
                             kppDetailsResponses[i] = {
 
@@ -87,19 +75,16 @@ const UpdateEmployeeKppRatingsComponent = () => {
 
 
                                 "kppId": kppId,
-                                "empId": Cookies.get('empId'),
-                                "empEId": Cookies.get('empEId'),
-                                "roleId": Cookies.get('roleId'),
-                                "deptId": Cookies.get('deptId'),
-                                "desigId": Cookies.get('desigId'),
-                                "empOverallTaskComp": field === "empOverallAchieve" && !!e.target.value ? (Number(e.target.value) / 5 * 100).toFixed(1) : 0,
-                                "empAchivedWeight": field === "empOverallAchieve" && !!e.target.value ? ((kppOverallWeightage * (Number(e.target.value) / 5 * 100).toFixed(1)) / 100).toFixed(1) : 0,
+                                "empId": Cookies.get('empIdForKppRatings'),                               
+                     
+                                "hodOverallTaskComp": field === "hodOverallAchieve" && !!e.target.value ? (Number(e.target.value) / 5 * 100).toFixed(1) : 0,
+                                "hodAchivedWeight": field === "hodOverallAchieve" && !!e.target.value ? ((kppOverallWeightage * (Number(e.target.value) / 5 * 100).toFixed(1)) / 100).toFixed(1) : 0,
                                 "ekppMonth": ekppMonth,
                                 [field]: parseInt(e.target.value || 0),
                             }
-                            setFieldValue("totalOverallTaskCompleted", totalOverallTaskComp(kppDetailsResponses));
-                            setFieldValue("totalOverAllAchive", totalOverAllAchive(kppDetailsResponses));
-                            setFieldValue("totalAchivedWeightage", totalAchivedWeight(kppDetailsResponses));
+                            setFieldValue("totalOverallTaskCompleted",hodTotalOverallTaskComp(kppDetailsResponses));
+                            setFieldValue("totalOverAllAchive", hodTotalOverallAchieve(kppDetailsResponses));
+                            setFieldValue("totalAchivedWeightage",hodTotalAchivedWeight(kppDetailsResponses));
                             setFieldValue("fields", kppDetailsResponses)
                         };
                         return (
@@ -157,30 +142,29 @@ const UpdateEmployeeKppRatingsComponent = () => {
                                                     <td>{kppResponse.kppUoM}</td>
                                                     <td className='text-center'>{kppResponse.kppOverallWeightage}</td>
                                                    
-                                                
-                                                  
+                                                    <td className='text-center'>{kppResponse.empAchivedWeight}</td>
+                                                    <td className='text-center'>{kppResponse.empOverallAchieve}</td>
+                                                    <td className='text-center'>{kppResponse.empOverallTaskComp}</td>
                                                    
                                                     <td>
-                                                        <input type="text" className="form-control" name={`${index}.empAchivedWeight`} value={values?.fields?.[index]?.empAchivedWeight} disabled />
+                                                        <input type="text" className="form-control" name={`${index}.hodAchivedWeight`} value={values?.fields?.[index]?.hodAchivedWeight} disabled />
                                                     </td>
 
                                                     <td>
                                                         <input type="number" className="form-control"
-                                                            name={`${index}.empOverallAchieve`}
+                                                            name={`${index}.hodOverallAchieve`}
                                                             min={0}
-                                                            defaultValue={values?.fields?.[index]?.empOverallAchieve}
+                                                            defaultValue={values?.fields?.[index]?.hodOverallAchieve}
 
-                                                            onKeyDown={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, values?.fields?.[index]?.empOverallTaskComp, kppResponse.kppRating1)}
-                                                            onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, values?.fields?.[index]?.empOverallTaskComp, kppResponse.kppRating1)}
+                                                            onKeyDown={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, values?.fields?.[index]?.hodOverallTaskComp, kppResponse.kppRating1)}
+                                                            onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, values?.fields?.[index]?.hodOverallTaskComp, kppResponse.kppRating1)}
                                                         />
                                                     </td>
                                                     <td>
-                                                        <input type="text" className="form-control" name={`${index}.empOverallTaskComp`} value={values?.fields?.[index]?.empOverallTaskComp} disabled />
+                                                        <input type="text" className="form-control" name={`${index}.hodOverallTaskComp`} value={values?.fields?.[index]?.hodOverallTaskComp} disabled />
                                                     </td>
 
-                                                    <td className='text-center'>{kppResponse.hodAchivedWeight}</td>
-                                                    <td className='text-center'>{kppResponse.hodOverallAchieve}</td>
-                                                    <td className='text-center'>{kppResponse.hodOverallTaskComp}</td>
+                                                   
                                                     <td className='text-center'>{kppResponse.gmAchivedWeight}</td>
                                                     <td className='text-center'>{kppResponse.gmOverallAchieve}</td>
                                                     <td className='text-center'>{kppResponse.gmOverallTaskComp}</td>
@@ -200,13 +184,14 @@ const UpdateEmployeeKppRatingsComponent = () => {
                                             <td className='text-center'> </td>
                                             <td></td>
                                             <td className='text-center'></td>
-                                            <td className='text-center'> <label className="control-label text-right">{values?.totalAchivedWeightage === 0 ? totalAchivedWeight(values?.fields) : values?.totalAchivedWeightage}</label></td>
-                                            <td className='text-center'> <label className="control-label text-right">{values?.totalOverAllAchive === 0 ? totalOverAllAchive(values?.fields) : values?.totalOverAllAchive}</label></td>
-                                            <td className='text-center'> <label className="control-label text-right">{values?.totalOverallTaskCompleted === 0 ? totalOverallTaskComp(values?.fields) : values?.totalOverallTaskCompleted}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalEmpAchivedWeight}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalEmpOverallAchieve}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalEmpOverallTaskComp}</label></td>
+                                           
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalHodAchivedWeight === 0 ? hodTotalAchivedWeight(values?.fields) : values?.totalHodAchivedWeight}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalHodOverallAchieve === 0 ? hodTotalOverallAchieve(values?.fields) : values?.totalHodOverallAchieve}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalHodOverallTaskComp === 0 ? hodTotalOverallTaskComp(values?.fields) : values?.totalHodOverallTaskComp}</label></td>
 
-                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalHodAchivedWeight}</label></td>
-                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalHodOverallAchieve}</label></td>
-                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalHodOverallTaskComp}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmAchivedWeight}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmOverallAchieve}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmOverallTaskComp}</label></td>
@@ -216,52 +201,31 @@ const UpdateEmployeeKppRatingsComponent = () => {
                                 </table>
 
                                 <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="reamrk">Upload Evidence:</label>
+                                    <label className="control-label col-sm-4" htmlFor="reamrk">View Evidence:</label>
                                     <div className="col-sm-3">
-                                        <input type="file" className="form-control" id="deptName" />
+                                        click here to download
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="empRemark">Enter Remark:</label>
                                     <div className="col-sm-6">
-                                        <textarea row="5" className="form-control" id="empRemark" name="empRemark" defaultValue={empRemark} placeholder="Enter Remark here" onChange={(e) => setEmpRemark(e.target.value)} />
+                                        <textarea row="5" className="form-control" id="hodRemark" name="hodRemark" defaultValue={hodRemark} placeholder="Enter Remark here" onChange={(e) => setHodRemark(e.target.value)} />
                                     </div>
+                                </div>
+                    
+                                <div className="form-group">
+                                <label className="control-label col-sm-4" htmlFor="hodKppStatus">Hod Status:</label>
+                                <div className="col-sm-2">
+                                    <select className="form-control" id="hodKppStatus" onChange={(e) => onHodStatusChangeHandler(e.target.value)} defaultValue={hodKppStatus} >
+                                        <option value="Approved">Approved</option>
+                                        <option value="Reject">Reject</option>
+                                    </select>
+                                </div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="empKppStatus">Employee Status</label>
-                                    <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.empKppStatus}</label>
-                                    </div>
-                                </div>
+                               
 
-                                <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Hod Status</label>
-                                    <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.hodKppStatus}</label>
-                                    </div>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Hod Remark</label>
-                                    <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.hodRemark}</label>
-                                    </div>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="gmKppStatus">GM Status</label>
-                                    <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.gmKppStatus}</label>
-                                    </div>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">GM Remark</label>
-                                    <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.gmRemark}</label>
-                                    </div>
-                                </div>
+                               
                                 <div className="row">
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>
@@ -281,4 +245,4 @@ const UpdateEmployeeKppRatingsComponent = () => {
         </div>
     );
 }
-export default UpdateEmployeeKppRatingsComponent;
+export default EmplyeeUpdateKppRatingsComponent;

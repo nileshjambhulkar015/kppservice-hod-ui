@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import AllEmployeeKppStatusService from '../../services/AllEmployeeKppStatusService';
 import { useNavigate } from 'react-router-dom';
-
+import Cookies from 'js-cookie';
 export default function ManageEmployeeComponent() {
 
     const navigate = useNavigate();
@@ -13,12 +13,14 @@ export default function ManageEmployeeComponent() {
     useEffect(() => {
         AllEmployeeKppStatusService.getEmployeeDetailsByPagination().then((res) => {
             setEmpResponses(res.data.responseData.content);
+           
         });
     }, []);
 
     const onOptionChangeHandler = (event) => {
         setEmpKppStatus(event);
     };
+
 
     const searchByEKpp = (e) => {
         console.log("data=", empKppStatus)
@@ -27,6 +29,12 @@ export default function ManageEmployeeComponent() {
         });
     }
 
+  const navigateToUpdateRating=(empId)=>{ 
+    console.log("kpp emp Id :", empId)
+    Cookies.set('empIdForKppRatings', empId);
+   // navigate(`/updateEmployeeKpp/${empResponse.empId}`, { replace: true })
+        navigate(`/updateEmployeeKpp`, { replace: true })       
+    }
 
     return (
         <div className='container'>
@@ -81,7 +89,7 @@ export default function ManageEmployeeComponent() {
                                             <td className='text-center'>{empResponse.hodOverallAchieve}</td>
                                             <td className='text-center'>{empResponse.hodKppStatus}</td>
                                             <td>
-                                                <button type="submit" className="btn col-sm-offset-1 btn-success" disabled={empResponse.empEKppStatus === "Pending"} onClick={() => navigate(`/updateEmployeeKpp/${empResponse.empId}`, { replace: true })} >View</button></td>
+                                                <button type="submit" className="btn col-sm-offset-1 btn-success" disabled={empResponse.empEKppStatus === "Pending"} onClick={() => navigateToUpdateRating(empResponse.empId)} >View</button></td>
                                         </tr>
                                 )
                             }

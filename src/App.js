@@ -1,13 +1,11 @@
+import Cookies from 'js-cookie';
 import React from "react";
-import { Route, BrowserRouter, Link, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import AddHodKppRatingsComponent from "./components/AddHodKppRatingsComponent/AddHodKppRatingsComponent";
 import AllEmployeeKppStatusComponent from "./components/AllEmployeeKppStatusComponent/AllEmployeeKppStatusComponent";
-import UpdateEmployeeKppRatingsComponent from "./components/UpdateEmployeeKppRatingsComponent/UpdateEmployeeKppRatingsComponent";
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
+import EmplyeeUpdateKppRatingsComponent from "./components/EmplyeeUpdateKppRatingsComponent/EmplyeeUpdateKppRatingsComponent";
 import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
-import Cookies from 'js-cookie';
-import HodKppRatingsComponent from "./components/AddHodKppRatingsComponent/AddHodKppRatingsComponent";
-import EmplyeeKppRatingsComponent from "./components/UpdateEmployeeKppRatingsComponent/UpdateEmployeeKppRatingsComponent";
 
 
 function App() {
@@ -51,7 +49,7 @@ function App() {
         <Route exact path="/" element={<AddHodKppRatingsComponent />}></Route>
         <Route exact path="/addHodKpp" element={<AddHodKppRatingsComponent />}></Route>
         <Route exact path="/allEmployeeKppStatus" element={<AllEmployeeKppStatusComponent />}></Route>
-        <Route exact path="/updateEmployeeKpp/:empId" element={<UpdateEmployeeKppRatingsComponent />}></Route>
+        <Route exact path="/updateEmployeeKpp" element={<EmplyeeUpdateKppRatingsComponent />}></Route>
         <Route exact path="/viewProfile" element={<ViewProfileComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
       </Routes>

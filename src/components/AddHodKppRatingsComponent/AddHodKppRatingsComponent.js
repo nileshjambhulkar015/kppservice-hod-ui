@@ -2,40 +2,64 @@ import React from 'react';
 import { Form, Formik } from 'formik'
 import { useEffect } from 'react';
 import { useState } from 'react';
-import AddHodKppRatingsService from '../../services/AddHodKppRatingsService';
+import EmployeeKppsService from '../../services/EmployeeKppsService';
 import Cookies from 'js-cookie';
 
 const AddHodKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
     const [empRemark, setEmpRemark] = useState('');
 
+    const [totalAchivedWeight, setTotalAchivedWeight] = useState('');
+    const [totalOverAllAchive, setTotalOverAllAchive] = useState('');
+    const [totalOverallTaskComp, setTotalOverallTaskComp] = useState('');
+
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
-    const totalAchivedWeight = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empAchivedWeight), 0);
+
+    const YYYY_MM_DD_Formater = (date, format = 'YYYY-MM-DD') => {
+        const t = new Date(date)
+        const y = t.getFullYear()
+        const m = ('0' + (t.getMonth() + 1)).slice(-2)
+        const d = ('0' + t.getDate()).slice(-2)
+        return format.replace('YYYY', y).replace('MM', m).replace('DD', d)
+    }
+
+
+
+    const sumTotalAchivedWeight = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empAchivedWeight), 0);
+        setTotalAchivedWeight(sum)
         return sum;
     }
 
-    const totalOverAllAchive = (empKpps) => {
+
+
+    const sumTotalOverAllAchive = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallAchieve), 0);
+        setTotalOverAllAchive(sum)
         return sum;
     }
-    const totalOverallTaskComp = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallTaskComp), 0);
+    const sumTotalOverallTaskComp = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empOverallTaskComp), 0);
+        setTotalOverallTaskComp(sum)
         return sum;
     }
+
     useEffect(() => {
-        AddHodKppRatingsService.getKPPDetails().then((res) => {
+       let hodEmpId= Cookies.get('empId');
+        EmployeeKppsService.getKPPDetailsForHodRatings(hodEmpId).then((res) => {
+           
+            setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))           
             setKppMasterResponses(res.data);
             setEmpRemark(res.data.empRemark)
             setKppDetailsResponses(res.data.kppStatusDetails)
         });
     }, []);
 
-    const handleExcel=()=>{
-        /*AddHodKppRatingsService.getEmployeeKPPReport(Cookies.get('empId')).then(res => {
+    const handleExcel = () => {
+        EmployeeKppsService.getEmployeeKPPReport(Cookies.get('empId')).then(res => {
             alert("Report generated");
-        });*/
+        });
     }
     return (
         <div className='container-fluid'>
@@ -50,8 +74,8 @@ const AddHodKppRatingsComponent = () => {
                     onSubmit={(values) => {
                         let ekppStatus = "In-Progress";
                         let evidence = "evidence";
-                        const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": values?.totalAchivedWeightage, "totalOverAllAchive": values?.totalOverAllAchive, "totalOverallTaskCompleted": values?.totalOverallTaskCompleted, ekppStatus, empRemark, evidence };
-                        AddHodKppRatingsService.saveEmployeeKppDetails(payload).then(res => {
+                        const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": totalAchivedWeight, "totalOverAllAchive": totalOverAllAchive, "totalOverallTaskCompleted": totalOverallTaskComp, ekppMonth, ekppStatus, empRemark, evidence };
+                        EmployeeKppsService.saveEmployeeKppDetails(payload).then(res => {
                             alert("Employee KPP added");
                         });
                     }}>
@@ -78,49 +102,52 @@ const AddHodKppRatingsComponent = () => {
                                 "ekppMonth": ekppMonth,
                                 [field]: parseInt(e.target.value || 0),
                             }
-                            setFieldValue("totalOverallTaskCompleted", totalOverallTaskComp(kppDetailsResponses));
-                            setFieldValue("totalOverAllAchive", totalOverAllAchive(kppDetailsResponses));
-                            setFieldValue("totalAchivedWeightage", totalAchivedWeight(kppDetailsResponses));
+                            setFieldValue("totalAchivedWeightage", sumTotalAchivedWeight(kppDetailsResponses));
+                            setFieldValue("totalOverAllAchive", sumTotalOverAllAchive(kppDetailsResponses));
+                            setFieldValue("totalOverallTaskCompleted", sumTotalOverallTaskComp(kppDetailsResponses));
+
+
                             setFieldValue("fields", kppDetailsResponses)
                         };
                         return (
                             <Form className="form-horizontal">
                                 <div className="form-group">
-                                    <label className="control-label col-sm-1 "  >Select Date:</label>
+                                    <label className="control-label col-sm-1 "  >KPP Date:</label>
                                     <div className="col-sm-2">
-                                        <input type="date" className="form-control" name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)} />
+                                        <input type="date" className="form-control" defaultValue={ekppMonth} name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)} />
                                     </div>
                                 </div>
                                 <table className="table table-bordered" >
 
                                     <thead>
                                         <tr>
-                                        <td colSpan={21} className="text-center"><b>EMPLOYEE-WISE KEY PERFORMANCE INDICATORS (KPIs) FY 2022-2023</b></td>
+                                            <td colSpan={21} className="text-center"><b>EMPLOYEE-WISE KEY PERFORMANCE INDICATORS (KPIs) FY 2022-2023</b></td>
                                         </tr>
                                         <tr>
-                                        <th rowSpan={2} className="text-center">Sr No</th>
-                                        <th rowSpan={2} className="text-center">INDIVIDUAL KPI / OBJECTIVES</th>
-                                        <th rowSpan={2} className="text-center">PERFORMANCE INDICATOR</th>
-                                        <th rowSpan={2} colSpan={2} className="text-center">OVERALL TARGET</th>
-                                        <th rowSpan={2} className="text-center">UOM</th>
-                                        <th colSpan={2} className="text-center">OVERALL WEIGHTAGE TO BE 100%</th>
-                                        <th rowSpan={2} className="text-center">OVERALL ACHIEVEMENT</th>
-                                        <th rowSpan={2} className="text-center">% OF TOTAL TASK COMPLETED</th>
-                                        <th rowSpan={2} className="text-center">GM Achived Weightage</th>
-                                        <th rowSpan={2} className="text-center">GM Ratings</th>
-                                        <th rowSpan={2} className="text-center">GM Overall Task Completed</th>
-                                        <th colSpan={5} className="text-center">RATING RATIO COULD BE CHANGED AS PER TARGETS</th>
+                                            <th rowSpan={2} className="text-center">Sr No</th>
+                                            <th rowSpan={2} className="text-center">INDIVIDUAL KPI / OBJECTIVES</th>
+                                            <th rowSpan={2} className="text-center">PERFORMANCE INDICATOR</th>
+                                            <th rowSpan={2} colSpan={2} className="text-center">OVERALL TARGET</th>
+                                            <th rowSpan={2} className="text-center">UOM</th>
+                                            <th colSpan={2} className="text-center">OVERALL WEIGHTAGE TO BE 100%</th>
+                                            <th rowSpan={2} className="text-center">OVERALL ACHIEVEMENT</th>
+                                            <th rowSpan={2} className="text-center">% OF TOTAL TASK COMPLETED</th>
+
+                                            <th rowSpan={2} className="text-center">GM Achived Weightage</th>
+                                            <th rowSpan={2} className="text-center">GM Ratings</th>
+                                            <th rowSpan={2} className="text-center">GM Overall Task Completed</th>
+                                            <th colSpan={5} className="text-center">RATING RATIO COULD BE CHANGED AS PER TARGETS</th>
                                         </tr>
                                         <tr className="text-center">
                                             <th className="text-center">OVERALL WEIGHTAGE IN % </th>
-                                            <th className="text-center">ACHIEVED WEIGHTAGE IN % </th>                                           
+                                            <th className="text-center">ACHIEVED WEIGHTAGE IN % </th>
                                             <th className="text-center">Rating 1</th>
                                             <th className="text-center">Rating 2</th>
                                             <th className="text-center">Rating 3</th>
                                             <th className="text-center">Rating 4</th>
                                             <th className="text-center">Rating 5</th>
                                         </tr>
-                                    
+
                                     </thead>
                                     <tbody>
                                         {values?.fields?.map(
@@ -133,10 +160,8 @@ const AddHodKppRatingsComponent = () => {
                                                     <td className='text-center'>{kppResponse.kppTargetPeriod}</td>
                                                     <td>{kppResponse.kppUoM}</td>
                                                     <td className='text-center'>{kppResponse.kppOverallWeightage}</td>
-                                                   
-                                                
-                                                  
-                                                   
+
+
                                                     <td>
                                                         <input type="text" className="form-control" name={`${index}.empAchivedWeight`} value={values?.fields?.[index]?.empAchivedWeight} disabled />
                                                     </td>
@@ -154,6 +179,7 @@ const AddHodKppRatingsComponent = () => {
                                                     <td>
                                                         <input type="text" className="form-control" name={`${index}.empOverallTaskComp`} value={values?.fields?.[index]?.empOverallTaskComp} disabled />
                                                     </td>
+                                                    
                                                     <td className='text-center'>{kppResponse.gmAchivedWeight}</td>
                                                     <td className='text-center'>{kppResponse.gmOverallAchieve}</td>
                                                     <td className='text-center'>{kppResponse.gmOverallTaskComp}</td>
@@ -173,9 +199,9 @@ const AddHodKppRatingsComponent = () => {
                                             <td className='text-center'> </td>
                                             <td></td>
                                             <td className='text-center'></td>
-                                            <td className='text-center'> <label className="control-label text-right">{values?.totalAchivedWeightage === 0 ? totalAchivedWeight(values?.fields) : values?.totalAchivedWeightage}</label></td>
-                                            <td className='text-center'> <label className="control-label text-right">{values?.totalOverAllAchive === 0 ? totalOverAllAchive(values?.fields) : values?.totalOverAllAchive}</label></td>
-                                            <td className='text-center'> <label className="control-label text-right">{values?.totalOverallTaskCompleted === 0 ? totalOverallTaskComp(values?.fields) : values?.totalOverallTaskCompleted}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalAchivedWeightage === 0 ? sumTotalAchivedWeight(values?.fields) : values?.totalAchivedWeightage}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalOverAllAchive === 0 ? sumTotalOverAllAchive(values?.fields) : values?.totalOverAllAchive}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalOverallTaskCompleted === 0 ? sumTotalOverallTaskComp(values?.fields) : values?.totalOverallTaskCompleted}</label></td>
 
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalHodAchivedWeight}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalHodOverallAchieve}</label></td>
@@ -208,7 +234,19 @@ const AddHodKppRatingsComponent = () => {
                                     </div>
                                 </div>
 
-                         
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Hod Status</label>
+                                    <div className="col-sm-6">
+                                        <label htmlFor="empKppStatus">{kppMasterResponses?.hodKppStatus}</label>
+                                    </div>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Hod Remark</label>
+                                    <div className="col-sm-6">
+                                        <label htmlFor="empKppStatus">{kppMasterResponses?.hodRemark}</label>
+                                    </div>
+                                </div>
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="gmKppStatus">GM Status</label>
@@ -226,11 +264,12 @@ const AddHodKppRatingsComponent = () => {
                                 <div className="row">
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>
-                                        
-                                    <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}   
-                                    onClick={() => { handleExcel()
-                                          
-                                        }}> Download</button>
+
+                                        <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}
+                                            onClick={() => {
+                                                handleExcel()
+
+                                            }}> Download</button>
                                     </div>
                                 </div>
                             </Form>

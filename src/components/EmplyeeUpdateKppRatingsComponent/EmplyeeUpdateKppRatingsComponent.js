@@ -8,6 +8,9 @@ import EmployeeKppsService from '../../services/EmployeeKppsService';
 
 const EmplyeeUpdateKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
+    const [empName, setEmpName] = useState('');
+    const [deptName, setDeptName] = useState('');
+    const [desigName, setDesigName] = useState('');
 
     const [hodTotalAchivedWeight, setHodTotalAchivedWeight] = useState('');
     const [hodTotalOverallAchieve, setHodTotalOverallAchieve] = useState('');
@@ -19,7 +22,13 @@ const EmplyeeUpdateKppRatingsComponent = () => {
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
 
-    const formikRef = useRef(null);
+    const YYYY_MM_DD_Formater = (date, format = 'YYYY-MM-DD') => {
+        const t = new Date(date)
+        const y = t.getFullYear()
+        const m = ('0' + (t.getMonth() + 1)).slice(-2)
+        const d = ('0' + t.getDate()).slice(-2)
+        return format.replace('YYYY', y).replace('MM', m).replace('DD', d)
+    }
 
        //for hod approved or reject status selection
        const onHodStatusChangeHandler = (event) => {
@@ -29,6 +38,11 @@ const EmplyeeUpdateKppRatingsComponent = () => {
   
     useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
+            setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth)) 
+            setEmpName(res.data.empName);
+            setDeptName(res.data.deptName);
+            setDesigName(res.data.desigName);
+            
             setKppMasterResponses(res.data);
             setHodRemark(res.data.hodRemark)
             setKppDetailsResponses(res.data.kppStatusDetails)
@@ -108,12 +122,34 @@ const EmplyeeUpdateKppRatingsComponent = () => {
                         };
                         return (
                             <Form className="form-horizontal">
-                                <div className="form-group">
-                                    <label className="control-label col-sm-1 "  >Select Date:</label>
+
+                            <div className="form-group">
+                                    <label className="control-label col-sm-1"  >Name :</label>
                                     <div className="col-sm-2">
-                                        <input type="date" className="form-control" name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)} />
+                                       {empName}
                                     </div>
                                 </div>
+
+                                <div className="form-group">
+                                <label className="control-label col-sm-1"  >Department :</label>
+                                <div className="col-sm-2">
+                                   {deptName}
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                            <label className="control-label col-sm-1"  >Designation:</label>
+                            <div className="col-sm-2">
+                               {desigName}
+                            </div>
+                        </div>
+                                <div className="form-group">
+                                    <label className="control-label col-sm-1 "  >Kpp Added Date:</label>
+                                    <div className="col-sm-2">
+                                       {ekppMonth}
+                                    </div>
+                                </div>
+
                                 <table className="table table-bordered" >
 
                                     <thead>

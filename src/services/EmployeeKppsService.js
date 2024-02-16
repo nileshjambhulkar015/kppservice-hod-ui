@@ -6,7 +6,19 @@ import {  KPP_API_BASE_URL, LOGIN_UI_BASE_URL } from "./EmployeeConstants";
 const BASE_URL = `http://localhost:9091/employee-key-perform-parameter/kpp?roleId=${Cookies.get('roleId')}&deptId=${Cookies.get('deptId')}&desigId=${Cookies.get('desigId')}&statusCdEnum=A`;
 class EmployeeKppsService {
 
-    getKPPDetails() {
+     //get kpp details for hod updating rating 
+     getKPPDetailsForHodRatings(empId) {
+        console.log("before get call")
+        if (null != Cookies.get('empId')) {
+            return axios.get(`http://localhost:9091/employee-kpp-status?empId=${empId}`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
+    //get kpp details for hod updating rating of employee
+   getKPPDetails() {
         if (null != Cookies.get('empId')) {
            
             return axios.get(`http://localhost:9091/employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`)

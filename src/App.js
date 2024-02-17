@@ -46,7 +46,7 @@ function App() {
         </div>
       </nav>
       <Routes>
-       
+      <Route exact path="/" element={<AddHodKppRatingsComponent />}></Route>
         <Route exact path="/addHodKpp" element={<AddHodKppRatingsComponent />}></Route>
         <Route exact path="/allEmployeeKppStatus" element={<AllEmployeeKppStatusComponent />}></Route>
         <Route exact path="/updateEmployeeKpp" element={<EmplyeeUpdateKppRatingsComponent />}></Route>

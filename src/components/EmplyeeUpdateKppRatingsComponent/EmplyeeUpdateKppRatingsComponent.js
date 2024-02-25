@@ -209,6 +209,7 @@ const EmplyeeUpdateKppRatingsComponent = () => {
                                                         <input type="number" className="form-control"
                                                             name={`${index}.hodOverallAchieve`}
                                                             min={0}
+                                                            max={5}
                                                             defaultValue={values?.fields?.[index]?.hodOverallAchieve}
 
                                                             onKeyDown={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, values?.fields?.[index]?.hodOverallTaskComp, kppResponse.kppRating1)}

@@ -6,6 +6,8 @@ import AllEmployeeKppStatusComponent from "./components/AllEmployeeKppStatusComp
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import EmplyeeUpdateKppRatingsComponent from "./components/EmplyeeUpdateKppRatingsComponent/EmplyeeUpdateKppRatingsComponent";
 import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
+import ViewHoDCumulativeKppComponent from './components/ViewHoDCumulativeKppComponent/ViewHoDCumulativeKppComponent';
+import ViewEmployeeKppCumulativeComponent from './components/ViewEmployeeKppCumulativeComponent/ViewEmployeeKppCumulativeComponent';
 
 
 function App() {
@@ -37,6 +39,8 @@ function App() {
             <li><Link to="/addHodKpp">Add Hod KPP</Link></li>
             <li><Link to="/allEmployeeKppStatus">Employees KPP Status</Link></li>
             <li><Link to="/viewProfile">View Profile</Link></li>
+            <li><Link to="/viewHoDCumulativeKpp">View Cumulative Kpp</Link></li>
+            <li><Link to="/viewEmployeeCumulativeKpp">View Cumulative Kpp</Link></li>
             <li><Link to="/changePassword">Change Password</Link></li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
@@ -51,6 +55,8 @@ function App() {
         <Route exact path="/allEmployeeKppStatus" element={<AllEmployeeKppStatusComponent />}></Route>
         <Route exact path="/updateEmployeeKpp" element={<EmplyeeUpdateKppRatingsComponent />}></Route>
         <Route exact path="/viewProfile" element={<ViewProfileComponent />}></Route>
+        <Route exact path="/viewHoDCumulativeKpp" element={<ViewHoDCumulativeKppComponent />}></Route>
+        <Route exact path="/viewEmployeeCumulativeKpp" element={<ViewEmployeeKppCumulativeComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
       </Routes>
     </BrowserRouter>

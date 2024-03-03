@@ -76,7 +76,7 @@ const AddHodKppRatingsComponent = () => {
                         let evidence = "evidence";
                         const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": totalAchivedWeight, "totalOverAllAchive": totalOverAllAchive, "totalOverallTaskCompleted": totalOverallTaskComp, ekppMonth, ekppStatus, empRemark, evidence };
                         EmployeeKppsService.saveEmployeeKppDetails(payload).then(res => {
-                            alert("Employee KPP added");
+                            alert("HoD KPP added");
                         });
                     }}>
                     {({ values, setFieldValue }) => {
@@ -228,25 +228,14 @@ const AddHodKppRatingsComponent = () => {
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="empKppStatus">Employee Status</label>
+                                    <label className="control-label col-sm-4" htmlFor="empKppStatus">HoD Status</label>
                                     <div className="col-sm-6">
                                         <label htmlFor="empKppStatus">{kppMasterResponses?.empKppStatus}</label>
                                     </div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Hod Status</label>
-                                    <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.hodKppStatus}</label>
-                                    </div>
-                                </div>
+                               
 
-                                <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Hod Remark</label>
-                                    <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.hodRemark}</label>
-                                    </div>
-                                </div>
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="gmKppStatus">GM Status</label>
@@ -255,21 +244,11 @@ const AddHodKppRatingsComponent = () => {
                                     </div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">GM Remark</label>
-                                    <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.gmRemark}</label>
-                                    </div>
-                                </div>
                                 <div className="row">
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>
-
-                                        <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}
-                                            onClick={() => {
-                                                handleExcel()
-
-                                            }}> Download</button>
+                                    <a href={`http://localhost:9091/report/employee-kpp-status?empId=${Cookies.get('empId')}`}>
+                                        <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}>  Download</button></a>
                                     </div>
                                 </div>
                             </Form>

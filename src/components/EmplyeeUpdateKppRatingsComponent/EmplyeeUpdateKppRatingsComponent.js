@@ -49,12 +49,6 @@ const EmplyeeUpdateKppRatingsComponent = () => {
         });
     }, []);
 
-    const handleExcel=()=>{
-        EmployeeKppsService.getEmployeeKPPReport(Cookies.get('empId')).then(res => {
-            alert("Report generated");
-        });
-    }
-
     const sumHodTotalAchivedWeight = (empKpps) => {
 
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodAchivedWeight), 0);
@@ -285,11 +279,9 @@ const EmplyeeUpdateKppRatingsComponent = () => {
                                 <div className="row">
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>
-                                        
-                                    <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}   
-                                    onClick={() => { handleExcel()
-                                          
-                                        }}> Download</button>
+                                       
+                                    <a href={`http://localhost:9091/report/in-progress-employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`}>
+                                    <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}> Download</button> </a>
                                     </div>
                                 </div>
                             </Form>

@@ -20,8 +20,6 @@ export default function EmployeeCumulativeComponent() {
 
     useEffect(() => {
         CumumlativeService.getEmployeeCumulative().then((res) => {
-
-
             if (res.data.success) {
                 setEmployees(res.data.responseData);
             }

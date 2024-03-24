@@ -27,7 +27,7 @@ const AddHodKppRatingsComponent = () => {
 
 
     const sumTotalAchivedWeight = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empAchivedWeight), 0);
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empAchivedWeight), 0).toFixed(1);
         setTotalAchivedWeight(sum)
         return sum;
     }

@@ -5,10 +5,10 @@ import AddHodKppRatingsComponent from "./components/AddHodKppRatingsComponent/Ad
 import AllEmployeeKppStatusComponent from "./components/AllEmployeeKppStatusComponent/AllEmployeeKppStatusComponent";
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import EmplyeeUpdateKppRatingsComponent from "./components/EmplyeeUpdateKppRatingsComponent/EmplyeeUpdateKppRatingsComponent";
+import HODCumulativeKppComponent from './components/HODCumulativeKppComponent/HODCumulativeKppComponent';
+import ViewAllEmployeeCumulativeComponent from './components/ViewAllEmployeeCumulativeComponent/ViewAllEmployeeCumulativeComponent';
 import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
-import ViewHoDCumulativeKppComponent from './components/ViewHoDCumulativeKppComponent/ViewHoDCumulativeKppComponent';
-import ViewEmployeeKppCumulativeComponent from './components/ViewEmployeeKppCumulativeComponent/ViewEmployeeKppCumulativeComponent';
-import EmployeeCumulativeComponent from './components/EmployeeCumulativeComponent/EmployeeCumulativeComponent';
+import SingleEmployeeCumulativeComponent from './components/SingleEmployeeCumulativeComponent/SingleEmployeeCumulativeComponent';
 
 
 function App() {
@@ -57,9 +57,11 @@ function App() {
         <Route exact path="/allEmployeeKppStatus" element={<AllEmployeeKppStatusComponent />}></Route>
         <Route exact path="/updateEmployeeKpp" element={<EmplyeeUpdateKppRatingsComponent />}></Route>
         <Route exact path="/viewProfile" element={<ViewProfileComponent />}></Route>
-        <Route exact path="/viewHoDCumulativeKpp" element={<ViewHoDCumulativeKppComponent />}></Route>
-        <Route exact path="/viewEmployeeCumulativeKpp" element={<EmployeeCumulativeComponent />}></Route>
+        <Route exact path="/viewHoDCumulativeKpp" element={<HODCumulativeKppComponent />}></Route>
+        <Route exact path="/viewEmployeeCumulativeKpp" element={<ViewAllEmployeeCumulativeComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
+
+        <Route exact path="/viewSingleEmployeeRatings" element={<SingleEmployeeCumulativeComponent />}></Route>
       </Routes>
     </BrowserRouter>
   );

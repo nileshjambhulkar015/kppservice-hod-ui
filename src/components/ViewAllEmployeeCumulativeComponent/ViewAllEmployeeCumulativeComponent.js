@@ -1,9 +1,9 @@
+import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import CumulativeService from "../../services/CumulativeService";
 import EmployeeKppsService from "../../services/EmployeeKppsService";
-import Cookies from 'js-cookie';
-import CumumlativeService from "../../services/CumumlativeService";
-export default function EmployeeCumulativeComponent() {
+export default function ViewAllEmployeeCumulativeComponent() {
 
     const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ export default function EmployeeCumulativeComponent() {
     const [employees, setEmployees] = useState([])
 
     useEffect(() => {
-        CumumlativeService.getEmployeeCumulative().then((res) => {
+        CumulativeService.getOverallEmployeeCumulative().then((res) => {
             if (res.data.success) {
                 setEmployees(res.data.responseData);
             }
@@ -35,7 +35,7 @@ export default function EmployeeCumulativeComponent() {
 
 
     const getKPPDetailsByDate = (e) => {
-        EmployeeKppsService.getEmployeeKppReportByDates(fromDate, toDate).then((res) => {
+        CumulativeService.getOverallEmployeeCumulativeByDates(fromDate, toDate).then((res) => {
             if (res.data.success) {
                 setEmployees(res.data.responseData);
             } else {
@@ -57,6 +57,11 @@ export default function EmployeeCumulativeComponent() {
     }
 
 
+    const navigateToViewEmployeeRating=(empId)=>{
+        console.log("New empId =",empId)
+        Cookies.set('viewSingleEmpIdForKppRatings', empId);
+        navigate(`/viewSingleEmployeeRatings`, { replace: true })       
+    }
 
     return (
         <div className="row">
@@ -102,11 +107,11 @@ export default function EmployeeCumulativeComponent() {
                                         <td className="text-center">{employee.totalHodKppRatings}</td>
                                         <td className="text-center">{employee.totalMonths}</td>
                                         <td className="text-center">{employee.avgTotalHodKppRatings}</td>
-
+                                        <td className="text-center">{employee.empId}</td>
                                         <td className="text-center">
                                         
                                        
-                                        <button type="submit" className="btn btn-info">View Details</button>
+                                        <button type="submit" className="btn btn-info" onClick={() => navigateToViewEmployeeRating(employee.empId)}>View Details</button>
                                         
                                         </td>
                                     </tr>

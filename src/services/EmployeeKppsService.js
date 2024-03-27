@@ -1,16 +1,14 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
-import {  KPP_API_BASE_URL, LOGIN_UI_BASE_URL } from "./EmployeeConstants";
+import {  BASE_URL_API, KPP_API_BASE_URL, LOGIN_UI_BASE_URL } from "./EmployeeConstants";
 
-//const BASE_URL = KPP_API_BASE_URL+`/hod-approval/employee-kpp?empId=${Cookies.get('empId')}&statusCd=A`;
-const BASE_URL = `http://localhost:9091/employee-key-perform-parameter/kpp?roleId=${Cookies.get('roleId')}&deptId=${Cookies.get('deptId')}&desigId=${Cookies.get('desigId')}&statusCdEnum=A`;
 class EmployeeKppsService {
 
      //get kpp details for hod updating rating 
      getKPPDetailsForHodRatings(empId) {
         console.log("before get call")
         if (null != Cookies.get('empId')) {
-            return axios.get(`http://localhost:9091/employee-kpp-status?empId=${empId}`)
+            return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${empId}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -21,7 +19,7 @@ class EmployeeKppsService {
    getKPPDetails() {
         if (null != Cookies.get('empId')) {
            
-            return axios.get(`http://localhost:9091/employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`)
+            return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -30,7 +28,7 @@ class EmployeeKppsService {
 
     saveEmployeeKppDetails(todos){
         if (null != Cookies.get('empId')) {
-            return axios.put(KPP_API_BASE_URL+"/employee-kpp",todos)
+            return axios.put(BASE_URL_API+"/employee-kpp",todos)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -40,7 +38,7 @@ class EmployeeKppsService {
     // update employee rating by hod
     saveEmployeeKppRatingByHod(todos){
         if (null != Cookies.get('empId')) {
-            return axios.put(KPP_API_BASE_URL+"/hod-approval",todos)
+            return axios.put(BASE_URL_API+"/hod-approval",todos)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -50,7 +48,7 @@ class EmployeeKppsService {
     getEmployeeKPPReport(employeeId) {
         if (null != Cookies.get('empId')) {    
             console.log(employeeId)       
-            return axios.get(`http://localhost:9091/report/employee-kpp-status?empId=${employeeId}`)
+            return axios.get(BASE_URL_API+`/report/employee-kpp-status?empId=${employeeId}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -61,7 +59,7 @@ class EmployeeKppsService {
      getEmployeeKppReportByDates(fromDate, toDate) {
         if (null != Cookies.get('empId')) {    
                  
-            return axios.get(`http://localhost:9091/employee/employee-kpp-status-report?fromDate=${fromDate}&toDate=${toDate}&empId=${Cookies.get('empId')}&page=0&size=1200`)
+            return axios.get(BASE_URL_API+`/employee/employee-kpp-status-report?fromDate=${fromDate}&toDate=${toDate}&empId=${Cookies.get('empId')}&page=0&size=1200`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -72,7 +70,7 @@ class EmployeeKppsService {
      getEmployeeKppReportDetailsByPaging() {
         if (null != Cookies.get('empId')) {    
                  
-            return axios.get(`http://localhost:9091/employee/employee-kpp-status-report?empId=${Cookies.get('empId')}`)
+            return axios.get(BASE_URL_API+`/employee/employee-kpp-status-report?empId=${Cookies.get('empId')}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

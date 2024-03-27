@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import EmployeeKppsService from '../../services/EmployeeKppsService';
 import Cookies from 'js-cookie';
+import { BASE_URL_API } from '../../services/EmployeeConstants';
 
 const AddHodKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
@@ -248,7 +249,7 @@ const AddHodKppRatingsComponent = () => {
                                 <div className="row">
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>
-                                    <a href={`http://localhost:9091/report/in-progress-hod-kpp-status?empId=${Cookies.get('empId')}`}>
+                                    <a href={BASE_URL_API+`/report/in-progress-hod-kpp-status?empId=${Cookies.get('empId')}`}>
                                         <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}>  Download</button></a>
                                     </div>
                                 </div>

@@ -1,7 +1,8 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { KPP_API_BASE_URL, LOGIN_UI_BASE_URL } from "./HodConstants";
-//const BASE_URL = `http://localhost:9091/hod-approval/employee-kpp?empId=${}&statusCd=A`;
+import { BASE_URL_API } from "./EmployeeConstants";
+
 
 class UpdateEmployeeKppRatingsService {
 
@@ -10,7 +11,7 @@ class UpdateEmployeeKppRatingsService {
        
         if (null != Cookies.get('empId')) {
 
-            return axios.get(`http://localhost:9091/employee-kpp-status?empId=${empId}`)
+            return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${empId}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -21,7 +22,7 @@ class UpdateEmployeeKppRatingsService {
     saveEmployeeKppDetails(todos){
      
         if (null != Cookies.get('empId')) {
-            return axios.put(KPP_API_BASE_URL+"/employee-key-perform-parameter",todos)
+            return axios.put(BASE_URL_API+"/employee-key-perform-parameter",todos)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -31,7 +32,7 @@ class UpdateEmployeeKppRatingsService {
     updateEmpArroveOrRejectByHod(todos){
      
         if (null != Cookies.get('empId')) {
-            return axios.put(KPP_API_BASE_URL+"/hod-approval",todos)
+            return axios.put(BASE_URL_API+"/hod-approval",todos)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

@@ -78,6 +78,12 @@ const AddHodKppRatingsComponent = () => {
                         const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": totalAchivedWeight, "totalOverAllAchive": totalOverAllAchive, "totalOverallTaskCompleted": totalOverallTaskComp, ekppMonth, ekppStatus, empRemark, evidence };
                         EmployeeKppsService.saveEmployeeKppDetails(payload).then(res => {
                             alert("HoD KPP added");
+                            EmployeeKppsService.getKPPDetails().then((res) => {
+                                setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
+                                setKppMasterResponses(res.data);
+                                setEmpRemark(res.data.empRemark)
+                                setKppDetailsResponses(res.data.kppStatusDetails)
+                            });
                         });
                     }}>
                     {({ values, setFieldValue }) => {

@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import CumulativeService from "../../services/CumulativeService";
 import { BASE_URL_API } from "../../services/EmployeeConstants";
+import EmployeeService from "../../services/EmployeeService";
+import Cookies from 'js-cookie';
 export default function SingleEmployeeCumulativeComponent() {
 
     const navigate = useNavigate();
-
+    const [isSuccess, setIsSuccess] = useState(true)
     const [fromDate, setFromDate] = useState('')
     const [toDate, setToDate] = useState('')
     const [totalMonths, setTotalMonths] = useState()
@@ -18,12 +20,27 @@ export default function SingleEmployeeCumulativeComponent() {
 
     const [employees, setEmployees] = useState([])
 
-    useEffect(() => {
+    const [empId, setEmpId] = useState('');
+    const [empEId, setEmpEId] = useState('');
+    const [empName, setEmpName] = useState('');
+    const [roleId, setRoleId] = useState('');
+    const [roleName, setRoleName] = useState('');
+    const [deptId, setDeptId] = useState('');
+    const [deptName, setDeptName] = useState('');
+    const [desigId, setDesigId] = useState('');
+    const [desigName, setDesigName] = useState('');
+  
+
+    function clearDates(){
+        document.getElementById("fromDate").value = "";
+        document.getElementById("toDate").value = "";
+    }
+    const loadCumulativeData = ()=>{
         CumulativeService.getSingleEmployeeKppReportDetailsByPaging().then((res) => {
 
 
             if (res.data.success) {
-
+                setIsSuccess(true);
                 setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
                 setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
                 setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
@@ -34,7 +51,7 @@ export default function SingleEmployeeCumulativeComponent() {
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
             }
             else {
-                alert("Kpp is not approved for month");
+                setIsSuccess(false);
 
             }
 
@@ -42,12 +59,27 @@ export default function SingleEmployeeCumulativeComponent() {
             alert(err.response.data.details)
         });
 
+        EmployeeService.searchEmployeeById(Cookies.get('viewSingleEmpIdForKppRatings')).then((res)=>{
+            setEmpId(res.data.empId)
+            setEmpEId(res.data.empEId)
+            setEmpName(res.data.empFirstName +' '+res.data.empMiddleName+' '+res.data.empLastName )
+            setRoleName(res.data.roleName)
+            setDeptName(res.data.deptName)
+            setDesigName(res.data.desigName)
+        });
+
+    }
+
+
+    useEffect(() => {
+        loadCumulativeData();
     }, []);
 
 
     const getKPPDetailsByDate = (e) => {
         CumulativeService.getSingleEmployeeKppReportByDates(fromDate, toDate).then((res) => {
             if (res.data.success) {
+                setIsSuccess(true);
                 setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
                 setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
                 setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
@@ -56,7 +88,7 @@ export default function SingleEmployeeCumulativeComponent() {
                 setTotalMonths(res.data.responseData.totalMonths)
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
             } else {
-                alert("Kpp is not found for month");
+                setIsSuccess(false);
 
             }
 
@@ -73,29 +105,79 @@ export default function SingleEmployeeCumulativeComponent() {
         return format.replace('YYYY', y).replace('MM', m).replace('DD', d)
     }
 
-
+    const navigateToViewEmployeeRating = () => {
+      
+        Cookies.remove('viewSingleEmpIdForKppRatings');
+        navigate(`/viewEmployeeCumulativeKpp`, { replace: true })
+    }
 
     return (
         <div className="row">
+
+        <div className="row" >
+        <form className="form-horizontal">
+            <div className="col-md-10">
+
+                <div className="form-group">
+                    <label className="control-label col-sm-2"  >Name :</label>
+                    <div className="col-sm-5">
+                        {empName}
+                    </div>
+                </div>
+
+                <div className="form-group">
+                <label className="control-label col-sm-2"  >Role :</label>
+                <div className="col-sm-5">
+                    {roleName}
+                </div>
+            </div>
+
+                <div className="form-group">
+                    <label className="control-label col-sm-2"  >Department :</label>
+                    <div className="col-sm-5">
+                        {deptName}
+                    </div>
+                </div>
+
+                <div className="form-group">
+                    <label className="control-label col-sm-2"  >Designation:</label>
+                    <div className="col-sm-5">
+                        {desigName}
+                    </div>
+                </div>
+              
+
+
+
+            </div>
+        </form>
+    </div>
+
             <h3 className="text-center">View KPP</h3>
             <div className="form-group">
                 <form className="form-horizontal" enctype="multipart/form-data">
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> From Date:</label>
 
                     <div className="col-sm-2">
-                        <input type="date" className="form-control" defaultValue={fromDate} name="fromDate" onChange={(e) => setFromDate(e.target.value)} />
+                        <input type="date" className="form-control" defaultValue={fromDate} id="fromDate" name="fromDate" onChange={(e) => setFromDate(e.target.value)} />
                     </div>
 
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> To Date:</label>
                     <div className="col-sm-2">
-                        <input type="date" className="form-control" defaultValue={toDate} name="toDate" onChange={(e) => setToDate(e.target.value)} />
+                        <input type="date" className="form-control"id="toDate"  defaultValue={toDate} name="toDate" onChange={(e) => setToDate(e.target.value)} />
                     </div>
                 </form>
                 <button type="submit" className="btn btn-primary" onClick={(e) => getKPPDetailsByDate(fromDate, toDate)}>Search</button>
+                <button type="submit" className="btn btn-primary col-sm-offset-1" onClick={(e) =>{
+                    loadCumulativeData();
+                    clearDates();   
+                       } }>Clear</button>
+                <button type="submit" className="col-sm-offset-1 btn btn-primary" onClick={(e) => navigateToViewEmployeeRating()}>Back</button>
             </div>
 
 
             <div className="col-sm-8">
+            {isSuccess?
                 <table className="table table-bordered">
                     <thead>
                         <tr>
@@ -157,6 +239,7 @@ export default function SingleEmployeeCumulativeComponent() {
                     </tbody>
 
                 </table>
+                :<h1>No Data Found</h1>}
             </div>
 
 

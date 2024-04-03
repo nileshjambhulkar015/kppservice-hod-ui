@@ -4,6 +4,7 @@ import ViewProfileService from "../../services/ViewProfileService";
 
 export default function ViewProfileComponent() {
 
+    const [empTypeName, setEmpTypeName] = useState('');
     const [empId, setEmpId] = useState('');
     const [empEId, setEmpEId] = useState('');
    
@@ -33,7 +34,7 @@ export default function ViewProfileComponent() {
             console.log(employee)
             setEmpId(employee.empId)
             setEmpEId(employee.empEId)
-           
+           setEmpTypeName(employee.empTypeName)
             setRoleName(employee.roleName)
         
             setDeptName(employee.deptName)
@@ -59,6 +60,15 @@ export default function ViewProfileComponent() {
         <div className="row">
             <h2 className="text-center">Employee Details</h2>
             <form className="form-horizontal">
+
+            <div className="form-group">
+            <div className="row">
+                <label className="control-label col-sm-2 col-sm-offset-1" htmlFor="empFirstName">Employee Type:</label>
+                <div className="col-sm-9">
+                    {empTypeName}
+                </div>
+            </div>
+        </div>
 
                 <div className="form-group">
                     <div className="row">

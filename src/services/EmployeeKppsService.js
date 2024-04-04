@@ -18,8 +18,8 @@ class EmployeeKppsService {
     //get kpp details for hod updating rating of employee
    getKPPDetails() {
         if (null != Cookies.get('empId')) {
-           
-            return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`)
+            return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empId')}`)
+           // return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

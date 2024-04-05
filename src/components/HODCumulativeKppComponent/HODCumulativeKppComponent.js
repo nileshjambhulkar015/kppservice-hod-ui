@@ -122,7 +122,7 @@ export default function HODCumulativeKppComponent() {
 
                                         <td className="text-center">
 
-                                            <a href={BASE_URL_API+`/report/completed-employee-kpp-status?empId=${employee.empId}&ekppMonth=${YYYY_MM_DD_Formater(employee.ekppMonth)}`}>
+                                            <a href={BASE_URL_API+`/report/completed-hod-kpp-status?empId=${employee.empId}&ekppMonth=${YYYY_MM_DD_Formater(employee.ekppMonth)}`}>
                                                 <button type="submit" className="btn btn-info">Download</button>
                                             </a>
                                         </td>

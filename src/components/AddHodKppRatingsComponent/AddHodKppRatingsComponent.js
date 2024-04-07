@@ -13,7 +13,8 @@ const AddHodKppRatingsComponent = () => {
     const [totalAchivedWeight, setTotalAchivedWeight] = useState('');
     const [totalOverAllAchive, setTotalOverAllAchive] = useState('');
     const [totalOverallTaskComp, setTotalOverallTaskComp] = useState('');
-
+    const[evidenceFileName, setEvidenceFileName] = useState('')
+    const [selectedFile, setSelectedFile] = useState()
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
 
@@ -47,21 +48,62 @@ const AddHodKppRatingsComponent = () => {
     }
 
     useEffect(() => {
-       let hodEmpId= Cookies.get('empId');
-        EmployeeKppsService.getKPPDetailsForHodRatings(hodEmpId).then((res) => {
+     
+        EmployeeKppsService.getKPPDetailsForHodRatings().then((res) => {
            
             setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))           
             setKppMasterResponses(res.data);
             setEmpRemark(res.data.empRemark)
             setKppDetailsResponses(res.data.kppStatusDetails)
         });
+
+        EmployeeKppsService.getEvidenceFileDetails(ekppMonth).then((res) => {
+         
+            setEvidenceFileName(res.data.responseData.evFileName);
+         
+        });
     }, []);
 
-    const handleExcel = () => {
-        EmployeeKppsService.getEmployeeKPPReport(Cookies.get('empId')).then(res => {
-            alert("Report generated");
-        });
-    }
+    const selectFile =  (e) => {
+        setSelectedFile(e.target.files[0]);
+     }
+     const uploadFile =  (e) => {
+        
+         if (selectedFile) {
+           let data = new FormData();
+           data.append('multipartFile', selectedFile);
+           data.append('empId',Cookies.get('empId'))
+           data.append('evMonth', ekppMonth)
+           EmployeeKppsService.uploadEvidence(data).then((res)=>{
+             if(res.data.success){
+                 alert(res.data.responseMessage)
+                 EmployeeKppsService.getEvidenceFileDetails(ekppMonth).then((res) => {
+          
+                     setEvidenceFileName(res.data.responseData.evFileName);
+                  
+                 });
+                
+             } else {
+                 alert(res.data.responseMessage)
+             }
+ 
+           });
+           // axios.post('http://localhost:9091/evidence', data);
+         }
+     }
+ 
+     const deleteFile =  (ekppMonth) => {
+           EmployeeKppsService.deleteEvidence(ekppMonth).then((res)=>{
+             if(res.data.success){
+                 alert(res.data.responseMessage)
+             } else {
+                 alert(res.data.responseMessage)
+             }
+           });      
+         
+     }
+   
+
     return (
         <div className='container-fluid'>
             <div className="row">
@@ -78,7 +120,7 @@ const AddHodKppRatingsComponent = () => {
                         const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": totalAchivedWeight, "totalOverAllAchive": totalOverAllAchive, "totalOverallTaskCompleted": totalOverallTaskComp, ekppMonth, ekppStatus, empRemark, evidence };
                         EmployeeKppsService.saveEmployeeKppDetails(payload).then(res => {
                             alert("HoD KPP added");
-                            EmployeeKppsService.getKPPDetails().then((res) => {
+                            EmployeeKppsService.getHODKPPDetails().then((res) => {
                                 setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
                                 setKppMasterResponses(res.data);
                                 setEmpRemark(res.data.empRemark)
@@ -148,11 +190,11 @@ const AddHodKppRatingsComponent = () => {
                                         <tr className="text-center">
                                             <th className="text-center">OVERALL WEIGHTAGE IN % </th>
                                             <th className="text-center">ACHIEVED WEIGHTAGE IN % </th>
-                                            <th className="text-center">Rating 1</th>
-                                            <th className="text-center">Rating 2</th>
-                                            <th className="text-center">Rating 3</th>
-                                            <th className="text-center">Rating 4</th>
                                             <th className="text-center">Rating 5</th>
+                                            <th className="text-center">Rating 4</th>
+                                            <th className="text-center">Rating 3</th>
+                                            <th className="text-center">Rating 2</th>
+                                            <th className="text-center">Rating 1</th>
                                         </tr>
 
                                     </thead>
@@ -224,10 +266,26 @@ const AddHodKppRatingsComponent = () => {
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="reamrk">Upload Evidence:</label>
-                                    <div className="col-sm-3">
-                                        <input type="file" className="form-control" id="deptName" />
-                                    </div>
+                                    <div className="col-sm-2">
+                                        <input type="file" className="form-control" id="fileUpload"  multiple={false}
+                                        accept=".pdf"  onChange={(e)=>selectFile(e)}/>
+                                       
+                                        </div>
+                                        <button type="submit" className="btn btn-info" onClick={(e) => uploadFile(e)}> Upload</button>
+                                        
                                 </div>
+
+                                
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="reamrk">Uploaded File Name:</label>
+                                    <div className="col-sm-2">
+                                       {evidenceFileName}
+                                       <button type="submit" className="btn btn-danger col-sm-offset-1" onClick={(e) => deleteFile(ekppMonth)}> Delete</button>
+                                        </div>
+                                        
+                                       
+                                </div>
+                              
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="empRemark">Enter Remark:</label>
                                     <div className="col-sm-6">

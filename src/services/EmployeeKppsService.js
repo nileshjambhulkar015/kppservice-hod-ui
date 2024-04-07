@@ -8,7 +8,7 @@ class EmployeeKppsService {
      getKPPDetailsForHodRatings(empId) {
         console.log("before get call")
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${empId}`)
+            return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empId')}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -18,13 +18,26 @@ class EmployeeKppsService {
     //get kpp details for hod updating rating of employee
    getKPPDetails() {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empId')}`)
+            return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`)
            // return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
         }
     }
+
+        //get kpp details for hod updating rating of employee
+   getHODKPPDetails() {
+    if (null != Cookies.get('empId')) {
+        return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empId')}`)
+       // return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`)
+    } else {
+        alert("You need to login first")
+        window.location.replace(LOGIN_UI_BASE_URL);
+    }
+}
+
+
 
     saveEmployeeKppDetails(todos){
         if (null != Cookies.get('empId')) {
@@ -76,6 +89,38 @@ class EmployeeKppsService {
             window.location.replace(LOGIN_UI_BASE_URL);
         }
     }
+
+    
+    getEvidenceFileDetails(ekppMonth) {
+        if (null != Cookies.get('empId')) {
+    
+            return axios.get(BASE_URL_API+`/evidence/by-empid-evmonth?empId=${Cookies.get('empId')}`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
+    uploadEvidence =  (data) => {
+
+        if (null != Cookies.get('empId')) {
+            return axios.post(BASE_URL_API+"/evidence", data)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
+    deleteEvidence =  (evMonth) => {
+
+        if (null != Cookies.get('empId')) {
+            return axios.delete(BASE_URL_API+`/evidence?empId=${Cookies.get('empId')}&evMonth=${evMonth}`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
 
 }
 

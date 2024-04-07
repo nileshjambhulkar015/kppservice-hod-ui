@@ -254,7 +254,7 @@ const EmplyeeUpdateKppRatingsComponent = () => {
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="reamrk">View Evidence:</label>
                                     <div className="col-sm-3">Download evidence 
-                                    <a href={BASE_URL_API+`/evidence?empId=5`}>
+                                    <a href={BASE_URL_API+`/evidence?empId=${Cookies.get('empIdForKppRatings')}`}>
                                     Click here</a>
                                     </div>
                                 </div>

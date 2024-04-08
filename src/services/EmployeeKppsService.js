@@ -4,16 +4,7 @@ import {  BASE_URL_API, KPP_API_BASE_URL, LOGIN_UI_BASE_URL } from "./EmployeeCo
 
 class EmployeeKppsService {
 
-     //get kpp details for hod updating rating 
-     getKPPDetailsForHodRatings(empId) {
-        console.log("before get call")
-        if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empId')}`)
-        } else {
-            alert("You need to login first")
-            window.location.replace(LOGIN_UI_BASE_URL);
-        }
-    }
+
 
     //get kpp details for hod updating rating of employee
    getKPPDetails() {
@@ -30,7 +21,7 @@ class EmployeeKppsService {
    getHODKPPDetails() {
     if (null != Cookies.get('empId')) {
         return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empId')}`)
-       // return axios.get(BASE_URL_API+`/employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`)
+      
     } else {
         alert("You need to login first")
         window.location.replace(LOGIN_UI_BASE_URL);

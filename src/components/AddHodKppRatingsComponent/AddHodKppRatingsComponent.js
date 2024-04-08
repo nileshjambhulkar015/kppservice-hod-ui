@@ -49,7 +49,7 @@ const AddHodKppRatingsComponent = () => {
 
     useEffect(() => {
      
-        EmployeeKppsService.getKPPDetailsForHodRatings().then((res) => {
+        EmployeeKppsService.getHODKPPDetails().then((res) => {
            
             setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))           
             setKppMasterResponses(res.data);
@@ -170,7 +170,7 @@ const AddHodKppRatingsComponent = () => {
 
                                     <thead>
                                         <tr>
-                                            <td colSpan={21} className="text-center"><b>EMPLOYEE-WISE KEY PERFORMANCE INDICATORS (KPIs) FY 2022-2023</b></td>
+                                            <td colSpan={21} className="text-center"><b>EMPLOYEE-WISE KEY PERFORMANCE INDICATORS (KPIs)</b></td>
                                         </tr>
                                         <tr>
                                             <th rowSpan={2} className="text-center">Sr No</th>

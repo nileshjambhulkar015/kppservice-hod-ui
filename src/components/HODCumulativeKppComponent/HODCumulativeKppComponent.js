@@ -105,6 +105,7 @@ export default function HODCumulativeKppComponent() {
                             <th className="text-center">HOD Ratings</th>
                             <th className="text-center">GM Ratings Name</th>
                             <th className="text-center">Total Ratings</th>
+                            <th className="text-center">Evidence</th>
                             <th className="text-center">Action</th>
                         </tr>
                     </thead>
@@ -119,7 +120,12 @@ export default function HODCumulativeKppComponent() {
 
                                         <td className="text-center">{employee.gmOverallAchieve}</td>
                                         <td className="text-center">{employee.sumOfRatings}</td>
-
+                                        <td className="text-center">
+                                        <div className="col-sm-3">
+                                        <a href={BASE_URL_API+`/report-evidence?empId=${employee.empId}&evMonth=${YYYY_MM_DD_Formater(employee.ekppMonth)}`}>
+                                        View</a>
+                                        </div>
+                                        </td>
                                         <td className="text-center">
 
                                             <a href={BASE_URL_API+`/report/completed-hod-kpp-status?empId=${employee.empId}&ekppMonth=${YYYY_MM_DD_Formater(employee.ekppMonth)}`}>

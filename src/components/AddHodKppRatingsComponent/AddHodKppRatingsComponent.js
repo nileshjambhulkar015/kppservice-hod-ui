@@ -271,7 +271,7 @@ const AddHodKppRatingsComponent = () => {
                                         accept=".pdf"  onChange={(e)=>selectFile(e)}/>
                                        
                                         </div>
-                                        <button type="submit" className="btn btn-info" onClick={(e) => uploadFile(e)}> Upload</button>
+                                        <button type="button" className="btn btn-info" onClick={(e) => uploadFile(e)}> Upload</button>
                                         
                                 </div>
 

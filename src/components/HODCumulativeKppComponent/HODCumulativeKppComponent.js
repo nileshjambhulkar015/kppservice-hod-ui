@@ -12,7 +12,7 @@ export default function HODCumulativeKppComponent() {
     const [sumOfEmployeeRatings, setSumOfEmployeeRatings] = useState()
     const [sumOfHodRatings, setSumOfHodRatings] = useState()
     const [sumOfGMRatings, setSumOfGMRatings] = useState()
-
+    const [isSuccess, setIsSuccess] = useState(true)
     const [cummulativeRatings, setCummulativeRatings] = useState()
     const [avgCummulativeRatings, setAvgCummulativeRatings] = useState()
 
@@ -23,7 +23,7 @@ export default function HODCumulativeKppComponent() {
 
 
             if (res.data.success) {
-
+                setIsSuccess(true);
                 setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
                 setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
                 setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
@@ -34,8 +34,7 @@ export default function HODCumulativeKppComponent() {
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
             }
             else {
-                alert("Kpp is not approved for month");
-
+                setIsSuccess(false);
             }
 
         }).catch((err) => {
@@ -48,6 +47,7 @@ export default function HODCumulativeKppComponent() {
     const getKPPDetailsByDate = (e) => {
         CumulativeService.getEmployeeKppReportByDates(fromDate, toDate).then((res) => {
             if (res.data.success) {
+                setIsSuccess(true);
                 setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
                 setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
                 setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
@@ -56,7 +56,7 @@ export default function HODCumulativeKppComponent() {
                 setTotalMonths(res.data.responseData.totalMonths)
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
             } else {
-                alert("Kpp is not found for month");
+                setIsSuccess(false);
 
             }
 
@@ -96,6 +96,7 @@ export default function HODCumulativeKppComponent() {
 
 
             <div className="col-sm-8">
+            {isSuccess ?
                 <table className="table table-bordered">
                     <thead>
                         <tr>
@@ -162,7 +163,7 @@ export default function HODCumulativeKppComponent() {
                         </tr>
                     </tbody>
 
-                </table>
+                </table>  : <h4>Cumulative KPP result not available</h4>}
             </div>
 
 

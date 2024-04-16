@@ -9,6 +9,7 @@ import HODCumulativeKppComponent from './components/HODCumulativeKppComponent/HO
 import ViewAllEmployeeCumulativeComponent from './components/ViewAllEmployeeCumulativeComponent/ViewAllEmployeeCumulativeComponent';
 import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
 import SingleEmployeeCumulativeComponent from './components/SingleEmployeeCumulativeComponent/SingleEmployeeCumulativeComponent';
+import HODAllEmployeeComponent from './components/HODAllEmployeeComponent/HODAllEmployeeComponent';
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
             </ul>
           </li>
 
+          <li><Link to="/viewAllEmployeeByHODId">View All Employee</Link></li>
           <li><Link to="/viewProfile">View Profile</Link></li>
             
           <li><Link to="/changePassword">Change Password</Link></li>
@@ -71,6 +73,7 @@ function App() {
         <Route exact path="/viewProfile" element={<ViewProfileComponent />}></Route>
         <Route exact path="/viewHoDCumulativeKpp" element={<HODCumulativeKppComponent />}></Route>
         <Route exact path="/viewEmployeeCumulativeKpp" element={<ViewAllEmployeeCumulativeComponent />}></Route>
+        <Route exact path="/viewAllEmployeeByHODId" element={<HODAllEmployeeComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
 
         <Route exact path="/viewSingleEmployeeRatings" element={<SingleEmployeeCumulativeComponent />}></Route>

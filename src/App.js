@@ -10,6 +10,7 @@ import ViewAllEmployeeCumulativeComponent from './components/ViewAllEmployeeCumu
 import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
 import SingleEmployeeCumulativeComponent from './components/SingleEmployeeCumulativeComponent/SingleEmployeeCumulativeComponent';
 import HODAllEmployeeComponent from './components/HODAllEmployeeComponent/HODAllEmployeeComponent';
+import ComplaintComponent from './components/ComplaintComponent/ComplaintComponent';
 
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
           <li><Link to="/viewProfile">View Profile</Link></li>
             
           <li><Link to="/changePassword">Change Password</Link></li>
+          <li><Link to="/complaint">Complaint Management</Link></li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li><a href="#">Welcome: {Cookies.get('empEId')}</a></li>
@@ -77,6 +79,7 @@ function App() {
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
 
         <Route exact path="/viewSingleEmployeeRatings" element={<SingleEmployeeCumulativeComponent />}></Route>
+        <Route exact path="/complaint" element={<ComplaintComponent />}></Route>
       </Routes>
     </BrowserRouter>
   );

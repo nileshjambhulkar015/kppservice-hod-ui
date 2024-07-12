@@ -149,7 +149,7 @@ const EmplyeeUpdateKppRatingsComponent = () => {
 
                                     <thead>
                                         <tr>
-                                        <td colSpan={21} className="text-center"><b>EMPLOYEE-WISE KEY PERFORMANCE INDICATORS (KPIs) FY 2022-2023</b></td>
+                                        <td colSpan={21} className="text-center"><b>EMPLOYEE-WISE KEY PERFORMANCE INDICATORS (KPIs)</b></td>
                                         </tr>
                                         <tr>
                                         <th rowSpan={2} className="text-center">Sr No</th>

@@ -11,6 +11,7 @@ import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileC
 import SingleEmployeeCumulativeComponent from './components/SingleEmployeeCumulativeComponent/SingleEmployeeCumulativeComponent';
 import HODAllEmployeeComponent from './components/HODAllEmployeeComponent/HODAllEmployeeComponent';
 import ComplaintComponent from './components/ComplaintComponent/ComplaintComponent';
+import PendingEmployeeComplaintComponent from './components/EmployeeComplaintMaster/PendingEmployeeComplaintComponent';
 
 
 function App() {
@@ -46,8 +47,7 @@ function App() {
             <li className="dropdown">
             <a className="dropdown-toggle" data-toggle="dropdown" href="#">Cumulative Master
             <span className="caret"></span></a>
-            <ul className="dropdown-menu">
-          
+            <ul className="dropdown-menu">          
    
             <li><Link to="/viewHoDCumulativeKpp">View HOD Cumulative Kpp</Link></li>
             <li><Link to="/viewEmployeeCumulativeKpp">View Employee Cumulative Kpp</Link></li>
@@ -60,6 +60,16 @@ function App() {
             
           <li><Link to="/changePassword">Change Password</Link></li>
           <li><Link to="/complaint">Complaint Management</Link></li>
+          <li className="dropdown">
+          <a className="dropdown-toggle" data-toggle="dropdown" href="#">Employee Complaint
+          <span className="caret"></span></a>
+          <ul className="dropdown-menu">          
+ 
+          <li><Link to="/pendingEmployeeComplaint">Pending Employee Complaint</Link></li>
+          <li><Link to="/viewEmployeeCumulativeKpp">View Employee Cumulative Kpp</Link></li>
+      
+          </ul>
+        </li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li><a href="#">Welcome: {Cookies.get('empEId')}</a></li>
@@ -80,6 +90,7 @@ function App() {
 
         <Route exact path="/viewSingleEmployeeRatings" element={<SingleEmployeeCumulativeComponent />}></Route>
         <Route exact path="/complaint" element={<ComplaintComponent />}></Route>
+        <Route exact path="/pendingEmployeeComplaint" element={<PendingEmployeeComplaintComponent />}></Route>
       </Routes>
     </BrowserRouter>
   );

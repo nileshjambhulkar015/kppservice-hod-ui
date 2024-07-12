@@ -12,6 +12,7 @@ import SingleEmployeeCumulativeComponent from './components/SingleEmployeeCumula
 import HODAllEmployeeComponent from './components/HODAllEmployeeComponent/HODAllEmployeeComponent';
 import ComplaintComponent from './components/ComplaintComponent/ComplaintComponent';
 import PendingEmployeeComplaintComponent from './components/EmployeeComplaintMaster/PendingEmployeeComplaintComponent';
+import ResolveEmployeeComplaintComponent from './components/EmployeeComplaintMaster/ResolveEmployeeComplaintComponent';
 
 
 function App() {
@@ -66,7 +67,7 @@ function App() {
           <ul className="dropdown-menu">          
  
           <li><Link to="/pendingEmployeeComplaint">Pending Employee Complaint</Link></li>
-          <li><Link to="/viewEmployeeCumulativeKpp">View Employee Cumulative Kpp</Link></li>
+          <li><Link to="/resolveEmployeeComplaint">View Employee Cumulative Kpp</Link></li>
       
           </ul>
         </li>
@@ -91,6 +92,7 @@ function App() {
         <Route exact path="/viewSingleEmployeeRatings" element={<SingleEmployeeCumulativeComponent />}></Route>
         <Route exact path="/complaint" element={<ComplaintComponent />}></Route>
         <Route exact path="/pendingEmployeeComplaint" element={<PendingEmployeeComplaintComponent />}></Route>
+        <Route exact path="/resolveEmployeeComplaint" element={<ResolveEmployeeComplaintComponent />}></Route>
       </Routes>
     </BrowserRouter>
   );

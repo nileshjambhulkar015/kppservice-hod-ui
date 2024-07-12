@@ -16,7 +16,17 @@ class EmployeeComplaintService {
     //at page load call all the departments load all departments
     getEmployeeCompaintsDetailsByPaging() {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+`/complaint/employee-search?roleId=${Cookies.get('roleId')}&deptId=${Cookies.get('deptId')}&statusCd=A&page=0&size=1200&sort=empCompId asc`)
+            return axios.get(BASE_URL_API+`/complaint/employee-search?compTypeRoleId=${Cookies.get('roleId')}&compTypeDeptId=${Cookies.get('deptId')}&statusCd=A&page=0&size=1200&sort=empCompId asc`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
+       //at page load call all the departments load all departments
+       getResolveEmployeeCompaintsDetailsByPaging() {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API+`/complaint/employee-search?compStatus=Resolve&compTypeRoleId=${Cookies.get('roleId')}&compTypeDeptId=${Cookies.get('deptId')}&statusCd=A&page=0&size=1200&sort=empCompId asc`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

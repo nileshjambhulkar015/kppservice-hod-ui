@@ -110,7 +110,25 @@ deleteEmployeeComplaintById(empCompId) {
 
     }
 
+      //Get all roles present in designation table 
+     //second used in adding new employee
+     getRoles(){
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API+"/roles")
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }        
+    }  
 
+    getAllDepartmentDetails() {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API+"/department")
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }       
+    }
 }
 
 

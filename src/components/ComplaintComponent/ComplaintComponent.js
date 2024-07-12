@@ -18,7 +18,9 @@ export default function ComplaintComponent() {
     const [compTypeName, setCompTypeName] = useState('');
     const [remark, setRemark] = useState('');
 
-   
+    const [compTypeRoleId, setCompTypeRoleId] = useState('');
+    const [compTypeDeptId, setCompTypeDeptId] = useState('');
+    
 
     const [complaints, setComplaints] = useState([])
 
@@ -38,7 +40,9 @@ export default function ComplaintComponent() {
 
         ComplaintService.getAllComplaintType().then((res) => {
             setComplaintTypes(res.data); 
-            setCompTypeId(res.data?.[0].compTypeId)           
+            setCompTypeId(res.data?.[0].compTypeId)      
+            setCompTypeDeptId(res.data?.[0].compTypeDeptId)
+            setCompTypeRoleId(res.data?.[0].compTypeRoleId)                 
                   
         });
     }, []);
@@ -56,7 +60,7 @@ export default function ComplaintComponent() {
         let desigId = Cookies.get('desigId')
         let empId = Cookies.get('empId')
         let empEId = Cookies.get('empEId')
-        let complaint = {empId,empEId,roleId,deptId,desigId, compTypeId, compDesc, statusCd,employeeId };
+        let complaint = {empId,empEId,roleId,deptId,desigId, compTypeRoleId,compTypeDeptId,compTypeId, compDesc, statusCd,employeeId };
 
         ComplaintService.saveComplaintDetails(complaint).then(res => {
             console.log("res=", res.data)
@@ -90,6 +94,16 @@ setCompTypeId(complaint.compTypeId)
         // window.location.reload(); 
     }
 
+    const handleComplaintTypeIdChange = (value) => {
+        //  setCompTypeId(value)
+          let compTypeId1 = value;
+          ComplaintService.getComplaintTypeByIdDD(compTypeId1).then((res) => {
+             
+              setCompTypeId(res.data?.compTypeId)      
+             setCompTypeDeptId(res.data?.compTypeDeptId)
+              setCompTypeRoleId(res.data?.compTypeRoleId) 
+          });
+      }
 
     const deleteDepartmentById = (e) => {
             ComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
@@ -194,7 +208,7 @@ setCompTypeId(complaint.compTypeId)
                                 <div className="form-group">
                                 <label className="control-label col-sm-4" htmlFor="compTypeId">Select Complaint Type:</label>
                                 <div className="col-sm-8">
-                                    <select className="form-control" id="compTypeId" onChange={(e) => setCompTypeId(e.target.value)}>
+                                    <select className="form-control" id="compTypeId" onChange={(e) => handleComplaintTypeIdChange(e.target.value)}>
                                        
                                         {
                                             complaintTypes.map(

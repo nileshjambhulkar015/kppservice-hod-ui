@@ -56,21 +56,23 @@ function App() {
             </ul>
           </li>
 
-          <li><Link to="/viewAllEmployeeByHODId">View All Employee</Link></li>
-          <li><Link to="/viewProfile">View Profile</Link></li>
-            
-          <li><Link to="/changePassword">Change Password</Link></li>
-          <li><Link to="/complaint">Complaint Management</Link></li>
+          
           <li className="dropdown">
-          <a className="dropdown-toggle" data-toggle="dropdown" href="#">Employee Complaint
+          <a className="dropdown-toggle" data-toggle="dropdown" href="#">Complaint Management
           <span className="caret"></span></a>
           <ul className="dropdown-menu">          
- 
+          <li><Link to="/complaint">My Complaint</Link></li>
           <li><Link to="/pendingEmployeeComplaint">Pending Employee Complaint</Link></li>
           <li><Link to="/resolveEmployeeComplaint">View Employee Cumulative Kpp</Link></li>
       
           </ul>
         </li>
+        
+          <li><Link to="/viewAllEmployeeByHODId">View All Employee</Link></li>
+          <li><Link to="/viewProfile">View Profile</Link></li>
+            
+          <li><Link to="/changePassword">Change Password</Link></li>
+          
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li><a href="#">Welcome: {Cookies.get('empEId')}</a></li>

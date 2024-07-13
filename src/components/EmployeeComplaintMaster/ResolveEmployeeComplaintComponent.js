@@ -51,6 +51,9 @@ export default function ResolveEmployeeComplaintComponent() {
     };
 
 
+    
+
+
     //loading all department and roles while page loading at first time
     useEffect(() => {
         EmployeeComplaintService.getResolveEmployeeCompaintsDetailsByPaging().then((res) => {
@@ -141,7 +144,7 @@ export default function ResolveEmployeeComplaintComponent() {
     const searchByComplaintId = (e) => {
         setCompId(e.target.value)
     
-        ComplaintService.getComplaintDetailsByCompIdPaging(e.target.value).then((res) => {
+        EmployeeComplaintService.getComplaintDetailsByCompIdPaging(e.target.value).then((res) => {
 
             if (res.data.success) {
                 setIsSuccess(true);

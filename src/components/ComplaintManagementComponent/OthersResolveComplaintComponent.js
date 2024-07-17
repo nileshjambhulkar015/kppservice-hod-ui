@@ -1,28 +1,18 @@
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
+import OthersResolveComplaintService from '../../services/OthersResolveComplaintService';
 
 
-import ComplaintService from '../../services/ComplaintService';
-import EmployeeComplaintService from '../../services/EmployeeComplaintService';
 
-export default function PendingEmployeeComplaintComponent() {
+
+export default function OthersResolveComplaintComponent() {
 
 
     const [compId, setCompId] = useState('');
 
-    const [empId, setEmpId] = useState('');
-    const [empEId, setEmpEId] = useState('');
-    const [empName, setEmpName] = useState('');
-    const [empMobileNo, setEmpMobileNo] = useState('');
-    const [roleId, setRoleId] = useState('');
-    const [roleName, setRoleName] = useState('');
-    const [deptId, setDeptId] = useState('');
+    const [compTypeDeptId, setCompTypeDeptId] = useState('');
 
-    const [deptName, setDeptName] = useState('');
-    const [desigId, setDesigId] = useState('');
-    const [desigName, setDesigName] = useState('');
-
-    const [compStatus, setCompStatus] = useState('Resolve');
+    const [compStatus, setCompStatus] = useState('');
     const [compDate, setCompDate] = useState('');
     const [compResolveDate, setCompResolveDate] = useState('');
     const [empCompId, setEmpCompId] = useState('');
@@ -30,43 +20,44 @@ export default function PendingEmployeeComplaintComponent() {
     const [compTypeId, setCompTypeId] = useState('');
     const [compTypeName, setCompTypeName] = useState('');
     const [remark, setRemark] = useState('');
-    const [isSuccess, setIsSuccess] = useState(true)
+
+    const [empId, setEmpId] = useState('');
+    const [empEId, setEmpEId] = useState('');
+    const [empName, setEmpName] = useState('');
+    const [empMobileNo, setEmpMobileNo] = useState('');
+
+    const [roleId, setRoleId] = useState('');
+    const [roleName, setRoleName] = useState('');
+    const [deptId, setDeptId] = useState('');
+
+    const [deptName, setDeptName] = useState('');
+    const [desigId, setDesigId] = useState('');
+    const [desigName, setDesigName] = useState('');
+    const [compResolveEmpName, setCompResolveEmpName] = useState('');
+    const [compResolveEmpEId, setCompResolveEmpEId] = useState('');
+    
+
     const [complaints, setComplaints] = useState([])
 
     const [complaintTypes, setComplaintTypes] = useState([])
 
-    const [roles, setRoles] = useState([])
-
-    const [message, setMessage] = useState('');
-
-
-    //for gm approved or reject status selection
-    const onComplaintStatusChangeHandler = (event) => {
-        setCompStatus(event);
-    };
-
+    const [departments, setDepartments] = useState([])
 
     //loading all department and roles while page loading at first time
     useEffect(() => {
-        EmployeeComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-            setComplaints(res.data.responseData.content?.filter((item) => item.compStatus !== 'Resolve'));
+        OthersResolveComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+            setComplaints(res.data.responseData.content);
             console.log(res.data.responseData.content)
         });
 
-        EmployeeComplaintService.getAllComplaintType().then((res) => {
-            setComplaintTypes(res.data);
-            setCompTypeId(res.data?.[0].compTypeId)
-
-        });
     }, []);
 
 
     const getComplaintById = (e) => {
 
-        EmployeeComplaintService.getComplaintById(e).then(res => {
+        OthersResolveComplaintService.getComplaintById(e).then(res => {
             let complaint = res.data;
-            setEmpCompId(complaint.empCompId)
-            setCompId(complaint.compId)
+
             setEmpId(complaint.empId)
             setEmpEId(complaint.empEId)
 
@@ -81,39 +72,37 @@ export default function PendingEmployeeComplaintComponent() {
             setDesigName(complaint.desigName)
 
 
+            setEmpCompId(complaint.empCompId)
+            setCompId(complaint.compId)
             setCompTypeId(complaint.compTypeId)
             setCompDate(complaint.compDate)
             setCompResolveDate(complaint.compResolveDate)
-
+            setCompStatus(complaint.compStatus)
             setCompTypeName(complaint.compTypeName)
             setCompDesc(complaint.compDesc)
-
+            setRemark(complaint.remark)
+            setCompResolveEmpName(complaint.compResolveEmpName);
+            setCompResolveEmpEId(complaint.compResolveEmpEId);
+            
         }
         );
-        // window.location.reload(); 
+
     }
 
-
-    const deleteDepartmentById = (e) => {
-        EmployeeComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
-            EmployeeComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                setComplaints(res.data.responseData.content?.filter((item) => item.compStatus !== 'Resolve'));
-                console.log(res.data.responseData.content)
-            });
-            console.log("Department deleted");
-        }
-        );
-    }
 
     const updateComplaint = (e) => {
 
         e.preventDefault()
+        let compStatus = "In Progress";
+        let compResolveEmpId = Cookies.get('empId');
+        let compResolveEmpName = Cookies.get('empFirstName') + " " + Cookies.get('empMiddleName') + " " + Cookies.get('empLastName');
+        let compResolveEmpEId = Cookies.get('empEId');
 
-        let complaint = { empCompId, compStatus, remark };
+        let complaint = { empCompId, compStatus, compResolveEmpId, compResolveEmpName, compResolveEmpEId };
 
-        EmployeeComplaintService.updateComplaintDetails(complaint).then(res => {
-            EmployeeComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                setComplaints(res.data.responseData.content?.filter((item) => item.compStatus !== 'Resolve'));
+        OthersResolveComplaintService.updateComplaintDetails(complaint).then(res => {
+            OthersResolveComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+                setComplaints(res.data.responseData.content);
 
             });
             console.log("Complaint added");
@@ -122,49 +111,23 @@ export default function PendingEmployeeComplaintComponent() {
 
     }
 
-    const searchByComplaintId = (e) => {
-        setCompId(e.target.value)
-    
-        EmployeeComplaintService.getComplaintDetailsByCompIdPaging(e.target.value).then((res) => {
-
-            if (res.data.success) {
-                setIsSuccess(true);
-                setComplaints(res.data.responseData.content?.filter((item) => item.compStatus !== 'Resolve'));
-            }
-            else {
-                setIsSuccess(false);
-            }
-        });
-    }
-
+    const onComplaintStatusChangeHandler = (event) => {
+        setCompStatus(event);
+    };
 
 
 
     return (
 
-        <div className='container-fluid'>
+        <div>
             <div className="row">
-                <h2 className="text-center">Pending Complaint List</h2>
+                <h2 className="text-center">Resolve Complaint List</h2>
+                <div className="col-md-1"></div>
+                <div className="col-md-9">
+                    <div className="row">
 
-                <div className="col-md-12">
-                <div className="row">
-                <div className="col-sm-6">
-                    <div className="form-group">
-                        <form className="form-horizontal">
-                            <label className="control-label col-sm-3" htmlFor="compId">Enter Complaint Id:</label>
-                            <div className="col-sm-4">
-                                <input type="text" className="form-control" id="compId" placeholder="Enter Complaint Id" value={compId} onChange={(e) => searchByComplaintId(e)} />
-                            </div>
-                        </form>
-                      
+
                     </div>
-                </div>
-                <div className="col-sm-6">
-                    
-                    
-                
-                </div>
-            </div>
                     <div className="row">
 
                         <table className="table table-bordered">
@@ -179,12 +142,9 @@ export default function PendingEmployeeComplaintComponent() {
                                     <th className="text-center">Role</th>
                                     <th className="text-center">Department</th>
                                     <th className="text-center">Designation</th>
-
-
                                     <th className="text-center">Complaint Date</th>
                                     <th className="text-center">Complaint Type</th>
                                     <th className="text-center">Complaint Status</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -193,10 +153,7 @@ export default function PendingEmployeeComplaintComponent() {
                                         (complaint, index) =>   //index is inbuilt variable of map started with 0
                                             <tr key={complaint.empCompId}>
                                                 <td className="text-center">{index + 1}</td>
-                                                <td>
-
-                                                    <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => getComplaintById(complaint.empCompId)}>View</button></td>
-
+                                                <td> <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => getComplaintById(complaint.empCompId)}>View</button></td>
                                                 <td>{complaint.compId}</td>
 
 
@@ -212,6 +169,8 @@ export default function PendingEmployeeComplaintComponent() {
                                                 <td>{complaint.compStatus}</td>
 
 
+
+
                                             </tr>
                                     )
                                 }
@@ -220,14 +179,9 @@ export default function PendingEmployeeComplaintComponent() {
                     </div>
 
                 </div>
-
+                <div className="col-md-2"></div>
 
             </div>
-
-
-
-
-
 
             {/* Modal for show data when user click on view button */}
             <div className="modal fade" id="showData" role="dialog">
@@ -303,6 +257,13 @@ export default function PendingEmployeeComplaintComponent() {
                                     </div>
                                 </div>
 
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="deptName" >Complaint Resolve Date:</label>
+                                    <div className="col-sm-8">
+                                        {compResolveDate}
+                                    </div>
+                                </div>
+
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="reamrk" >Complaint Description :</label>
@@ -314,18 +275,30 @@ export default function PendingEmployeeComplaintComponent() {
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="hodKppStatus">Complaint Status:</label>
                                     <div className="col-sm-3">
-                                        <select className="form-control" id="compStatus" onChange={(e) => onComplaintStatusChangeHandler(e.target.value)} defaultValue={compStatus}>
-                                            <option value="Resolved">Resolved</option>
-                                            <option value="Reject">In Progress</option>
-                                            <option value="Reject">Reject</option>
-                                        </select>
+                                        {compStatus}
+                                    </div>
+                                </div>
+
+                                
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="hodKppStatus">Resolved By Employee Name:</label>
+                                    <div className="col-sm-3">
+                                        {compResolveEmpName}
+                                    </div>
+                                </div>
+
+                                
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="hodKppStatus">Resolved By Employee Id:</label>
+                                    <div className="col-sm-3">
+                                        {compResolveEmpEId}
                                     </div>
                                 </div>
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="remark">Remark :</label>
                                     <div className="col-sm-8">
-                                        <textarea row="5" className="form-control" id="remark" placeholder="Enter Complaint remark here" onChange={(e) => setRemark(e.target.value)} />
+                                        {remark}
                                     </div>
                                 </div>
 
@@ -333,13 +306,14 @@ export default function PendingEmployeeComplaintComponent() {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => updateComplaint(e)} > Submit</button>
+
                             <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
                         </div>
                     </div>
 
                 </div>
             </div>
+
         </div>
     );
 }

@@ -110,25 +110,50 @@ deleteEmployeeComplaintById(empCompId) {
 
     }
 
-      //Get all roles present in designation table 
-     //second used in adding new employee
-     getRoles(){
+        //when click on view button of UI
+        getComplaintTypeById(compTypeId) {
+            if (null != Cookies.get('empId')) {
+                return axios.get(BASE_URL + `/by-complaint-type-id?compTypeId=${compTypeId}`)
+            } else {
+                alert("You need to login first")
+                window.location.replace(LOGIN_UI_BASE_URL);
+            }
+    
+        }
+
+         //get site from company for region id
+     //Get all roles present in department table from designation for KPP
+     getComplaintTypeByIdDD(compTypeId) {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+"/roles")
+            return axios.get(BASE_URL_API+`/complaint-type/by-complaint-type-id?compTypeId=${compTypeId}`)  
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
-        }        
-    }  
+        }
+        
+    }
 
-    getAllDepartmentDetails() {
+    getAllDepartmentFromComplaintType() {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+"/department")
+            return axios.get(BASE_URL_API +"/complaint-type/comp-type-dd-dept")
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
         }       
     }
+
+     //Get all sites present in department table from designation for KPP
+     getComplaintTypeByDeptId(compTypeDeptId) {
+        console.log("Site Service regionid=", compTypeDeptId)
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API+`/complaint-type/dd-comp-type-by-dept-id?compTypeDeptId=${compTypeDeptId}`)  
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+        
+    }
+
 }
 
 

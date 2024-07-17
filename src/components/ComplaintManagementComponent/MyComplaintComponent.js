@@ -4,11 +4,13 @@ import React, { useEffect, useState } from "react";
 
 import ComplaintService from '../../services/ComplaintService';
 
-export default function ComplaintComponent() {
-   
-    
+export default function MyComplaintComponent() {
+
+
     const [compId, setCompId] = useState('');
     
+    const [compTypeDeptId, setCompTypeDeptId] = useState('');
+
     const [compStatus, setCompStatus] = useState('');
     const [compDate, setCompDate] = useState('');
     const [compResolveDate, setCompResolveDate] = useState('');
@@ -18,18 +20,18 @@ export default function ComplaintComponent() {
     const [compTypeName, setCompTypeName] = useState('');
     const [remark, setRemark] = useState('');
 
-    const [compTypeRoleId, setCompTypeRoleId] = useState('');
-    const [compTypeDeptId, setCompTypeDeptId] = useState('');
+    const [deptId, setDeptId] = useState('');
+
     
+    const [compResolveEmpName, setCompResolveEmpName] = useState('');
+    const [compResolveEmpEId, setCompResolveEmpEId] = useState('');
+
 
     const [complaints, setComplaints] = useState([])
 
     const [complaintTypes, setComplaintTypes] = useState([])
 
-    const updatedDept = ['Human Resource', 'General Manager'];
-    const [roles, setRoles] = useState([])
-
-    const [message, setMessage] = useState('');
+    const [departments, setDepartments] = useState([])
 
     //loading all department and roles while page loading at first time
     useEffect(() => {
@@ -38,18 +40,39 @@ export default function ComplaintComponent() {
             console.log(res.data.responseData.content)
         });
 
-        ComplaintService.getAllComplaintType().then((res) => {
-            setComplaintTypes(res.data); 
-            setCompTypeId(res.data?.[0].compTypeId)      
-            setCompTypeDeptId(res.data?.[0].compTypeDeptId)
-            setCompTypeRoleId(res.data?.[0].compTypeRoleId)                 
-                  
+
+        ComplaintService.getAllDepartmentFromComplaintType().then((res) => {
+            setDepartments(res.data);
+            setCompTypeDeptId(res.data?.[0].deptId)
+
+            let compTypeDeptId = res.data?.[0].deptId;
+            // console.log("region id =", regionId)
+            ComplaintService.getComplaintTypeByDeptId(compTypeDeptId).then((res1) => {
+                setComplaintTypes(res1.data);
+                setCompTypeId(res1.data?.[0]?.compTypeId)
+
+
+            });
         });
+
+
     }, []);
 
- 
 
-  
+    //for region  change
+    const handleDepartmentIdChange = (value) => {
+        let compTypeDeptId = value;
+        setCompTypeDeptId(compTypeDeptId);
+        ComplaintService.getComplaintTypeByDeptId(compTypeDeptId).then((res1) => {
+            setComplaintTypes(res1.data);
+            setCompTypeId(res1.data?.[0]?.compTypeId)
+
+        });
+
+    };
+
+
+
 
     const saveComplaintDetails = (e) => {
         e.preventDefault()
@@ -60,13 +83,13 @@ export default function ComplaintComponent() {
         let desigId = Cookies.get('desigId')
         let empId = Cookies.get('empId')
         let empEId = Cookies.get('empEId')
-        let complaint = {empId,empEId,roleId,deptId,desigId, compTypeRoleId,compTypeDeptId,compTypeId, compDesc, statusCd,employeeId };
+        let complaint = { empId, empEId, roleId, deptId, desigId, compTypeDeptId, compTypeId, compDesc, statusCd, employeeId };
 
         ComplaintService.saveComplaintDetails(complaint).then(res => {
             console.log("res=", res.data)
             ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
                 setComplaints(res.data.responseData.content);
-              
+
                 setRemark('');
 
             });
@@ -82,50 +105,42 @@ export default function ComplaintComponent() {
             let complaint = res.data;
             setEmpCompId(complaint.empCompId)
             setCompId(complaint.compId)
-setCompTypeId(complaint.compTypeId)
+            setCompTypeId(complaint.compTypeId)
             setCompDate(complaint.compDate)
             setCompResolveDate(complaint.compResolveDate)
             setCompStatus(complaint.compStatus)
             setCompTypeName(complaint.compTypeName)
             setCompDesc(complaint.compDesc)
+            setCompResolveEmpName(complaint.compResolveEmpName);
+            setCompResolveEmpEId(complaint.compResolveEmpEId);
             setRemark(complaint.remark)
         }
         );
         // window.location.reload(); 
     }
 
-    const handleComplaintTypeIdChange = (value) => {
-        //  setCompTypeId(value)
-          let compTypeId1 = value;
-          ComplaintService.getComplaintTypeByIdDD(compTypeId1).then((res) => {
-             
-              setCompTypeId(res.data?.compTypeId)      
-             setCompTypeDeptId(res.data?.compTypeDeptId)
-              setCompTypeRoleId(res.data?.compTypeRoleId) 
-          });
-      }
 
     const deleteDepartmentById = (e) => {
-            ComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
-                ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                    setComplaints(res.data.responseData.content);
-                    console.log(res.data.responseData.content)
-                });
-                console.log("Department deleted");
-            }
-            );       
+        ComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
+            ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+                setComplaints(res.data.responseData.content);
+                console.log(res.data.responseData.content)
+            });
+            console.log("Department deleted");
+        }
+        );
     }
 
     const updateComplaint = (e) => {
 
         e.preventDefault()
-        
-        let complaint = {empCompId, compDesc};
+
+        let complaint = { empCompId, compDesc };
 
         ComplaintService.updateComplaintDetails(complaint).then(res => {
             ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
                 setComplaints(res.data.responseData.content);
-                
+
             });
             console.log("Complaint added");
         }
@@ -133,20 +148,20 @@ setCompTypeId(complaint.compTypeId)
 
     }
 
-   
+
 
     return (
 
         <div>
             <div className="row">
-                <h2 className="text-center">Complaint List</h2>
+                <h2 className="text-center">My Complaint List</h2>
                 <div className="col-md-1"></div>
                 <div className="col-md-9">
                     <div className="row">
-                      
+
                         <div className="col-sm-12" align="right">
                             <button type="button" className="btn btn-primary " data-toggle="modal" data-target="#saveComplaint">Add Complaint</button>
-                            
+
                         </div>
                     </div>
                     <div className="row">
@@ -157,6 +172,7 @@ setCompTypeId(complaint.compTypeId)
                                     <th className="text-center">Sr No</th>
                                     <th className="text-center">Complaint No</th>
                                     <th className="text-center">Complaint Date</th>
+                                    <th className="text-center">Complaint Department</th>
                                     <th className="text-center">Complaint Type</th>
                                     <th className="text-center">Complaint Status</th>
                                     <th className="text-center">Action</th>
@@ -170,9 +186,10 @@ setCompTypeId(complaint.compTypeId)
                                                 <td className="text-center">{index + 1}</td>
                                                 <td>{complaint.compId}</td>
                                                 <td>{complaint.compDate}</td>
+                                                <td>{complaint.compTypeDeptName}</td>
                                                 <td>{complaint.compTypeName}</td>
                                                 <td>{complaint.compStatus}</td>
-                                               
+
 
                                                 <td> <button type="submit" className="btn btn-info" data-toggle="modal" data-target="#updateDepartment" onClick={() => getComplaintById(complaint.empCompId)}>Update</button>
                                                     <button type="submit" className="btn col-sm-offset-1 btn-danger" onClick={() => deleteDepartmentById(complaint.empCompId)}>Delete</button>
@@ -190,7 +207,7 @@ setCompTypeId(complaint.compTypeId)
             </div>
 
 
-           
+
 
             {/* Modal for save department details */}
             <div className="modal fade" id="saveComplaint" role="dialog">
@@ -202,30 +219,45 @@ setCompTypeId(complaint.compTypeId)
                         </div>
                         <div className="modal-body">
                             <form className="form-horizontal">
-            
-                                
+
 
                                 <div className="form-group">
-                                <label className="control-label col-sm-4" htmlFor="compTypeId">Select Complaint Type:</label>
-                                <div className="col-sm-8">
-                                    <select className="form-control" id="compTypeId" onChange={(e) => handleComplaintTypeIdChange(e.target.value)}>
-                                       
-                                        {
-                                            complaintTypes.map(
-                                                complaintType =>
-                                                    <option key={complaintType.compTypeId} value={complaintType.compTypeId}>{complaintType.compTypeName}</option>
-                                            )
-                                        };
+                                    <label className="control-label col-sm-4" htmlFor="deptName">Select Department Name:</label>
+                                    <div className="col-sm-4">
+                                        <select className="form-control" id="deptId" onChange={(e) => handleDepartmentIdChange(e.target.value)}>
 
-                                    </select>
+                                            {
+                                                departments.map(
+                                                    department =>
+                                                        <option key={department.deptId} value={department.deptId}>{department.deptName}</option>
+                                                )
+                                            };
+
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
 
-                               
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="compTypeId">Select Complaint Type:</label>
+                                    <div className="col-sm-8">
+                                        <select className="form-control" id="compTypeId" onChange={(e) => setCompTypeId(e.target.value)}>
+
+                                            {
+                                                complaintTypes.map(
+                                                    complaintType =>
+                                                        <option key={complaintType.compTypeId} value={complaintType.compTypeId}>{complaintType.compTypeName}</option>
+                                                )
+                                            };
+
+                                        </select>
+                                    </div>
+                                </div>
+
+
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="compDesc">Enter Complaint Description:</label>
                                     <div className="col-sm-8">
-                                    <textarea row={50} cols={50} className="form-control" id="compDesc" placeholder="Enter Complaint Description here"  onChange={(e) => setCompDesc(e.target.value)} />
+                                        <textarea row={50} cols={50} className="form-control" id="compDesc" placeholder="Enter Complaint Description here" onChange={(e) => setCompDesc(e.target.value)} />
                                     </div>
                                 </div>
 
@@ -252,11 +284,11 @@ setCompTypeId(complaint.compTypeId)
                             <form className="form-horizontal">
                                 <div> <input type="hidden" id="empCompId" name="deptId" value={empCompId} /></div>
                                 <div className="form-group">
-                                <label className="control-label col-sm-4" htmlFor="reamrk">Complaint For:</label>
-                                <div className="col-sm-8">
-                                    {compTypeName}
+                                    <label className="control-label col-sm-4" htmlFor="reamrk">Complaint For:</label>
+                                    <div className="col-sm-8">
+                                        {compTypeName}
+                                    </div>
                                 </div>
-                            </div>
 
 
                                 <div className="form-group">
@@ -289,8 +321,8 @@ setCompTypeId(complaint.compTypeId)
                         </div>
                         <div className="modal-body">
                             <form className="form-horizontal">
- 
-           
+
+
                                 <div> <input type="hidden" id="deptId" name="deptId" value={empCompId} /></div>
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="deptName" >Complaint Id:</label>
@@ -300,25 +332,25 @@ setCompTypeId(complaint.compTypeId)
                                 </div>
 
                                 <div className="form-group">
-                                <label className="control-label col-sm-4" htmlFor="deptName" >Complaint Type Name:</label>
-                                <div className="col-sm-8">
-                                    {compTypeName}
+                                    <label className="control-label col-sm-4" htmlFor="deptName" >Complaint Type Name:</label>
+                                    <div className="col-sm-8">
+                                        {compTypeName}
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="form-group">
-                            <label className="control-label col-sm-4" htmlFor="deptName" >Complaint Start Date:</label>
-                            <div className="col-sm-8">
-                                {compDate}
-                            </div>
-                        </div>
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="deptName" >Complaint Start Date:</label>
+                                    <div className="col-sm-8">
+                                        {compDate}
+                                    </div>
+                                </div>
 
-                        <div className="form-group">
-                        <label className="control-label col-sm-4" htmlFor="deptName" >Complaint Resolve Date:</label>
-                        <div className="col-sm-8">
-                            {compResolveDate}
-                        </div>
-                    </div>
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="deptName" >Complaint Resolve Date:</label>
+                                    <div className="col-sm-8">
+                                        {compResolveDate}
+                                    </div>
+                                </div>
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="reamrk" >Complaint Description :</label>
@@ -328,18 +360,34 @@ setCompTypeId(complaint.compTypeId)
                                 </div>
 
                                 <div className="form-group">
-                                <label className="control-label col-sm-4" htmlFor="deptName" >Complaint Status:</label>
-                                <div className="col-sm-8">
-                                    {compStatus}
+                                    <label className="control-label col-sm-4" htmlFor="deptName" >Complaint Status:</label>
+                                    <div className="col-sm-8">
+                                        {compStatus}
+                                    </div>
                                 </div>
-                            </div>
 
                                 <div className="form-group">
-                                <label className="control-label col-sm-4" htmlFor="deptName" >Remark:</label>
-                                <div className="col-sm-8">
-                                    {remark}
+                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Working By Employee Name:</label>
+                                    <div className="col-sm-3">
+                                        {compResolveEmpName}
+                                    </div>
                                 </div>
-                            </div>
+
+                                
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Working By Employee Id:</label>
+                                    <div className="col-sm-3">
+                                        {compResolveEmpEId}
+                                    </div>
+                                </div>
+
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="deptName" >Remark:</label>
+                                    <div className="col-sm-8">
+                                        {remark}
+                                    </div>
+                                </div>
                             </form>
                         </div>
                         <div className="modal-footer">

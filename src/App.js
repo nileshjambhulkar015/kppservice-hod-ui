@@ -10,10 +10,11 @@ import ViewAllEmployeeCumulativeComponent from './components/ViewAllEmployeeCumu
 import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
 import SingleEmployeeCumulativeComponent from './components/SingleEmployeeCumulativeComponent/SingleEmployeeCumulativeComponent';
 import HODAllEmployeeComponent from './components/HODAllEmployeeComponent/HODAllEmployeeComponent';
-import ComplaintComponent from './components/ComplaintComponent/ComplaintComponent';
-import PendingEmployeeComplaintComponent from './components/EmployeeComplaintMaster/PendingEmployeeComplaintComponent';
-import ResolveEmployeeComplaintComponent from './components/EmployeeComplaintMaster/ResolveEmployeeComplaintComponent';
 
+import MyComplaintComponent from './components/ComplaintManagementComponent/MyComplaintComponent';
+import OthersPendingComplaintComponent from './components/ComplaintManagementComponent/OthersPendingComplaintComponent';
+import OthersResolveComplaintComponent from './components/ComplaintManagementComponent/OthersResolveComplaintComponent';
+import OthersInProgressComplaintComponent from './components/ComplaintManagementComponent/OthersInProgressComplaintComponent';
 
 function App() {
   //remove cookies when click on logout
@@ -57,14 +58,15 @@ function App() {
           </li>
 
           
+         
           <li className="dropdown">
           <a className="dropdown-toggle" data-toggle="dropdown" href="#">Complaint Management
-          <span className="caret"></span></a>
-          <ul className="dropdown-menu">          
-          <li><Link to="/complaint">My Complaint</Link></li>
-          <li><Link to="/pendingEmployeeComplaint">Pending Employee Complaint</Link></li>
-          <li><Link to="/resolveEmployeeComplaint">View Employee Cumulative Kpp</Link></li>
-      
+            <span className="caret"></span></a>
+          <ul className="dropdown-menu">
+            <li><Link to="/myComplaint">My Complaints</Link></li>
+            <li><Link to="/othersPendingComplaint">Other's Pending Complaint</Link></li>
+            <li><Link to="/othersInProgressComplaint">Other's In Progress Complaint</Link></li>
+            <li><Link to="/othersResolveComplaint">Other's Resolve Complaint</Link></li>
           </ul>
         </li>
         
@@ -92,9 +94,10 @@ function App() {
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
 
         <Route exact path="/viewSingleEmployeeRatings" element={<SingleEmployeeCumulativeComponent />}></Route>
-        <Route exact path="/complaint" element={<ComplaintComponent />}></Route>
-        <Route exact path="/pendingEmployeeComplaint" element={<PendingEmployeeComplaintComponent />}></Route>
-        <Route exact path="/resolveEmployeeComplaint" element={<ResolveEmployeeComplaintComponent />}></Route>
+        <Route exact path="/myComplaint" element={<MyComplaintComponent />}></Route>
+        <Route exact path="/othersPendingComplaint" element={<OthersPendingComplaintComponent />}></Route>
+        <Route exact path="/othersInProgressComplaint" element={<OthersInProgressComplaintComponent />}></Route>
+        <Route exact path="/othersResolveComplaint" element={<OthersResolveComplaintComponent />}></Route>
       </Routes>
     </BrowserRouter>
   );

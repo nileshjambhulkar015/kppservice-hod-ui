@@ -38,11 +38,14 @@ export default function OthersInProgressComplaintComponent() {
 
 
     const [complaints, setComplaints] = useState([])
+    const [ekppMonth, setEkppMonth] = useState('');
+    const [compResolveDateTime, setCompResolveDateTime] = useState('');
+    
 
-    const [complaintTypes, setComplaintTypes] = useState([])
 
     const [departments, setDepartments] = useState([])
 
+    
     //loading all department and roles while page loading at first time
     useEffect(() => {
         OthersInProgressComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
@@ -98,7 +101,7 @@ export default function OthersInProgressComplaintComponent() {
         let compResolveEmpName = Cookies.get('empFirstName') + " " + Cookies.get('empMiddleName') + " " + Cookies.get('empLastName');
         let compResolveEmpEId = Cookies.get('empEId');
 
-        let complaint = { empCompId, compStatus, compResolveEmpId, compResolveEmpName, compResolveEmpEId };
+        let complaint = { empCompId, compStatus,compResolveDateTime, compResolveEmpId, compResolveEmpName, compResolveEmpEId,remark };
 
         OthersInProgressComplaintService.updateComplaintDetails(complaint).then(res => {
             OthersInProgressComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
@@ -121,7 +124,7 @@ export default function OthersInProgressComplaintComponent() {
             <div className="row">
                 <h2 className="text-center">In Progress Complaint List</h2>
                 <div className="col-md-1"></div>
-                <div className="col-md-9">
+                <div className="col-md-10">
                     <div className="row">
 
 
@@ -180,7 +183,7 @@ export default function OthersInProgressComplaintComponent() {
                     </div>
 
                 </div>
-                <div className="col-md-2"></div>
+                <div className="col-md-1"></div>
 
             </div>
 
@@ -266,6 +269,14 @@ export default function OthersInProgressComplaintComponent() {
                                         {compDesc}
                                     </div>
                                 </div>
+
+                                <div className="form-group">
+                                <label className="control-label col-sm-3"  >Resolve Date and Time:</label>
+                                <div className="col-sm-3">
+                                    <input type="datetime-local" className="form-control" defaultValue={compResolveDateTime} name="compResolveDateTime" onChange={(e) => setCompResolveDateTime(e.target.value)} />
+                                </div>
+                            </div>
+              
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="hodKppStatus">Complaint Status:</label>

@@ -28,13 +28,13 @@ export default function ChangePasswordComponent() {
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="userPassword">Enter Password :</label>
                                     <div className="col-sm-4">
-                                        <input type="text" className="form-control" id="userPassword" placeholder="Enter Re-type Password here" value={userPassword} onChange={(e) => setUserPassword(e.target.value)} />
+                                        <input type="password" className="form-control" id="userPassword" placeholder="Enter Re-type Password here" value={userPassword} onChange={(e) => setUserPassword(e.target.value)} />
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="userRetypePassword">Enter Re-Type Password:</label>
                                     <div className="col-sm-4">
-                                    <input type="text" className="form-control" id="userRetypePassword" placeholder="Enter Confirm Password here" value={userRetypePassword} onChange={(e) => setUserRetypePassword(e.target.value)} />
+                                    <input type="password" className="form-control" id="userRetypePassword" placeholder="Enter Confirm Password here" value={userRetypePassword} onChange={(e) => setUserRetypePassword(e.target.value)} />
                                     </div>
                                 </div>
                                 </form>

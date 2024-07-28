@@ -10,7 +10,7 @@ export default function ChangePasswordComponent() {
 
 
     const updatePassword = (e) => {        
-        ChangePasswordService.updatePassword("e495", userPassword).then(res => {
+        ChangePasswordService.updatePassword(userPassword).then(res => {
            setUserPassword('');
            setUserRetypePassword('');
 

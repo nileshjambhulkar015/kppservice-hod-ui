@@ -16,7 +16,17 @@ class OthersResolveComplaintService {
     //at page load call all the departments load all departments
     getEmployeeCompaintsDetailsByPaging() {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+`/complaint/employee-search?compStatus=Resolved&compTypeDeptId=${Cookies.get('deptId')}&statusCd=A&page=0&size=1200&sort=empCompId asc`)
+            return axios.get(BASE_URL_API+`/complaint/complaint-search?compStatus=Resolved&compTypeDeptId=${Cookies.get('deptId')}&statusCd=A&page=0&size=1200&sort=empCompId asc`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
+    //search complaint by complaint id
+    getEmployeeCompaintsByComplaintId(empCompIdSearch) {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API + `/complaint/complaint-search?compStatus=Resolved&compId=${empCompIdSearch}&compTypeDeptId=${Cookies.get('deptId')}&statusCd=A&page=0&size=1200&sort=empCompId asc`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -54,6 +64,28 @@ class OthersResolveComplaintService {
         }
 
     }
+
+    //for advance search department
+    getAllDepartmentDetails() {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API + "/department")
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
+    //advance search of employee
+    advanceSearchComplaintDetails(advSearchComplaints) {
+        if (null != Cookies.get('empId')) {
+            return axios.post(BASE_URL_API+"/complaint/complaint-adv-search?page=0&size=200", advSearchComplaints)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+
+    }
+
 }
 
 

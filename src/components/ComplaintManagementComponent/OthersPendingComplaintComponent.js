@@ -2,6 +2,8 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
 
 import OthersPendingComplaintService from '../../services/OthersPendingComplaintService';
+import ComplaintService from '../../services/ComplaintService';
+import { BASE_URL_API } from '../../services/EmployeeConstants';
 
 
 
@@ -10,9 +12,9 @@ export default function OthersPendingComplaintComponent() {
 
 
     const [compId, setCompId] = useState('');
-    
+    const [isSuccess, setIsSuccess] = useState(true)
     const [compTypeDeptId, setCompTypeDeptId] = useState('');
-
+    const [empCompIdSearch, setEmpCompIdSearch] = useState();
     const [compStatus, setCompStatus] = useState('');
     const [compDate, setCompDate] = useState('');
     const [compResolveDate, setCompResolveDate] = useState('');
@@ -43,6 +45,13 @@ export default function OthersPendingComplaintComponent() {
 
     const [departments, setDepartments] = useState([])
 
+    const [compFromDate, setCompFromDate] = useState('')
+    const [compToDate, setCompToDate] = useState('')
+    const [asCompDeptId, setAsCompDeptId] = useState('')
+    const [asCompId, setAsCompId] = useState('')
+    const [asCompStatus, setAsCompStatus] = useState('')
+    const [empCompDeptId, setEmpCompDeptId] = useState('')
+    
     //loading all department and roles while page loading at first time
     useEffect(() => {
         OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
@@ -50,7 +59,38 @@ export default function OthersPendingComplaintComponent() {
             console.log(res.data.responseData.content)
         });
 
+        OthersPendingComplaintService.getAllDepartmentDetails().then((res) => {
+            setDepartments(res.data);
+        });
+
+
     }, []);
+
+
+    const handleDepartmentChange = (value) => {
+        if (value == "Select Department") {
+            value = null;
+        }
+        setEmpCompDeptId(value)
+    }
+
+     // Advance search employee
+     const advSearchEmployeeComplaints = (e) => {
+        let empId = null;
+        let asCompStatus = 'Pending';
+        let asCompTypeDeptId= Cookies.get('deptId')
+
+        e.preventDefault()
+        let advComplaintSearch = {compFromDate, compToDate, empId,empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
+
+        OthersPendingComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
+            setComplaints(res.data.responseData.content);
+            console.log("Site added");
+        }
+        );
+    }
+
+
 
 
     const getComplaintById = (e) => {
@@ -83,19 +123,35 @@ export default function OthersPendingComplaintComponent() {
             setRemark(complaint.remark)
         }
         );
-       
+
+    }
+
+    const searchComplaintById = (e) => {
+        setEmpCompIdSearch(e.target.value)
+
+        OthersPendingComplaintService.getEmployeeCompaintsByComplaintId(e.target.value).then((res) => {
+
+            if (res.data.success) {
+                setIsSuccess(true);
+                setComplaints(res.data.responseData.content);
+                // setEmployees(res.data.responseData.content?.filter((item) => item.roleId !== 1));
+            }
+            else {
+                setIsSuccess(false);
+            }
+        });
     }
 
 
     const updateComplaint = (e) => {
 
         e.preventDefault()
-        let compStatus= "In Progress";
+        let compStatus = "In Progress";
         let compResolveEmpId = Cookies.get('empId');
-        let compResolveEmpName = Cookies.get('empFirstName') +" "+  Cookies.get('empMiddleName')+" "+ Cookies.get('empLastName');
+        let compResolveEmpName = Cookies.get('empFirstName') + " " + Cookies.get('empMiddleName') + " " + Cookies.get('empLastName');
         let compResolveEmpEId = Cookies.get('empEId');
 
-        let complaint = { empCompId, compStatus, compResolveEmpId,compResolveEmpName,compResolveEmpEId };
+        let complaint = { empCompId, compStatus, compResolveEmpId, compResolveEmpName, compResolveEmpEId };
 
         OthersPendingComplaintService.updateComplaintDetails(complaint).then(res => {
             OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
@@ -108,7 +164,8 @@ export default function OthersPendingComplaintComponent() {
 
     }
 
-    
+
+   
 
 
 
@@ -116,13 +173,29 @@ export default function OthersPendingComplaintComponent() {
 
         <div>
             <div className="row">
-                <h2 className="text-center">Other's Pending Complaint List</h2>
-                <div className="col-md-1"></div>
-                <div className="col-md-9">
-                    <div className="row">
 
-                      
+
+                <h2 className="text-center">Other's Pending Complaint List</h2>
+
+                <div className="col-md-11">
+                
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <div className="form-group">
+                                <form className="form-horizontal">
+                                    <label className="control-label col-sm-2" htmlFor="empCompIdSearch">Enter Complaint Id:</label>
+                                    <div className="col-sm-2">
+                                        <input type="text" className="form-control" id="empCompIdSearch" placeholder="Enter Complaint Id" value={empCompIdSearch} onChange={(e) => searchComplaintById(e)} />
+                                    </div>
+                                    <div className="col-sm-7" align="right">
+                                    <button type="button" className="btn btn-primary col-sm-offset-1" data-toggle="modal" data-target="#advanceSearchEmployee">Advance Search</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
                     </div>
+
                     <div className="row">
 
                         <table className="table table-bordered">
@@ -142,7 +215,7 @@ export default function OthersPendingComplaintComponent() {
                                     <th className="text-center">Complaint Date</th>
                                     <th className="text-center">Complaint Type</th>
                                     <th className="text-center">Complaint Status</th>
-                                    
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -168,7 +241,7 @@ export default function OthersPendingComplaintComponent() {
 
 
 
-                                                
+
                                             </tr>
                                     )
                                 }
@@ -180,6 +253,83 @@ export default function OthersPendingComplaintComponent() {
                 <div className="col-md-2"></div>
 
             </div>
+
+            
+
+            {/* Modal for Advance search for employe comlaint details */}
+            <div className="modal fade" id="advanceSearchEmployee" role="dialog">
+                <form className="form-horizontal">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                                <h4 className="modal-title">Advance Search Complaint</h4>
+                            </div>
+                            <div className="modal-body">
+
+                                <div className="form-group">
+
+                                    <div className="row">
+                                        <label className="control-label col-sm-4" htmlFor="regionName">Complaint Statrt Date:</label>
+                                        <div className="col-sm-5">
+                                            <div className="form-group">
+                                                <input type="date" className="form-control" id="compFromDate" defaultValue={compFromDate} name="compFromDate" onChange={(e) => setCompFromDate(e.target.value)} />                                 </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <label className="control-label col-sm-4" htmlFor="regionName">Comlaint End Date:</label>
+                                        <div className="col-sm-5">
+                                            <div className="form-group">
+                                                <input type="date" className="form-control" id="compToDate" defaultValue={compToDate} name="compToDate" onChange={(e) => setCompToDate(e.target.value)} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                    <div className="row">
+                                        <label className="control-label col-sm-4" htmlFor="regionName">Department Name:</label>
+                                        <div className="col-sm-5">
+                                            <div className="form-group">
+                                                <select className="form-control" id="asDeptId" defaultValue={null} onChange={(e) => handleDepartmentChange(e.target.value)}>
+                                                    <option>Select Department</option>
+                                                    {
+                                                        departments.map(
+                                                            department =>
+                                                                <option key={department.deptId} value={department.deptId}>{department.deptName}</option>
+                                                        )
+                                                    };
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+                            </div>
+                            <div className="modal-footer">
+
+                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={(e) => advSearchEmployeeComplaints(e)}>Search</button>
+
+                               
+                                <a href={BASE_URL_API + `/complaint/download-employee-complaint?compFromDate=${compFromDate}&compToDate=${compToDate}&empCompDeptId=${empCompDeptId}&asCompTypeDeptId=${Cookies.get('deptId')}&empCompId=${asCompId}&asCompStatus=Pending`}>
+                                    <button type="button" className="btn btn-success col-sm-offset-1 "> Download</button>
+                                </a>
+                                <button type="button" className="btn btn-danger col-sm-offset-1" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+
 
             {/* Modal for update user details */}
             <div className="modal fade" id="updateDepartment" role="dialog">
@@ -220,109 +370,109 @@ export default function OthersPendingComplaintComponent() {
 
 
             {/* Modal for show data when user click on view button */}
-                       {/* Modal for show data when user click on view button */}
-                       <div className="modal fade" id="showData" role="dialog">
-                       <div className="modal-dialog modal-lg">
-       
-                           <div className="modal-content">
-                               <div className="modal-header">
-                                   <button type="button" className="close" data-dismiss="modal">&times;</button>
-                                   <h4 className="modal-title">Complaint Details</h4>
-                               </div>
-                               <div className="modal-body">
-                                   <form className="form-horizontal">
-       
-       
-                                       <div> <input type="hidden" id="empCompId" name="deptId" value={empCompId} /></div>
-                                       <div className="form-group">
-                                           <label className="control-label col-sm-3" htmlFor="compId" >Complaint Id:</label>
-                                           <div className="col-sm-3">
-                                               {compId}
-                                           </div>
-                                       </div>
-       
-                                       <div className="form-group">
-                                           <label className="control-label col-sm-3" htmlFor="empName" >Employee Name:</label>
-                                           <div className="col-sm-8">
-                                               {empName}
-                                           </div>
-                                       </div>
+            {/* Modal for show data when user click on view button */}
+            <div className="modal fade" id="showData" role="dialog">
+                <div className="modal-dialog modal-lg">
 
-                                       <div className="form-group">
-                                       <label className="control-label col-sm-3" htmlFor="empName" >Employee ID:</label>
-                                       <div className="col-sm-8">
-                                           {empEId}
-                                       </div>
-                                   </div>
-       
-       
-       
-                                       <div className="form-group">
-                                           <label className="control-label col-sm-3" htmlFor="empName" >Mobile Number:</label>
-                                           <div className="col-sm-3">
-                                               {empMobileNo}
-                                           </div>
-                                       </div>
-       
-       
-                                       <div className="form-group">
-                                           <label className="control-label col-sm-3" htmlFor="empName" >Role Name:</label>
-                                           <div className="col-sm-3">
-                                               {roleName}
-                                           </div>
-                                       </div>
-       
-       
-                                       <div className="form-group">
-                                           <label className="control-label col-sm-3" htmlFor="empName" >Department Name:</label>
-                                           <div className="col-sm-3">
-                                               {deptName}
-                                           </div>
-                                       </div>
-       
-       
-                                       <div className="form-group">
-                                           <label className="control-label col-sm-3" htmlFor="empName" >Designation Name:</label>
-                                           <div className="col-sm-8">
-                                               {desigName}
-                                           </div>
-                                       </div>
-       
-                                       <div className="form-group">
-                                           <label className="control-label col-sm-3" htmlFor="deptName" >Complaint Type Name:</label>
-                                           <div className="col-sm-8">
-                                               {compTypeName}
-                                           </div>
-                                       </div>
-       
-                                       <div className="form-group">
-                                           <label className="control-label col-sm-3" htmlFor="deptName" >Complaint Start Date:</label>
-                                           <div className="col-sm-8">
-                                               {compDate}
-                                           </div>
-                                       </div>
-       
-       
-                                       <div className="form-group">
-                                           <label className="control-label col-sm-3" htmlFor="reamrk" >Complaint Description :</label>
-                                           <div className="col-sm-8">
-                                               {compDesc}
-                                           </div>
-                                       </div>
-       
-                                      
-       
-                                   </form>
-                               </div>
-                               <div className="modal-footer">
-                                   <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => updateComplaint(e)} > Assign To Me</button>
-                                   <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
-                               </div>
-                           </div>
-       
-                       </div>
-                   </div>
-        
-                  </div>
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal">&times;</button>
+                            <h4 className="modal-title">Complaint Details</h4>
+                        </div>
+                        <div className="modal-body">
+                            <form className="form-horizontal">
+
+
+                                <div> <input type="hidden" id="empCompId" name="deptId" value={empCompId} /></div>
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="compId" >Complaint Id:</label>
+                                    <div className="col-sm-3">
+                                        {compId}
+                                    </div>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="empName" >Employee Name:</label>
+                                    <div className="col-sm-8">
+                                        {empName}
+                                    </div>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="empName" >Employee ID:</label>
+                                    <div className="col-sm-8">
+                                        {empEId}
+                                    </div>
+                                </div>
+
+
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="empName" >Mobile Number:</label>
+                                    <div className="col-sm-3">
+                                        {empMobileNo}
+                                    </div>
+                                </div>
+
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="empName" >Role Name:</label>
+                                    <div className="col-sm-3">
+                                        {roleName}
+                                    </div>
+                                </div>
+
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="empName" >Department Name:</label>
+                                    <div className="col-sm-3">
+                                        {deptName}
+                                    </div>
+                                </div>
+
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="empName" >Designation Name:</label>
+                                    <div className="col-sm-8">
+                                        {desigName}
+                                    </div>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="deptName" >Complaint Type Name:</label>
+                                    <div className="col-sm-8">
+                                        {compTypeName}
+                                    </div>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="deptName" >Complaint Start Date:</label>
+                                    <div className="col-sm-8">
+                                        {compDate}
+                                    </div>
+                                </div>
+
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="reamrk" >Complaint Description :</label>
+                                    <div className="col-sm-8">
+                                        {compDesc}
+                                    </div>
+                                </div>
+
+
+
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => updateComplaint(e)} > Assign To Me</button>
+                            <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     );
 }

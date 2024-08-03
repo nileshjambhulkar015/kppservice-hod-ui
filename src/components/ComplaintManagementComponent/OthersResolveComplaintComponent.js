@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
 import OthersResolveComplaintService from '../../services/OthersResolveComplaintService';
+import { BASE_URL_API } from '../../services/EmployeeConstants';
 
 
 
@@ -35,13 +36,23 @@ export default function OthersResolveComplaintComponent() {
     const [desigName, setDesigName] = useState('');
     const [compResolveEmpName, setCompResolveEmpName] = useState('');
     const [compResolveEmpEId, setCompResolveEmpEId] = useState('');
-    
+
+
+    const [empCompIdSearch, setEmpCompIdSearch] = useState();
+    const [isSuccess, setIsSuccess] = useState(true)
 
     const [complaints, setComplaints] = useState([])
 
     const [complaintTypes, setComplaintTypes] = useState([])
 
     const [departments, setDepartments] = useState([])
+
+    const [compFromDate, setCompFromDate] = useState('')
+    const [compToDate, setCompToDate] = useState('')
+    const [asDeptId, setAsDeptId] = useState('')
+    const [asCompId, setAsCompId] = useState('')
+    const [asCompTypeDeptId, setAsCompTypeDeptId] = useState('')
+    const [empCompDeptId, setEmpCompDeptId] = useState('')
 
     //loading all department and roles while page loading at first time
     useEffect(() => {
@@ -50,8 +61,45 @@ export default function OthersResolveComplaintComponent() {
             console.log(res.data.responseData.content)
         });
 
+        OthersResolveComplaintService.getAllDepartmentDetails().then((res) => {
+            setDepartments(res.data);
+        });
+
+
     }, []);
 
+
+    const handleDepartmentChange = (value) => {
+        if (value == "Select Department") {
+            value = null;
+        }
+        setEmpCompDeptId(value)
+    }
+
+
+
+    // Advance search employee
+    const advSearchEmployeeComplaints = (e) => {
+        let asCompResolveEmpId = Cookies.get('empId');
+        
+        let asCompStatus = 'Resolved';
+        let asCompTypeDeptId = Cookies.get('deptId')
+
+        let empId="";
+        e.preventDefault()
+        let advComplaintSearch = { empId,compFromDate, compToDate, asCompResolveEmpId, empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
+
+        OthersResolveComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
+            if (res.data.success) {              
+                setIsSuccess(true);
+                setComplaints(res.data.responseData.content);
+            }
+            else {
+                setIsSuccess(false);
+            }
+        }
+        );
+    }
 
     const getComplaintById = (e) => {
 
@@ -83,11 +131,33 @@ export default function OthersResolveComplaintComponent() {
             setRemark(complaint.remark)
             setCompResolveEmpName(complaint.compResolveEmpName);
             setCompResolveEmpEId(complaint.compResolveEmpEId);
-            
+
         }
         );
 
     }
+
+
+    const searchComplaintById = (e) => {
+        setEmpCompIdSearch(e.target.value)
+
+        OthersResolveComplaintService.getEmployeeCompaintsByComplaintId(e.target.value).then((res) => {
+
+            if (res.data.success) {
+                setIsSuccess(true);
+                setComplaints(res.data.responseData.content);
+                // setEmployees(res.data.responseData.content?.filter((item) => item.roleId !== 1));
+            }
+            else {
+                setIsSuccess(false);
+            }
+        });
+    }
+
+
+
+
+
 
 
     const updateComplaint = (e) => {
@@ -122,14 +192,28 @@ export default function OthersResolveComplaintComponent() {
         <div>
             <div className="row">
                 <h2 className="text-center">Resolve Complaint List</h2>
-             
-                <div className="col-md-12">
+
+                <div className="col-md-11">
                     <div className="row">
+                        <div className="col-sm-12">
+                            <div className="form-group">
+                                <form className="form-horizontal">
+                                    <label className="control-label col-sm-2" htmlFor="empCompIdSearch">Enter Complaint Id:</label>
+                                    <div className="col-sm-2">
+                                        <input type="text" className="form-control" id="empCompIdSearch" placeholder="Enter Complaint Id" value={empCompIdSearch} onChange={(e) => searchComplaintById(e)} />
 
+                                    </div>
+                                    <div className="col-sm-7" align="right">
+                                        <button type="button" className="btn btn-primary col-sm-offset-1" data-toggle="modal" data-target="#advanceSearchEmployee">Advance Search</button>
+                                    </div>
+                                </form>
 
+                            </div>
+                        </div>
                     </div>
-                    <div className="row">
 
+                    <div className="row">
+                    {isSuccess?
                         <table className="table table-bordered">
                             <thead>
                                 <tr>
@@ -178,12 +262,88 @@ export default function OthersResolveComplaintComponent() {
                                 }
                             </tbody>
                         </table>
+                        :<h1>No Data Found</h1>}
                     </div>
 
                 </div>
-               
+
 
             </div>
+
+
+            {/* Modal for Advance search for employe comlaint details */}
+            <div className="modal fade" id="advanceSearchEmployee" role="dialog">
+                <form className="form-horizontal">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                                <h4 className="modal-title">Advance Search Complaint</h4>
+                            </div>
+                            <div className="modal-body">
+
+                                <div className="form-group">
+
+                                    <div className="row">
+                                        <label className="control-label col-sm-4" htmlFor="regionName">Complaint Statrt Date:</label>
+                                        <div className="col-sm-5">
+                                            <div className="form-group">
+                                                <input type="date" className="form-control" id="compFromDate" defaultValue={compFromDate} name="compFromDate" onChange={(e) => setCompFromDate(e.target.value)} />                                 </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <label className="control-label col-sm-4" htmlFor="regionName">Comlaint End Date:</label>
+                                        <div className="col-sm-5">
+                                            <div className="form-group">
+                                                <input type="date" className="form-control" id="compToDate" defaultValue={compToDate} name="compToDate" onChange={(e) => setCompToDate(e.target.value)} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                    <div className="row">
+                                        <label className="control-label col-sm-4" htmlFor="regionName">Department Name:</label>
+                                        <div className="col-sm-5">
+                                            <div className="form-group">
+                                                <select className="form-control" id="asDeptId" defaultValue={null} onChange={(e) => handleDepartmentChange(e.target.value)}>
+                                                    <option>Select Department</option>
+                                                    {
+                                                        departments.map(
+                                                            department =>
+                                                                <option key={department.deptId} value={department.deptId}>{department.deptName}</option>
+                                                        )
+                                                    };
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+                            </div>
+                            <div className="modal-footer">
+
+                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={(e) => advSearchEmployeeComplaints(e)}>Search</button>
+
+                                <a href={BASE_URL_API + `/complaint/download-employee-complaint?compFromDate=${compFromDate}&compToDate=${compToDate}&asCompResolveEmpId=${Cookies.get('empId')}&empCompDeptId=${empCompDeptId}&asCompTypeDeptId=${Cookies.get('deptId')}&empCompId=${asCompId}&asCompStatus=Resolved`}>
+                                    <button type="button" className="btn btn-success col-sm-offset-1 "> Download</button>
+                                </a>
+                                <button type="button" className="btn btn-danger col-sm-offset-1" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+
 
             {/* Modal for show data when user click on view button */}
             <div className="modal fade" id="showData" role="dialog">
@@ -281,7 +441,7 @@ export default function OthersResolveComplaintComponent() {
                                     </div>
                                 </div>
 
-                                
+
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="hodKppStatus">Resolved By Employee Name:</label>
                                     <div className="col-sm-3">
@@ -289,7 +449,7 @@ export default function OthersResolveComplaintComponent() {
                                     </div>
                                 </div>
 
-                                
+
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="hodKppStatus">Resolved By Employee Id:</label>
                                     <div className="col-sm-3">

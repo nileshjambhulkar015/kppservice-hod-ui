@@ -76,7 +76,7 @@ export default function MyComplaintComponent() {
     }, []);
 
     const clearSearchData = () => {
-        
+
         ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
@@ -139,6 +139,7 @@ export default function MyComplaintComponent() {
 
 
     const saveComplaintDetails = (e) => {
+
         e.preventDefault()
         let statusCd = 'A';
         let employeeId = Cookies.get('empId')
@@ -153,15 +154,19 @@ export default function MyComplaintComponent() {
         ComplaintService.saveComplaintDetails(complaint).then(res => {
             console.log("res=", res.data)
             ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                setComplaints(res.data.responseData.content);
-
-                setRemark('');
+                if (res.data.success) {
+                    setIsSuccess(true);
+                    setComplaints(res.data.responseData.content);
+                }
+                else {
+                    setIsSuccess(false);
+                }
 
             });
-            console.log("Department added");
+
         }
         );
-        // window.location.reload(); 
+
     }
 
     const getComplaintById = (e) => {
@@ -186,14 +191,30 @@ export default function MyComplaintComponent() {
 
 
     const deleteDepartmentById = (e) => {
-        ComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
-            ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                setComplaints(res.data.responseData.content);
-                console.log(res.data.responseData.content)
+
+        if (window.confirm("Do you want to delete this complaint ?")) {
+            ComplaintService.getComplaintById(e).then(res => {
+                let complaint = res.data;
+                setEmpCompId(complaint.empCompId)
+
+                ComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
+                    ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+                        if (res.data.success) {
+                            setIsSuccess(true);
+                            setComplaints(res.data.responseData.content);
+                        }
+                        else {
+                            setIsSuccess(false);
+                        }
+                    });
+                    console.log("Department deleted");
+                }
+                );
             });
-            console.log("Department deleted");
+        } else {
+            // User clicked Cancel
+            console.log("User canceled the action.");
         }
-        );
     }
 
     const updateComplaint = (e) => {
@@ -299,8 +320,8 @@ export default function MyComplaintComponent() {
                                                     <td>{complaint.compStatus}</td>
 
 
-                                                    <td> <button type="submit" className="btn btn-info" data-toggle="modal" data-target="#updateDepartment" onClick={() => getComplaintById(complaint.empCompId)}>Update</button>
-                                                        <button type="submit" className="btn col-sm-offset-1 btn-danger" onClick={() => deleteDepartmentById(complaint.empCompId)}>Delete</button>
+                                                    <td> <button type="submit" className="btn btn-info" data-toggle="modal" disabled={complaint?.compStatus === "Resolved"} data-target="#updateDepartment" onClick={() => getComplaintById(complaint.empCompId)}>Update</button>
+                                                        <button type="submit" className="btn col-sm-offset-1 btn-danger" disabled={complaint?.compStatus === "Resolved"} onClick={() => deleteDepartmentById(complaint.empCompId)}>Delete</button>
                                                         <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => getComplaintById(complaint.empCompId)}>View</button></td>
                                                 </tr>
                                         )

@@ -61,7 +61,7 @@ export default function MeetingMasterComponent() {
     }
 
     const cancelMeeting = (e) => {
-
+        if (window.confirm("Do you want to assign this meeting ?")) {
         MeetingMasterService.getMeetingById(e).then(res => {
             let ExsitingMeeting = res.data;
           
@@ -80,7 +80,10 @@ export default function MeetingMasterComponent() {
         }
         );
     });
-
+} else {
+    // User clicked Cancel
+    console.log("User canceled the action.");
+}
     }
 
 
@@ -119,12 +122,12 @@ export default function MeetingMasterComponent() {
 
         <div>
             <div className="row">
-                <h2 className="text-center">Meeting List</h2>
+                <h2 className="text-center">Meeting / News List</h2>
 
                 <div className="col-md-12">
                     <div className="row">
                         <div className="col-sm-11" align="right">
-                            <button type="button" className="btn btn-primary " data-toggle="modal" data-target="#saveMeeting">Add Meeting</button>
+                            <button type="button" className="btn btn-primary " data-toggle="modal" data-target="#saveMeeting">Add Meeting / News</button>
 
                         </div>
                     </div>
@@ -165,7 +168,7 @@ export default function MeetingMasterComponent() {
                                                 <td>
                                                 
                                                     <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => showMeetingById(meeting.meetId)}>View</button>
-                                                    <button type="submit" className="btn col-sm-offset-1 btn-danger" onClick={() => cancelMeeting(meeting.meetId)}>Cancel</button></td>
+                                                    <button type="submit" className="btn col-sm-offset-1 btn-danger" disabled={meeting?.meetStatus === "Cancel"} onClick={() => cancelMeeting(meeting.meetId)}>Cancel</button></td>
                                             </tr>
                                     )
                                 }
@@ -182,7 +185,7 @@ export default function MeetingMasterComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal">&times;</button>
-                                <h4 className="modal-title">Add Department</h4>
+                                <h4 className="modal-title">Add Meeting / News</h4>
                             </div>
                             <div className="modal-body">
                                 <form className="form-horizontal">

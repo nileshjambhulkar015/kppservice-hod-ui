@@ -16,6 +16,7 @@ import OthersPendingComplaintComponent from './components/ComplaintManagementCom
 import OthersResolveComplaintComponent from './components/ComplaintManagementComponent/OthersResolveComplaintComponent';
 import OthersInProgressComplaintComponent from './components/ComplaintManagementComponent/OthersInProgressComplaintComponent';
 import MeetingMasterComponent from './components/MeetingMasterComponent/MeetingMasterComponent';
+import UpdateDoBComponent from './components/UpdateDoBComponent/UpdateDoBComponent';
 
 function App() {
   //remove cookies when click on logout
@@ -74,7 +75,7 @@ function App() {
           <li><Link to="/viewAllEmployeeByHODId">View All Employee</Link></li>
           <li><Link to="/meetingMaster">Meeting Master</Link></li>
           <li><Link to="/viewProfile">View Profile</Link></li>
-            
+          <li><Link to="/updateDOB">Update Date of Birth</Link></li>  
           <li><Link to="/changePassword">Change Password</Link></li>
           
           </ul>
@@ -101,6 +102,7 @@ function App() {
         <Route exact path="/othersInProgressComplaint" element={<OthersInProgressComplaintComponent />}></Route>
         <Route exact path="/othersResolveComplaint" element={<OthersResolveComplaintComponent />}></Route>
         <Route exact path="/meetingMaster" element={<MeetingMasterComponent />}></Route>
+        <Route exact path="/updateDOB" element={<UpdateDoBComponent />}></Route>
       </Routes>
     </BrowserRouter>
   );

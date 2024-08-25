@@ -87,7 +87,7 @@ export default function OthersPendingComplaintComponent() {
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
-                
+
             }
             else {
                 setIsSuccess(false);
@@ -150,29 +150,32 @@ export default function OthersPendingComplaintComponent() {
 
 
     const updateComplaint = (e) => {
+        if (window.confirm("Do you want to assign this complaint ?")) {
+            e.preventDefault()
+            let compStatus = "In Progress";
+            let compResolveEmpId = Cookies.get('empId');
+            let compResolveEmpName = Cookies.get('empFirstName') + " " + Cookies.get('empMiddleName') + " " + Cookies.get('empLastName');
+            let compResolveEmpEId = Cookies.get('empEId');
 
-        e.preventDefault()
-        let compStatus = "In Progress";
-        let compResolveEmpId = Cookies.get('empId');
-        let compResolveEmpName = Cookies.get('empFirstName') + " " + Cookies.get('empMiddleName') + " " + Cookies.get('empLastName');
-        let compResolveEmpEId = Cookies.get('empEId');
+            let complaint = { empCompId, compStatus, compResolveEmpId, compResolveEmpName, compResolveEmpEId };
 
-        let complaint = { empCompId, compStatus, compResolveEmpId, compResolveEmpName, compResolveEmpEId };
+            OthersPendingComplaintService.updateComplaintDetails(complaint).then(res => {
+                OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+                    setComplaints(res.data.responseData.content?.filter((item) => item.compStatus == 'Pending'));
 
-        OthersPendingComplaintService.updateComplaintDetails(complaint).then(res => {
-            OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                setComplaints(res.data.responseData.content?.filter((item) => item.compStatus == 'Pending'));
-
-            });
-            console.log("Complaint added");
+                });
+                console.log("Complaint added");
+            }
+            );
+        } else {
+            // User clicked Cancel
+            console.log("User canceled the action.");
         }
-        );
-
     }
 
 
     const clearSearchData = () => {
-        
+
         OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
@@ -218,57 +221,57 @@ export default function OthersPendingComplaintComponent() {
                     </div>
 
                     <div className="row">
-                    {isSuccess?
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th className="text-center">Sr No</th>
-                                    <th className="text-center">Action</th>
-                                    <th className="text-center">Complaint No</th>
+                        {isSuccess ?
+                            <table className="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th className="text-center">Sr No</th>
+                                        <th className="text-center">Action</th>
+                                        <th className="text-center">Complaint No</th>
 
-                                    <th className="text-center">Employee Name</th>
-                                    <th className="text-center">Employee ID</th>
-                                    <th className="text-center">Role</th>
-                                    <th className="text-center">Department</th>
-                                    <th className="text-center">Designation</th>
-
-
-                                    <th className="text-center">Complaint Date</th>
-                                    <th className="text-center">Complaint Type</th>
-                                    <th className="text-center">Complaint Status</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    complaints.map(
-                                        (complaint, index) =>   //index is inbuilt variable of map started with 0
-                                            <tr key={complaint.empCompId}>
-                                                <td className="text-center">{index + 1}</td>
-                                                <td> <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => getComplaintById(complaint.empCompId)}>View</button></td>
-                                                <td>{complaint.compId}</td>
+                                        <th className="text-center">Employee Name</th>
+                                        <th className="text-center">Employee ID</th>
+                                        <th className="text-center">Role</th>
+                                        <th className="text-center">Department</th>
+                                        <th className="text-center">Designation</th>
 
 
-                                                <td>{complaint.empName}</td>
-                                                <td>{complaint.empEId}</td>
-                                                <td>{complaint.roleName}</td>
-                                                <td>{complaint.deptName}</td>
-                                                <td>{complaint.desigName}</td>
+                                        <th className="text-center">Complaint Date</th>
+                                        <th className="text-center">Complaint Type</th>
+                                        <th className="text-center">Complaint Status</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        complaints.map(
+                                            (complaint, index) =>   //index is inbuilt variable of map started with 0
+                                                <tr key={complaint.empCompId}>
+                                                    <td className="text-center">{index + 1}</td>
+                                                    <td> <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => getComplaintById(complaint.empCompId)}>View</button></td>
+                                                    <td>{complaint.compId}</td>
 
 
-                                                <td>{complaint.compDate}</td>
-                                                <td>{complaint.compTypeName}</td>
-                                                <td>{complaint.compStatus}</td>
+                                                    <td>{complaint.empName}</td>
+                                                    <td>{complaint.empEId}</td>
+                                                    <td>{complaint.roleName}</td>
+                                                    <td>{complaint.deptName}</td>
+                                                    <td>{complaint.desigName}</td>
+
+
+                                                    <td>{complaint.compDate}</td>
+                                                    <td>{complaint.compTypeName}</td>
+                                                    <td>{complaint.compStatus}</td>
 
 
 
 
-                                            </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                        :<h1>No Data Found</h1>}
+                                                </tr>
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                            : <h1>No Data Found</h1>}
                     </div>
 
                 </div>

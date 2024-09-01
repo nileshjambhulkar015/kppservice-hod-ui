@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import Cookies from 'js-cookie';
 import EmployeeKppsService from '../../services/EmployeeKppsService';
-import { BASE_URL_API } from '../../services/EmployeeConstants';
+import { BASE_URL_API } from '../../services/URLConstants';
 
 const EmplyeeUpdateKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');

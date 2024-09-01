@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import CumulativeService from "../../services/CumulativeService";
-import { BASE_URL_API } from "../../services/EmployeeConstants";
+import { BASE_URL_API } from "../../services/URLConstants";
 export default function HODCumulativeKppComponent() {
 
     const navigate = useNavigate();

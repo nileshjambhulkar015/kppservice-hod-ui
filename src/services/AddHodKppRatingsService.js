@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { KPP_API_BASE_URL, LOGIN_UI_BASE_URL } from "./HodConstants";
-import { BASE_URL_API } from "./EmployeeConstants";
+import { BASE_URL_API } from "./URLConstants";
 
 class AddHodKppRatingsService {
 

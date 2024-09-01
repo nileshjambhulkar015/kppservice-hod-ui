@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import EmployeeKppsService from '../../services/EmployeeKppsService';
 import Cookies from 'js-cookie';
-import { BASE_URL_API } from '../../services/EmployeeConstants';
+import { BASE_URL_API } from '../../services/URLConstants';
 
 const AddHodKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');

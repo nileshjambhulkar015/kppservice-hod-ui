@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
-import {  BASE_URL_API, KPP_API_BASE_URL, LOGIN_UI_BASE_URL } from "./EmployeeConstants";
+import {  BASE_URL_API, KPP_API_BASE_URL, LOGIN_UI_BASE_URL } from "./URLConstants";
 
 class EmployeeKppsService {
 

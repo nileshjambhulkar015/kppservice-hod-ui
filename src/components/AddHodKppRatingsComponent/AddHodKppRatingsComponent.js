@@ -121,7 +121,8 @@ const AddHodKppRatingsComponent = () => {
                         EmployeeKppsService.saveEmployeeKppDetails(payload).then(res => {
                             if (res.data.success) {
                                 alert(res.data.responseMessage);
-                                EmployeeKppsService.getKPPDetails().then((res) => {
+                              //  EmployeeKppsService.getKPPDetails().then((res) => {
+                                EmployeeKppsService.getHODKPPDetails().then((res) => {
                                     setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
                                     setKppMasterResponses(res.data);
                                     setEmpRemark(res.data.empRemark)

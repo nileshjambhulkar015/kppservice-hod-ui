@@ -38,20 +38,30 @@ const AddHodKppRatingsComponent = () => {
 
     const sumTotalOverAllAchive = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallAchieve), 0);
-        setTotalOverAllAchive(sum)
-        return sum;
+        const totalKpps=kppDetailsResponses?.length || 1;
+        setTotalOverAllAchive((sum/totalKpps).toFixed(1))
+        return (sum/totalKpps).toFixed(1);
     }
     const sumTotalOverallTaskComp = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empOverallTaskComp), 0);
-        setTotalOverallTaskComp(sum)
-        return sum;
+        const totalKpps=kppDetailsResponses?.length || 1;
+        setTotalOverallTaskComp((sum/totalKpps).toFixed(1))
+        return (sum/totalKpps).toFixed(1);
     }
 
     useEffect(() => {
      
         EmployeeKppsService.getHODKPPDetails().then((res) => {
            
-            setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))           
+            if('null'!=res.data.ekppMonth){
+                setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
+             } else{
+                const newDate = new Date();           
+                // Format to YYYY-MM-DD
+                const formattedDate = newDate.toISOString().split('T')[0];            
+                setEkppMonth(formattedDate);
+               
+             }         
             setKppMasterResponses(res.data);
             setEmpRemark(res.data.empRemark)
             setKppDetailsResponses(res.data.kppStatusDetails)

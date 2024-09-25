@@ -59,13 +59,15 @@ const EmplyeeUpdateKppRatingsComponent = () => {
 
     const sumHodTotalOverallAchieve = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodOverallAchieve), 0);
-        setHodTotalOverallAchieve(sum)
-        return sum;
+        const totalKpps=kppDetailsResponses?.length || 1;
+        setHodTotalOverallAchieve((sum/totalKpps).toFixed(1))
+        return (sum/totalKpps).toFixed(1);
     }
     const sumHodTotalOverallTaskComp = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.hodOverallTaskComp), 0);
-        setHodTotalOverallTaskComp(sum)
-        return sum;
+        const totalKpps=kppDetailsResponses?.length || 1;
+        setHodTotalOverallTaskComp((sum/totalKpps).toFixed(1))
+        return (sum/totalKpps).toFixed(1);
     }
 
     return (

@@ -17,6 +17,8 @@ const AddHodKppRatingsComponent = () => {
     const [selectedFile, setSelectedFile] = useState()
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
+    const [totalOverallRatings, setTotalOverallRatings] = useState();
+    const [totalOverallPercentage, setTotalOverallPercentage] = useState();
 
     const YYYY_MM_DD_Formater = (date, format = 'YYYY-MM-DD') => {
         const t = new Date(date)
@@ -34,6 +36,20 @@ const AddHodKppRatingsComponent = () => {
         return sum;
     }
 
+
+    const getAvgTotalOverallRatings = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.overallRatings || 0), 0).toFixed(1);
+        const totalKpps=kppDetailsResponses?.length || 1;
+        setTotalOverallRatings((sum/totalKpps).toFixed(1))
+        return (sum/totalKpps).toFixed(1);
+    }
+
+    const getAvgTotalOverallPercetage = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.overallPercentage || 0), 0).toFixed(1);
+        const totalKpps=kppDetailsResponses?.length || 1;
+        setTotalOverallPercentage((sum/totalKpps).toFixed(1))
+        return (sum/totalKpps).toFixed(1);
+    }
 
 
     const sumTotalOverAllAchive = (empKpps) => {
@@ -121,13 +137,16 @@ const AddHodKppRatingsComponent = () => {
                     fields: kppDetailsResponses,
                     totalAchivedWeightage: 0,
                     totalOverAllAchive: 0,
-                    totalOverallTaskCompleted: 0
+                    totalOverallTaskCompleted: 0,
+                    totalOverallRatings: 0,
+                    totalOverallPercentage: 0,
+        
                 }}
                     enableReinitialize={true}
                     onSubmit={(values) => {
                         let ekppStatus = "In-Progress";
                         let evidence = "evidence";
-                        const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": totalAchivedWeight, "totalOverAllAchive": totalOverAllAchive, "totalOverallTaskCompleted": totalOverallTaskComp, ekppMonth, ekppStatus, empRemark, evidence };
+                        const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": totalAchivedWeight, "totalOverAllAchive": totalOverAllAchive, "totalOverallTaskCompleted": totalOverallTaskComp, "totalOverallRatings":totalOverallRatings,"totalOverallPercentage":totalOverallPercentage,ekppMonth, ekppStatus, empRemark, evidence };
                         EmployeeKppsService.saveEmployeeKppDetails(payload).then(res => {
                             if (res.data.success) {
                                 alert(res.data.responseMessage);
@@ -141,20 +160,15 @@ const AddHodKppRatingsComponent = () => {
                             } else{
                                 alert(res.data.responseMessage);
                             }});
-                            /*EmployeeKppsService.getHODKPPDetails().then((res) => {
-                                setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
-                                setKppMasterResponses(res.data);
-                                setEmpRemark(res.data.empRemark)
-                                setKppDetailsResponses(res.data.kppStatusDetails)
-                            });*/
+                          
                       
                     }}>
                     {({ values, setFieldValue }) => {
-
-                        const handleTodoChange = (e, i, kppId, kppOverallWeightage, empOverallTaskComp, kppRating1) => {
-                            console.log("e.target.value : ", e.target.value)
+                        const handleTodoChange = (e, i, kppId, kppOverallWeightage, gmOverallAchieve) => {
+                        
+                            
                             const field = e.target.name?.split(".")[1];
-                            console.log("kppDetailsResponses[i].empOverallTaskComp =", empOverallTaskComp)
+                            
 
                             kppDetailsResponses[i] = {
 
@@ -169,6 +183,10 @@ const AddHodKppRatingsComponent = () => {
                                 "desigId": Cookies.get('desigId'),
                                 "empOverallTaskComp": field === "empOverallAchieve" && !!e.target.value ? (Number(e.target.value) / 5 * 100).toFixed(1) : 0,
                                 "empAchivedWeight": field === "empOverallAchieve" && !!e.target.value ? ((kppOverallWeightage * (Number(e.target.value) / 5 * 100).toFixed(1)) / 100).toFixed(1) : 0,
+                                "overallRatings": field === "empOverallAchieve" && !!e.target.value ?  ((Number(gmOverallAchieve)+(Number(e.target.value)))  / 2).toFixed(1) : 0,
+                                "overallPercentage": field === "empOverallAchieve" && !!e.target.value ? ((((Number(gmOverallAchieve)+(Number(e.target.value)))  / 2)/5)*100).toFixed(1) : 0,
+                                
+
                                 "ekppMonth": ekppMonth,
                                 [field]: parseInt(e.target.value || 0),
                             }
@@ -176,6 +194,9 @@ const AddHodKppRatingsComponent = () => {
                             setFieldValue("totalOverAllAchive", sumTotalOverAllAchive(kppDetailsResponses));
                             setFieldValue("totalOverallTaskCompleted", sumTotalOverallTaskComp(kppDetailsResponses));
 
+                            setFieldValue("totalOverallRatings", getAvgTotalOverallRatings(kppDetailsResponses));
+                            setFieldValue("totalOverallPercentage", getAvgTotalOverallPercetage(kppDetailsResponses));
+                           
 
                             setFieldValue("fields", kppDetailsResponses)
                         };
@@ -206,6 +227,9 @@ const AddHodKppRatingsComponent = () => {
                                             <th rowSpan={2} className="text-center">GM Achived Weightage</th>
                                             <th rowSpan={2} className="text-center">GM Ratings</th>
                                             <th rowSpan={2} className="text-center">GM Overall Task Completed</th>
+                                            
+                                            <th rowSpan={2} className="text-center">Overall Ratings</th>
+                                            <th rowSpan={2} className="text-center">Overall Rating in %</th>
                                             <th colSpan={5} className="text-center">RATING RATIO COULD BE CHANGED AS PER TARGETS</th>
                                         </tr>
                                         <tr className="text-center">
@@ -242,10 +266,9 @@ const AddHodKppRatingsComponent = () => {
                                                             min={0}
                                                             max={5}
                                                             defaultValue={values?.fields?.[index]?.empOverallAchieve}
-
-                                                            onKeyDown={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, values?.fields?.[index]?.empOverallTaskComp, kppResponse.kppRating1)}
-                                                            onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, values?.fields?.[index]?.empOverallTaskComp, kppResponse.kppRating1)}
-                                                        />
+                                                            onKeyDown={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, kppResponse.gmOverallAchieve)}
+                                                            onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, kppResponse.gmOverallAchieve)}
+                                                       />
                                                     </td>
                                                     <td>
                                                         <input type="text" className="form-control" name={`${index}.empOverallTaskComp`} value={values?.fields?.[index]?.empOverallTaskComp} disabled />
@@ -254,6 +277,13 @@ const AddHodKppRatingsComponent = () => {
                                                     <td className='text-center'>{kppResponse.gmAchivedWeight}</td>
                                                     <td className='text-center'>{kppResponse.gmOverallAchieve}</td>
                                                     <td className='text-center'>{kppResponse.gmOverallTaskComp}</td>
+                                                    <td>
+                                                    <input type="text" className="form-control" name={`${index}.overallRatings`} value={values?.fields?.[index]?.overallRatings} disabled />
+                                                </td>
+                                                  <td>
+                                                        <input type="text" className="form-control" name={`${index}.overallPercentage`} value={values?.fields?.[index]?.overallPercentage} disabled />
+                                                    </td>
+                                                  
                                                     <td className='text-center'>{kppResponse.kppRating1}</td>
                                                     <td className='text-center'>{kppResponse.kppRating2}</td>
                                                     <td className='text-center'>{kppResponse.kppRating3}</td>
@@ -274,13 +304,14 @@ const AddHodKppRatingsComponent = () => {
                                             <td className='text-center'> <label className="control-label text-right">{values?.totalOverAllAchive === 0 ? sumTotalOverAllAchive(values?.fields) : values?.totalOverAllAchive}</label></td>
                                             <td className='text-center'> <label className="control-label text-right">{values?.totalOverallTaskCompleted === 0 ? sumTotalOverallTaskComp(values?.fields) : values?.totalOverallTaskCompleted}</label></td>
 
-                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalHodAchivedWeight}</label></td>
-                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalHodOverallAchieve}</label></td>
-                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalHodOverallTaskComp}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmAchivedWeight}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmOverallAchieve}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmOverallTaskComp}</label></td>
 
+                                            
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalOverallRatings === 0 ? getAvgTotalOverallRatings(values?.fields) : values?.totalOverallRatings}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalOverallPercentage === 0 ? getAvgTotalOverallPercetage(values?.fields) : values?.totalOverallPercentage}</label></td>
+                                          
                                         </tr>
                                     </tbody>
                                 </table>

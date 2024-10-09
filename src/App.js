@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import React from "react";
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import AddHodKppRatingsComponent from "./components/AddHodKppRatingsComponent/AddHodKppRatingsComponent";
-import AllEmployeeKppStatusComponent from "./components/AllEmployeeKppStatusComponent/AllEmployeeKppStatusComponent";
+import AllEmployeeKppStatusComponent from "./components/EmplyeeUpdateKppRatingsComponent/AllEmployeeKppStatusComponent"
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import EmplyeeUpdateKppRatingsComponent from "./components/EmplyeeUpdateKppRatingsComponent/EmplyeeUpdateKppRatingsComponent";
 import HODCumulativeKppComponent from './components/HODCumulativeKppComponent/HODCumulativeKppComponent';

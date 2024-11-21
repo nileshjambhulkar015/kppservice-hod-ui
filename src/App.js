@@ -5,10 +5,11 @@ import AddHodKppRatingsComponent from "./components/AddHodKppRatingsComponent/Ad
 import AllEmployeeKppStatusComponent from "./components/EmplyeeUpdateKppRatingsComponent/AllEmployeeKppStatusComponent"
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import EmplyeeUpdateKppRatingsComponent from "./components/EmplyeeUpdateKppRatingsComponent/EmplyeeUpdateKppRatingsComponent";
-import HODCumulativeKppComponent from './components/HODCumulativeKppComponent/HODCumulativeKppComponent';
-import ViewAllEmployeeCumulativeComponent from './components/ViewAllEmployeeCumulativeComponent/ViewAllEmployeeCumulativeComponent';
-import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
-import SingleEmployeeCumulativeComponent from './components/SingleEmployeeCumulativeComponent/SingleEmployeeCumulativeComponent';
+
+
+import ViewAllEmployeeCumulativeComponent from './components/CumulativeComponent/ViewAllEmployeeCumulativeComponent';
+import SingleEmployeeCumulativeComponent from './components/CumulativeComponent/SingleEmployeeCumulativeComponent';
+
 import HODAllEmployeeComponent from './components/HODAllEmployeeComponent/HODAllEmployeeComponent';
 
 import MyComplaintComponent from './components/ComplaintManagementComponent/MyComplaintComponent';
@@ -18,6 +19,8 @@ import OthersInProgressComplaintComponent from './components/ComplaintManagement
 import MeetingMasterComponent from './components/MeetingMasterComponent/MeetingMasterComponent';
 import UpdateDoBComponent from './components/UpdateDoBComponent/UpdateDoBComponent';
 import AnnouncementComponent from "./components/AnnouncementComponent/AnnouncementComponent";
+import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
+import HODCumulativeKppComponent from './components/CumulativeComponent/HODCumulativeKppComponent';
 
 function App() {
   //remove cookies when click on logout

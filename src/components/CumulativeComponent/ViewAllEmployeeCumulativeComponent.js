@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import CumulativeService from "../../services/CumulativeService";
 import EmployeeKppsService from "../../services/EmployeeKppsService";
+import PaginationComponent from '../PaginationComponent/PaginationComponent';
 export default function ViewAllEmployeeCumulativeComponent() {
 
     const navigate = useNavigate();
@@ -17,34 +18,66 @@ export default function ViewAllEmployeeCumulativeComponent() {
     const [avgCummulativeRatings, setAvgCummulativeRatings] = useState()
 
     const [employees, setEmployees] = useState([])
+    const [responseMessage, setResponseMessage] = useState('')
+    const [isSuccess, setIsSuccess] = useState(true)
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [dataPageable, setDataPageable] = useState([])
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Handle data fetching or any other logic here
+    };
+
+    // Handle items per page change
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page when items per page changes
+    };
 
     useEffect(() => {
-        CumulativeService.getOverallEmployeeCumulative().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        CumulativeService.getOverallEmployeeCumulative(data).then((res) => {
             if (res.data.success) {
-                setEmployees(res.data.responseData);
+                setIsSuccess(true);
+                setEmployees(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
-                alert("Kpp is not approved for month");
+                setIsSuccess(false);
+                setResponseMessage(res.data.responseMessage)
+               
             }
 
         }).catch((err) => {
             alert(err.response.data.details)
         });
 
-    }, []);
+    }, [currentPage, itemsPerPage]);
 
 
     const getKPPDetailsByDate = (e) => {
-        CumulativeService.getOverallEmployeeCumulativeByDates(fromDate, toDate).then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage,
+            fromDate, 
+            toDate
+        }
+        CumulativeService.getOverallEmployeeCumulativeByDates(data).then((res) => {
             if (res.data.success) {
-                setEmployees(res.data.responseData);
+                setIsSuccess(true);
+                setEmployees(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             } else {
-                alert("Kpp is not found for month");
+                setIsSuccess(false);
+                setResponseMessage(res.data.responseMessage)
+                
 
             }
-
-
-        });
+        }, [currentPage, itemsPerPage]);
 
     }
 
@@ -65,7 +98,7 @@ export default function ViewAllEmployeeCumulativeComponent() {
 
     return (
         <div className="row">
-            <h3 className="text-center">View KPP</h3>
+            <h3 className="text-center">View Cumulative KPP for Employee</h3>
             <div className="form-group">
                 <form className="form-horizontal" enctype="multipart/form-data">
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> From Date:</label>
@@ -83,6 +116,7 @@ export default function ViewAllEmployeeCumulativeComponent() {
 
 
             <div className="col-sm-8">
+            {isSuccess ?
                 <table className="table table-bordered">
                     <thead>
                         <tr>
@@ -126,6 +160,13 @@ export default function ViewAllEmployeeCumulativeComponent() {
                     </tbody>
 
                 </table>
+                : <h4>{responseMessage}</h4>}
+                <PaginationComponent
+                    currentPage={currentPage}
+                    totalPages={dataPageable.totalPages || 10}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                />
             </div>
 
 

@@ -4,6 +4,7 @@ import CumulativeService from "../../services/CumulativeService";
 import { BASE_URL_API } from "../../services/URLConstants";
 import EmployeeService from "../../services/EmployeeService";
 import Cookies from 'js-cookie';
+import PaginationComponent from "../PaginationComponent/PaginationComponent";
 export default function SingleEmployeeCumulativeComponent() {
 
     const navigate = useNavigate();
@@ -30,13 +31,33 @@ export default function SingleEmployeeCumulativeComponent() {
     const [desigId, setDesigId] = useState('');
     const [desigName, setDesigName] = useState('');
   
+    const [responseMessage, setResponseMessage] = useState('')
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [dataPageable, setDataPageable] = useState([])
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Handle data fetching or any other logic here
+    };
+
+    // Handle items per page change
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page when items per page changes
+    };
 
     function clearDates(){
         document.getElementById("fromDate").value = "";
         document.getElementById("toDate").value = "";
     }
     const loadCumulativeData = ()=>{
-        CumulativeService.getSingleEmployeeKppReportDetailsByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        CumulativeService.getSingleEmployeeKppReportDetailsByPaging(data).then((res) => {
 
 
             if (res.data.success) {
@@ -49,10 +70,49 @@ export default function SingleEmployeeCumulativeComponent() {
                 setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
 
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+                setDataPageable(res.data.responseData);
             }
             else {
                 setIsSuccess(false);
 
+            }
+
+        }).catch((err) => {
+            alert(err.response.data.details)
+        }, [currentPage, itemsPerPage]);
+
+        EmployeeService.searchEmployeeById(Cookies.get('viewSingleEmpIdForKppRatings')).then((res)=>{
+            setEmpId(res.data.empId)
+            setEmpEId(res.data.empEId)
+            setEmpName(res.data.empFirstName +' '+res.data.empMiddleName+' '+res.data.empLastName )
+            setRoleName(res.data.roleName)
+            setDeptName(res.data.deptName)
+            setDesigName(res.data.desigName)
+        });
+
+    }
+
+
+    useEffect(() => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        CumulativeService.getSingleEmployeeKppReportDetailsByPaging(data).then((res) => {
+            if (res.data.success) {
+                setIsSuccess(true);
+                setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
+                setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
+                setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
+                setCummulativeRatings(res.data.responseData.cummulativeRatings)
+                setTotalMonths(res.data.responseData.totalMonths)
+                setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
+                setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+                setDataPageable(res.data.responseData);
+            }
+            else {
+                setIsSuccess(false);
+                setResponseMessage(res.data.responseMessage)
             }
 
         }).catch((err) => {
@@ -68,16 +128,17 @@ export default function SingleEmployeeCumulativeComponent() {
             setDesigName(res.data.desigName)
         });
 
-    }
-
-
-    useEffect(() => {
-        loadCumulativeData();
-    }, []);
+    }, [currentPage, itemsPerPage]);
 
 
     const getKPPDetailsByDate = (e) => {
-        CumulativeService.getSingleEmployeeKppReportByDates(fromDate, toDate).then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage,
+            fromDate, 
+            toDate
+        }
+        CumulativeService.getSingleEmployeeKppReportByDates(data).then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
@@ -87,13 +148,12 @@ export default function SingleEmployeeCumulativeComponent() {
                 setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
                 setTotalMonths(res.data.responseData.totalMonths)
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+                setDataPageable(res.data.responseData);
             } else {
                 setIsSuccess(false);
-
+                setResponseMessage(res.data.responseMessage)
             }
-
-
-        });
+        }, [currentPage, itemsPerPage]);
 
     }
 
@@ -252,7 +312,13 @@ export default function SingleEmployeeCumulativeComponent() {
                     </tbody>
 
                 </table>
-                :<h1>No Data Found</h1>}
+                : <h4>{responseMessage}</h4>}
+                <PaginationComponent
+                    currentPage={currentPage}
+                    totalPages={dataPageable.totalPages || 10}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                />
             </div>
 
 

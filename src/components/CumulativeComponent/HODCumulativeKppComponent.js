@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import CumulativeService from "../../services/CumulativeService";
 import { BASE_URL_API } from "../../services/URLConstants";
+import PaginationComponent from "../PaginationComponent/PaginationComponent";
 export default function HODCumulativeKppComponent() {
 
     const navigate = useNavigate();
@@ -17,9 +18,29 @@ export default function HODCumulativeKppComponent() {
     const [avgCummulativeRatings, setAvgCummulativeRatings] = useState()
 
     const [employees, setEmployees] = useState([])
+    const [responseMessage, setResponseMessage] = useState('')
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [dataPageable, setDataPageable] = useState([])
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Handle data fetching or any other logic here
+    };
+
+    // Handle items per page change
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page when items per page changes
+    };
 
     useEffect(() => {
-        CumulativeService.getEmployeeKppReportDetailsByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        CumulativeService.getEmployeeKppReportDetailsByPaging(data).then((res) => {
 
 
             if (res.data.success) {
@@ -30,10 +51,11 @@ export default function HODCumulativeKppComponent() {
                 setCummulativeRatings(res.data.responseData.cummulativeRatings)
                 setTotalMonths(res.data.responseData.totalMonths)
                 setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
-
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
 
@@ -41,11 +63,17 @@ export default function HODCumulativeKppComponent() {
             alert(err.response.data.details)
         });
 
-    }, []);
+    }, [currentPage, itemsPerPage]);
 
 
     const getKPPDetailsByDate = (e) => {
-        CumulativeService.getEmployeeKppReportByDates(fromDate, toDate).then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage,
+            fromDate, 
+            toDate
+        }
+        CumulativeService.getEmployeeKppReportByDates(data).then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
@@ -55,13 +83,14 @@ export default function HODCumulativeKppComponent() {
                 setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
                 setTotalMonths(res.data.responseData.totalMonths)
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+                setDataPageable(res.data.responseData);
             } else {
                 setIsSuccess(false);
-
+                setResponseMessage(res.data.responseMessage)
             }
 
 
-        });
+        }, [currentPage, itemsPerPage]);
 
     }
 
@@ -77,7 +106,7 @@ export default function HODCumulativeKppComponent() {
 
     return (
         <div className="row">
-            <h3 className="text-center">View KPP</h3>
+            <h3 className="text-center">View Cumulative KPP for HOD</h3>
             <div className="form-group">
                 <form className="form-horizontal" enctype="multipart/form-data">
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> From Date:</label>
@@ -163,7 +192,14 @@ export default function HODCumulativeKppComponent() {
                         </tr>
                     </tbody>
 
-                </table>  : <h4>Cumulative KPP result not available</h4>}
+                </table> 
+                : <h4>{responseMessage}</h4>}
+                <PaginationComponent
+                    currentPage={currentPage}
+                    totalPages={dataPageable.totalPages || 10}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                />
             </div>
 
 

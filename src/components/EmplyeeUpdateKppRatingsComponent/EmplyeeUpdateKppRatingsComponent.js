@@ -2,17 +2,19 @@ import React, { useRef } from 'react';
 import { Form, Formik } from 'formik'
 import { useEffect } from 'react';
 import { useState } from 'react';
-
+import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import EmployeeKppsService from '../../services/EmployeeKppsService';
 import { BASE_URL_API } from '../../services/URLConstants';
 
 const EmplyeeUpdateKppRatingsComponent = () => {
+    const navigate = useNavigate();
     const [ekppMonth, setEkppMonth] = useState('');
     const [empName, setEmpName] = useState('');
     const [deptName, setDeptName] = useState('');
     const [desigName, setDesigName] = useState('');
-
+    const [empEId, setEmpEId] = useState('');
+    
     const [hodTotalAchivedWeight, setHodTotalAchivedWeight] = useState('');
     const [hodTotalOverallAchieve, setHodTotalOverallAchieve] = useState('');
     const [hodTotalOverallTaskComp, setHodTotalOverallTaskComp] = useState('');
@@ -46,12 +48,18 @@ const EmplyeeUpdateKppRatingsComponent = () => {
             setEmpName(res.data.empName);
             setDeptName(res.data.deptName);
             setDesigName(res.data.desigName);
-            
+            setEmpEId(res.data.empEId)
             setKppMasterResponses(res.data);
             setHodRemark(res.data.hodRemark)
             setKppDetailsResponses(res.data.kppStatusDetails)
         });
     }, []);
+
+    const removeCookiesAndBack = () => {
+       
+
+        navigate(`/allEmployeeKppStatus`, { replace: true })
+    }
 
     const getAvgTotalOverallRatings = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.overallRatings || 0), 0).toFixed(1);
@@ -157,6 +165,14 @@ const EmplyeeUpdateKppRatingsComponent = () => {
                                 </div>
 
                                 <div className="form-group">
+                                <label className="control-label col-sm-1"  >Employee Id :</label>
+                                <div className="col-sm-2">
+                                   {empEId}
+                                </div>
+                            </div>
+                                
+
+                                <div className="form-group">
                                 <label className="control-label col-sm-1"  >Department :</label>
                                 <div className="col-sm-2">
                                    {deptName}
@@ -174,7 +190,13 @@ const EmplyeeUpdateKppRatingsComponent = () => {
                                     <div className="col-sm-2">
                                        {ekppMonth}
                                     </div>
+                                    
+                                    <div className="form-group">
+                                    <button type="submit" className="btn btn-success col-sm-offset-8 " onClick={() => removeCookiesAndBack()}> Back</button>
+                                    </div>
                                 </div>
+
+                              
 
                                 <table className="table table-bordered" >
 
@@ -322,11 +344,12 @@ const EmplyeeUpdateKppRatingsComponent = () => {
 
                                
                                 <div className="row">
-                                    <div className="col-sm-10"></div>
-                                    <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>
+                                    <div className="col-sm-8"></div>
+                                    <div className="col-sm-4"><button type="submit" className="btn btn-success"> Submit</button>
                                        
                                     <a href={BASE_URL_API+`/report/in-progress-employee-kpp-status?empId=${Cookies.get('empIdForKppRatings')}`}>
                                     <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}> Download</button> </a>
+                                   
                                     </div>
                                 </div>
                             </Form>

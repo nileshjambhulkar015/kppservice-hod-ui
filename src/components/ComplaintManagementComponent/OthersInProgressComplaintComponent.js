@@ -450,7 +450,7 @@ export default function OthersInProgressComplaintComponent() {
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="hodKppStatus">Complaint Status:</label>
                                     <div className="col-sm-3">
-                                        <select className="form-control" id="compStatus" onChange={(e) => onComplaintStatusChangeHandler(e.target.value)} defaultValue={compStatus}>
+                                        <select className="form-control" id="compStatus" onChange={(e) => onComplaintStatusChangeHandler(e.target.value)} >
                                             <option value="Resolved">Resolved</option>
                                             <option value="Reject">Reject</option>
                                         </select>

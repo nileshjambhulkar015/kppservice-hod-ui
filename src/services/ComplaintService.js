@@ -6,13 +6,6 @@ const BASE_URL = BASE_URL_API + "/complaint";
 
 
 class ComplaintService {
-
-
-
-
-
-
-
     //at page load call all the departments load all departments
     getEmployeeCompaintsDetailsByPaging(data) {
         if (null != Cookies.get('empId')) {

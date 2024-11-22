@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import OthersPendingComplaintService from '../../services/OthersPendingComplaintService';
 import ComplaintService from '../../services/ComplaintService';
 import { BASE_URL_API } from '../../services/URLConstants';
-
+import PaginationComponent from '../PaginationComponent/PaginationComponent';
 
 
 
@@ -51,12 +51,40 @@ export default function OthersPendingComplaintComponent() {
     const [asCompId, setAsCompId] = useState('')
     const [asCompStatus, setAsCompStatus] = useState('')
     const [empCompDeptId, setEmpCompDeptId] = useState('')
+    const [responseMessage, setResponseMessage] = useState('')
 
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [dataPageable, setDataPageable] = useState([])
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Handle data fetching or any other logic here
+    };
+
+    // Handle items per page change
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page when items per page changes
+    };
     //loading all department and roles while page loading at first time
     useEffect(() => {
-        OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
+            if (res.data.success) {
+                setIsSuccess(true);
             setComplaints(res.data.responseData.content);
-            console.log(res.data.responseData.content)
+            setDataPageable(res.data.responseData);
+        }
+        else {
+            setIsSuccess(false);
+            setResponseMessage(res.data.responseMessage)
+        }
+          
         });
 
         OthersPendingComplaintService.getAllDepartmentDetails().then((res) => {
@@ -64,7 +92,7 @@ export default function OthersPendingComplaintComponent() {
         });
 
 
-    }, []);
+    }, [currentPage, itemsPerPage]);
 
 
     const handleDepartmentChange = (value) => {
@@ -82,18 +110,22 @@ export default function OthersPendingComplaintComponent() {
 
         e.preventDefault()
         let advComplaintSearch = { compFromDate, compToDate, empId, empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
-
-        OthersPendingComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
+        const data = {
+            currentPage,
+            itemsPerPage,
+            advComplaintSearch
+        }
+        OthersPendingComplaintService.advanceSearchComplaintDetails(data).then(res => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
-
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
-        }
-        );
+        }, [currentPage, itemsPerPage]);
     }
 
 
@@ -134,15 +166,21 @@ export default function OthersPendingComplaintComponent() {
 
     const searchComplaintById = (e) => {
         setEmpCompIdSearch(e.target.value)
-
-        OthersPendingComplaintService.getEmployeeCompaintsByComplaintId(e.target.value).then((res) => {
+        let empCompIdSearch=e.target.value
+        const data = {
+            currentPage,
+            itemsPerPage,
+            empCompIdSearch
+        }
+        OthersPendingComplaintService.getEmployeeCompaintsByComplaintId(data).then((res) => {
 
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
-                // setEmployees(res.data.responseData.content?.filter((item) => item.roleId !== 1));
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
         });
@@ -158,13 +196,23 @@ export default function OthersPendingComplaintComponent() {
             let compResolveEmpEId = Cookies.get('empEId');
 
             let complaint = { empCompId, compStatus, compResolveEmpId, compResolveEmpName, compResolveEmpEId };
-
+            const data = {
+                currentPage,
+                itemsPerPage
+            }
             OthersPendingComplaintService.updateComplaintDetails(complaint).then(res => {
-                OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+                OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
+                    if (res.data.success) {
+                        setIsSuccess(true);
                     setComplaints(res.data.responseData.content?.filter((item) => item.compStatus == 'Pending'));
-
-                });
-                console.log("Complaint added");
+                    setDataPageable(res.data.responseData);
+                }
+                else {
+                    setResponseMessage(res.data.responseMessage)
+                    setIsSuccess(false);
+                }
+                }, [currentPage, itemsPerPage]);
+               
             }
             );
         } else {
@@ -175,17 +223,22 @@ export default function OthersPendingComplaintComponent() {
 
 
     const clearSearchData = () => {
-
-        OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
 
-        });
+        }, [currentPage, itemsPerPage]);
 
     }
 
@@ -271,7 +324,13 @@ export default function OthersPendingComplaintComponent() {
                                     }
                                 </tbody>
                             </table>
-                            : <h1>No Data Found</h1>}
+                            : <h1>{responseMessage}</h1>}
+                            <PaginationComponent
+                            currentPage={currentPage}
+                            totalPages={dataPageable.totalPages || 10}
+                            onPageChange={handlePageChange}
+                            onItemsPerPageChange={handleItemsPerPageChange}
+                        />
                     </div>
 
                 </div>

@@ -8,9 +8,9 @@ const BASE_URL = BASE_URL_API+"/announcement";
 class AnnouncementService {
 
 
-    getAnnouncementByPaging() {
+    getAnnouncementByPaging(data) {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+"/announcement/search?statusCd=A&page=0&size=200");
+            return axios.get(BASE_URL_API+`/announcement/search?statusCd=A&page=${data.currentPage-1}&size=${data.itemsPerPage}`);
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -51,9 +51,10 @@ class AnnouncementService {
     }
 
     //advance search of employee
-    advanceSearchAnnouncementDetails(advSearchAnnouncement) {
+    advanceSearchAnnouncementDetails(data) {
         if (null != Cookies.get('empId')) {
-            return axios.post(BASE_URL+"/announ-adv-search?page=0&size=200", advSearchAnnouncement)
+            console.log(data)
+            return axios.post(BASE_URL+`/announ-adv-search?page=${data.currentPage-1}&size=${data.itemsPerPage}`, data.advComplaintSearch)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

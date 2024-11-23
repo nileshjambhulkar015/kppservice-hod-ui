@@ -19,14 +19,24 @@ class EmployeeService {
 
     }
      
-    getEmployeeDetailsByPaging() {
+    getEmployeeDetailsByPaging(data) {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+`/employee/search?reportingEmpId=${Cookies.get('empId')}&statusCd=A&page=0&size=20&sort=emp.emp_fname`);
+            return axios.get(BASE_URL_API+`/employee/search?reportingEmpId=${Cookies.get('empId')}&statusCd=A&page=${data.currentPage-1}&size=${data.itemsPerPage}&sort=emp.emp_fname`);
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
         }       
     }
+
+    getEmployeeDetailsByEmpEIdPaging(data) {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API + `/employee/search?empEId=${data.empEId}&reportingEmpId=${Cookies.get('empId')}&statusCd=A&page=${data.currentPage-1}&size=${data.itemsPerPage}&sort=emp.emp_name`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
 
     getEmployeeById(empId) {
         if (null != Cookies.get('empId')) {
@@ -36,6 +46,8 @@ class EmployeeService {
             window.location.replace(LOGIN_UI_BASE_URL);
         }        
     }
+
+    
 }
 
 

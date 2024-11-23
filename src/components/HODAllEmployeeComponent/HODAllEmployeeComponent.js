@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import EmployeeService from "../../services/EmployeeService";
+import PaginationComponent from "../PaginationComponent/PaginationComponent";
 export default function HODAllEmployeeComponent() {
     const navigate = useNavigate();
-
 
     const [companyId, setCompanyId] = useState('');
     const [empId, setEmpId] = useState('');
@@ -32,55 +32,69 @@ export default function HODAllEmployeeComponent() {
     const [empGender, setEmpGender] = useState('Male');
     const [empBloodgroup, setEmpBloodgroup] = useState('A+');
     const [remark, setRemark] = useState('');
-    const [empTypeId, setEmpTypeId] = useState('');
 
-const[empFirstNameSearch, setEmpFirstNameSearch] = useState();
-    const [compnays, setCompanys] = useState([])
-    const [regions, setRegions] = useState([])
-    const [sites, setSites] = useState([])
     const [employees, setEmployees] = useState([])
-    const [roles, setRoles] = useState([])
 
-    const [departments, setDepartments] = useState([])
-
-    const [designations, setDesignations] = useState([])
     const [isSuccess, setIsSuccess] = useState(true)
-    const [empEIdSearch, setEmpEIdSearch] = useState('');
-    const [empTypes, setEmpTypes] = useState([])
-    //for gender selection
-    const onGenderChangeHandler = (event) => {
-        setEmpGender(event);
+
+    const [responseMessage, setResponseMessage] = useState('')
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [dataPageable, setDataPageable] = useState([])
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Handle data fetching or any other logic here
     };
 
-    //for blood group selection
-    const onBloodGroupChangeHandler = (event) => {
-        setEmpBloodgroup(event);
+    // Handle items per page change
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page when items per page changes
     };
-
-
 
     useEffect(() => {
-        EmployeeService.getEmployeeDetailsByPaging().then((res) => {
-
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        EmployeeService.getEmployeeDetailsByPaging(data).then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setEmployees(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
-          
+
         });
+    }, [currentPage, itemsPerPage]);
 
+    const searchEmployeeEId = (e) => {
+        setEmpEId(e.target.value)
+        let empEId = e.target.value;
+        const data = {
+            currentPage,
+            itemsPerPage,
+            empEId
+        }
+        EmployeeService.getEmployeeDetailsByEmpEIdPaging(data).then((res) => {
+            if (res.data.success) {
+                setIsSuccess(true);
+                setEmployees(res.data.responseData.content?.filter((item) => item.roleId !== 1));
+                setDataPageable(res.data.responseData);
+            }
+            else {
+                setResponseMessage(res.data.responseMessage)
+                setIsSuccess(false);
+            }
+        }, [currentPage, itemsPerPage]);
+    }
 
-
-    }, []);;
-
-    
-
-    
     const showEmployeeById = (e) => {
-
         EmployeeService.getEmployeeById(e).then(res => {
             let employee = res.data;
             console.log(employee)
@@ -110,66 +124,73 @@ const[empFirstNameSearch, setEmpFirstNameSearch] = useState();
             setEmpGender(employee.empGender)
             setEmpBloodgroup(employee.empBloodgroup)
             setRemark(employee.remark)
-        }
-        );
-        // window.location.reload(); 
+        });
     }
-
-
 
     return (
 
 
         <div className="row">
             <h2 className="text-center">Employee List</h2>
-            <div className="col-md-1"></div>
+            <div className="col-sm-6">
+                <div className="form-group">
+                    <form className="form-horizontal">
+                        <label className="control-label col-sm-3" htmlFor="empFirstNameSearch">Enter Employee Id:</label>
+                        <div className="col-sm-4">
+                            <input type="text" className="form-control" id="empEId" placeholder="Enter Employee Id" value={empEId} onChange={(e) => searchEmployeeEId(e)} />
+                        </div>
+                    </form>
+
+                </div>
+            </div>
             <div className="col-md-10">
-            
+
                 <div className="row">
-                {isSuccess?
-                    <table className="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th className="text-center">Sr No</th>
-                                <th className="text-center">Employee Name</th>
-                                <th className="text-center">Employee Id</th>
-
-                                <th className="text-center">Department Name</th>
-                                <th className="text-center">Desig   nation Name</th>
-                                <th className="text-center">Role Name</th>
-                                <th className="text-center">Mobile No</th>
-
-                                <th className="text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                employees.map(
-                                    (employee, index) =>   //index is inbuilt variable of map started with 0
-                                        <tr key={employee.empId}>
-                                            <td className="text-center">{index + 1}</td>
-                                            <td className="text-justify">{employee.empFirstName + ' ' + employee.empMiddleName + ' ' + employee.empLastName}</td>
-                                            <td className="text-center">{employee.empEId}</td>
-
-                                            <td className="text-center">{employee.deptName}</td>
-                                            <td className="text-center">{employee.desigName}</td>
-                                            <td className="text-center">{employee.roleName}</td>
-                                            <td className="text-center">{employee.empMobileNo}</td>
-
-                                            <td className="col-sm-3 text-center"> 
-                                              
-                                                <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showEmployee" onClick={() => showEmployeeById(employee.empId)}>View</button></td>
-                                        </tr>
-                                )
-                            }
-                        </tbody>
-                    </table>
-                    :<h4>Employee Id is not available</h4>}
+                    {isSuccess ?
+                        <table className="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th className="text-center">Sr No</th>
+                                    <th className="text-center">Employee Name</th>
+                                    <th className="text-center">Employee Id</th>
+                                    <th className="text-center">Department Name</th>
+                                    <th className="text-center">Desig   nation Name</th>
+                                    <th className="text-center">Role Name</th>
+                                    <th className="text-center">Mobile No</th>
+                                    <th className="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    employees.map(
+                                        (employee, index) =>   //index is inbuilt variable of map started with 0
+                                            <tr key={employee.empId}>
+                                                <td className="text-center">{index + 1}</td>
+                                                <td className="text-justify">{employee.empFirstName + ' ' + employee.empMiddleName + ' ' + employee.empLastName}</td>
+                                                <td className="text-center">{employee.empEId}</td>
+                                                <td className="text-center">{employee.deptName}</td>
+                                                <td className="text-center">{employee.desigName}</td>
+                                                <td className="text-center">{employee.roleName}</td>
+                                                <td className="text-center">{employee.empMobileNo}</td>
+                                                <td className="col-sm-3 text-center">
+                                                    <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showEmployee" onClick={() => showEmployeeById(employee.empId)}>View</button>
+                                                </td>
+                                            </tr>
+                                    )
+                                }
+                            </tbody>
+                        </table>
+                        : <h1>{responseMessage}</h1>}
+                    <PaginationComponent
+                        currentPage={currentPage}
+                        totalPages={dataPageable.totalPages || 10}
+                        onPageChange={handlePageChange}
+                        onItemsPerPageChange={handleItemsPerPageChange}
+                    />
                 </div>
 
             </div>
             <div className="col-md-1"></div>
-
 
             {/** Display Employee by Id */}
             <div className="modal fade" id="showEmployee" role="dialog">
@@ -216,21 +237,26 @@ const[empFirstNameSearch, setEmpFirstNameSearch] = useState();
                                         <div className="col-sm-9">
                                             {empFirstName + ' ' + empMiddleName + ' ' + empLastName}
                                         </div>
-
-
                                     </div>
                                 </div>
+
+                                <div className="form-group">
+                                <div className="row">
+                                    <label className="control-label col-sm-3" htmlFor="desigId"> Employee Id:</label>
+                                    <div className="col-sm-3">
+                                        {empEId}
+                                    </div>
+                                </div>
+                            </div>
 
                                 <div className="form-group">
                                     <div className="row">
                                         <label className="control-label col-sm-2 col-sm-offset-1" htmlFor="empDob">Date Of Birth:</label>
                                         <div className="col-sm-3">
                                             {empDob}
-
                                         </div>
 
                                         <label className="control-label col-sm-2" htmlFor="empPhoto">Upload Photo:</label>
-
                                         <div className="col-sm-3">
                                             {empPhoto}
                                         </div>
@@ -247,7 +273,6 @@ const[empFirstNameSearch, setEmpFirstNameSearch] = useState();
                                         </div>
 
                                         <label className="control-label col-sm-2" htmlFor="empEmerMobileNo">Mobile No 2:</label>
-
                                         <div className="col-sm-3">
                                             {empEmerMobileNo}
                                         </div>
@@ -261,9 +286,7 @@ const[empFirstNameSearch, setEmpFirstNameSearch] = useState();
                                             {tempAddress}
                                         </div>
 
-                                        <label className="control-label col-sm-2" htmlFor="permAddress">Permenent Address:</label>
-
-                                        <div className="col-sm-3">
+                                        <label className="control-label col-sm-2" htmlFor="permAddress">Permenent Address:</label>                                        <div className="col-sm-3">
                                             {permAddress}
                                         </div>
                                     </div>

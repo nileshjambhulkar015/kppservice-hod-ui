@@ -342,9 +342,9 @@ const AddHodKppRatingsComponent = () => {
                                 </div>
                               
                                 <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="empRemark">Enter Remark:</label>
+                                    <label className="control-label col-sm-4" htmlFor="empRemark">Short description on performance, achievement, challenges faced and support needed:</label>
                                     <div className="col-sm-6">
-                                        <textarea row="5" className="form-control" id="empRemark" name="empRemark" defaultValue={empRemark} placeholder="Enter Remark here" onChange={(e) => setEmpRemark(e.target.value)} />
+                                        <textarea rows="5" className="form-control" id="empRemark" name="empRemark" defaultValue={empRemark} placeholder="Enter Remark here" onChange={(e) => setEmpRemark(e.target.value)} />
                                     </div>
                                 </div>
 

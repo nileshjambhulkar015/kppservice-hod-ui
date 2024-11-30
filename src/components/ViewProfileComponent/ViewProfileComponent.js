@@ -31,7 +31,7 @@ export default function ViewProfileComponent() {
     useEffect(() => {
         ViewProfileService.getEmployeeById(empId).then(res => {
             let employee = res.data;
-            console.log(employee)
+     
             setEmpId(employee.empId)
             setEmpEId(employee.empEId)
            setEmpTypeName(employee.empTypeName)

@@ -74,7 +74,7 @@ export default function ManageEmployeeComponent() {
     }
 
     const navigateToUpdateRating = (empId) => {
-        console.log("kpp emp Id :", empId)
+
         Cookies.set('empIdForKppRatings', empId);
         // navigate(`/updateEmployeeKpp/${empResponse.empId}`, { replace: true })
         navigate(`/updateEmployeeKpp`, { replace: true })

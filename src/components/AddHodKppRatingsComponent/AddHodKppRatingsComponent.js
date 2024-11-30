@@ -69,13 +69,16 @@ const AddHodKppRatingsComponent = () => {
      
         EmployeeKppsService.getHODKPPDetails().then((res) => {
            
-            if('null'!=res.data.ekppMonth){
+            if(null !=res.data.ekppMonth){
                 setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
              } else{
                 const newDate = new Date();           
                 // Format to YYYY-MM-DD
                 const formattedDate = newDate.toISOString().split('T')[0];            
                 setEkppMonth(formattedDate);
+
+
+
                
              }         
             setKppMasterResponses(res.data);

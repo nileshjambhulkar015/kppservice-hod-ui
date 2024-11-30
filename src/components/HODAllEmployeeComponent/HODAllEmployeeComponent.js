@@ -97,7 +97,7 @@ export default function HODAllEmployeeComponent() {
     const showEmployeeById = (e) => {
         EmployeeService.getEmployeeById(e).then(res => {
             let employee = res.data;
-            console.log(employee)
+          
             setEmpId(employee.empId)
             setEmpEId(employee.empEId)
             setRoleId(employee.roleId)

@@ -161,12 +161,14 @@ export default function ViewAllEmployeeCumulativeComponent() {
 
                 </table>
                 : <h4>{responseMessage}</h4>}
+                { employees?.length>0 && (
                 <PaginationComponent
                     currentPage={currentPage}
                     totalPages={dataPageable.totalPages || 10}
                     onPageChange={handlePageChange}
                     onItemsPerPageChange={handleItemsPerPageChange}
                 />
+                )}
             </div>
 
 

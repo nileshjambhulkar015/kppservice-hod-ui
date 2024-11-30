@@ -104,6 +104,7 @@ export default function MyComplaintComponent() {
     }, [currentPage, itemsPerPage]);
 
     const clearSearchData = () => {
+        setEmpCompIdSearch('')
         const data = {
             currentPage,
             itemsPerPage
@@ -384,12 +385,14 @@ export default function MyComplaintComponent() {
                                 </tbody>
                             </table>
                             : <h4>{responseMessage}</h4>}
+                            { complaints?.length>0 && (
                             <PaginationComponent
                                 currentPage={currentPage}
                                 totalPages={dataPageable.totalPages || 10}
                                 onPageChange={handlePageChange}
                                 onItemsPerPageChange={handleItemsPerPageChange}
                             />
+                            )}
                     </div>
 
                 </div>

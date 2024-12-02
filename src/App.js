@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import React from "react";
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import AddHodKppRatingsComponent from "./components/AddHodKppRatingsComponent/AddHodKppRatingsComponent";
+import OverallRemarkHodKppRatingsComponent from "./components/AddHodKppRatingsComponent/OverallRemarkHodKppRatingsComponent";
 import AllEmployeeKppStatusComponent from "./components/EmplyeeUpdateKppRatingsComponent/AllEmployeeKppStatusComponent"
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import EmplyeeUpdateKppRatingsComponent from "./components/EmplyeeUpdateKppRatingsComponent/EmplyeeUpdateKppRatingsComponent";
@@ -59,7 +60,7 @@ function App() {
    
             <li><Link to="/viewHoDCumulativeKpp">View HOD Cumulative Kpp</Link></li>
             <li><Link to="/viewEmployeeCumulativeKpp">View Employee Cumulative Kpp</Link></li>
-        
+        <li><Link to="/overallRemarkHODKpp">Add Overall Feedback</Link></li>
             </ul>
           </li>
 
@@ -105,6 +106,7 @@ function App() {
         <Route exact path="/othersPendingComplaint" element={<OthersPendingComplaintComponent />}></Route>
         <Route exact path="/othersInProgressComplaint" element={<OthersInProgressComplaintComponent />}></Route>
         <Route exact path="/othersResolveComplaint" element={<OthersResolveComplaintComponent />}></Route>
+        <Route exact path="/overallRemarkHODKpp" element={<OverallRemarkHodKppRatingsComponent />}></Route>
         <Route exact path="/meetingMaster" element={<MeetingMasterComponent />}></Route>
         <Route exact path="/updateDOB" element={<UpdateDoBComponent />}></Route>
         <Route exact path="/announcement" element={<AnnouncementComponent />}></Route>

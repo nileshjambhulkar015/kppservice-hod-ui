@@ -61,13 +61,15 @@ const OverallRemarkHodKppRatingsComponent = () => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallAchieve), 0);
         const totalKpps=kppDetailsResponses?.length || 1;
         setTotalOverAllAchive((sum/totalKpps).toFixed(1))
-        return (sum/totalKpps).toFixed(1);
+        return (sum).toFixed(1);
+        //return (sum/totalKpps).toFixed(1);
     }
     const sumTotalOverallTaskComp = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empOverallTaskComp), 0);
         const totalKpps=kppDetailsResponses?.length || 1;
         setTotalOverallTaskComp((sum/totalKpps).toFixed(1))
-        return (sum/totalKpps).toFixed(1);
+        return (sum).toFixed(1);
+        //return (sum/totalKpps).toFixed(1);
     }
 
     useEffect(() => {
@@ -81,7 +83,7 @@ const OverallRemarkHodKppRatingsComponent = () => {
             setFinYear(res.data.finYear)
         });
      
-        EmployeeKppsService.getHODKPPDetails().then((res) => {
+        EmployeeKppsService.getHODKPPDetailsYearly().then((res) => {
            
             if(null !=res.data.ekppMonth){
                 setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
@@ -239,7 +241,7 @@ const OverallRemarkHodKppRatingsComponent = () => {
 
                                     <thead>
                                         <tr>
-                                            <td colSpan={21} className="text-center"><h3>EMPLOYEE-WISE KEY PERFORMANCE INDICATORS (KPIs) for financial Year {finYear}</h3></td>
+                                            <td colSpan={21} className="text-center"><h3>HOD KEY PERFORMANCE INDICATORS (KPIs) for financial Year {finYear}</h3></td>
                                         </tr>
                                         <tr>
                                             <th rowSpan={2} className="text-center">Sr No</th>
@@ -248,15 +250,19 @@ const OverallRemarkHodKppRatingsComponent = () => {
                                             <th rowSpan={2} colSpan={2} className="text-center">OVERALL TARGET</th>
                                             <th rowSpan={2} className="text-center">UOM</th>
                                             <th colSpan={2} className="text-center">OVERALL WEIGHTAGE TO BE 100%</th>
-                                            <th rowSpan={2} className="text-center">OVERALL ACHIEVEMENT</th>
-                                            <th rowSpan={2} className="text-center">% OF TOTAL TASK COMPLETED</th>
+                                            <th rowSpan={2} className="text-center">SELF APPRIASEE OVERALL ACHIEVEMENT</th>
+                                            <th rowSpan={2} className="text-center">SELF APPRIASEE % OF TOTAL TASK COMPLETED</th>
 
+                                            <th rowSpan={2} className="text-center">FIRST APPRIASEE ACHIEVED WEIGHTAGE IN % </th>
+                                            <th rowSpan={2} className="text-center">FIRST APPRIASEE OVERALL ACHIEVEMENT</th>
+                                            <th rowSpan={2} className="text-center">FIRST APPRIASEE % OF TOTAL TASK COMPLETED</th>
+                                           
                                             <th rowSpan={2} className="text-center">Overall KPP Remark</th>
                                            
                                         </tr>
                                         <tr className="text-center">
                                             <th className="text-center">OVERALL WEIGHTAGE IN % </th>
-                                            <th className="text-center">ACHIEVED WEIGHTAGE IN % </th>
+                                            <th className="text-center">SELF APPRIASEE ACHIEVED WEIGHTAGE IN % </th>
                                            
                                         </tr>
 
@@ -276,6 +282,10 @@ const OverallRemarkHodKppRatingsComponent = () => {
                                                     <td className='text-center'>  {kppResponse.empOverallAchieve}</td>
                                                     <td className='text-center'> {kppResponse.empOverallTaskComp}</td>
                                                     
+                                                    <td className='text-center'>{kppResponse.gmAchivedWeight} </td>
+                                                    <td className='text-center'>  {kppResponse.gmOverallAchieve}</td>
+                                                    <td className='text-center'> {kppResponse.gmOverallTaskComp}</td>
+
                                                     <td className='col-sm-4'>
                                                     <textarea rows="5" className="form-control" id="empRemark" name="empRemark" defaultValue={empRemark} placeholder="Enter Remark here" onChange={(e) => setEmpRemark(e.target.value)} />
                                                     </td>
@@ -298,6 +308,8 @@ const OverallRemarkHodKppRatingsComponent = () => {
                                             <td className='text-center'> <label className="control-label text-right">{values?.totalOverallTaskCompleted === 0 ? sumTotalOverallTaskComp(values?.fields) : values?.totalOverallTaskCompleted}</label></td>
 
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmAchivedWeight}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmOverallAchieve}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmOverallTaskComp}</label></td>
                                             
                                         </tr>
                                     </tbody>

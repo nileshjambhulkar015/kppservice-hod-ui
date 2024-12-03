@@ -28,6 +28,17 @@ class EmployeeKppsService {
     }
 }
 
+       //get kpp details for hod updating rating of employee
+       getHODKPPDetailsYearly() {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API+`/employee-kpp-status/yearly-kpp?empId=${Cookies.get('empId')}`)
+          
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
 
 
     saveEmployeeKppDetails(todos){

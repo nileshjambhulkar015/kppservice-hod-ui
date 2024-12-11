@@ -30,8 +30,9 @@ class EmployeeKppsService {
 
        //get kpp details for hod updating rating of employee
        getHODKPPDetailsYearly() {
+       
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+`/employee-kpp-status/yearly-kpp?empId=${Cookies.get('empId')}`)
+            return axios.get(BASE_URL_API+`/employee-kpp-status/yearly-kpp?empId=${Cookies.get('empId')}&finYear=${Cookies.get('finYear')}`)
           
         } else {
             alert("You need to login first")

@@ -49,40 +49,50 @@ function App() {
           </div>
           <ul className="nav navbar-nav">
 
-            <li><Link to="/addHodKpp">Add Hod KPP</Link></li>
-            <li><Link to="/allEmployeeKppStatus">Employees KPP Status</Link></li>
-          
+
 
             <li className="dropdown">
-            <a className="dropdown-toggle" data-toggle="dropdown" href="#">Cumulative Master
-            <span className="caret"></span></a>
-            <ul className="dropdown-menu">          
-   
-            <li><Link to="/viewHoDCumulativeKpp">View HOD Cumulative Kpp</Link></li>
-            <li><Link to="/viewEmployeeCumulativeKpp">View Employee Cumulative Kpp</Link></li>
-        <li><Link to="/overallRemarkHODKpp">Add Overall Feedback</Link></li>
-            </ul>
-          </li>
+              <a className="dropdown-toggle" data-toggle="dropdown" href="#">KPP Master
+                <span className="caret"></span></a>
+              <ul className="dropdown-menu">
+                <li><Link to="/addHodKpp">Add Hod KPP</Link></li>
+                <li><Link to="/overallRemarkHODKpp">Add Overall Feedback</Link></li>
+              </ul>
+            </li>
 
-          
-         
-          <li className="dropdown">
-          <a className="dropdown-toggle" data-toggle="dropdown" href="#">Complaint Management
-            <span className="caret"></span></a>
-          <ul className="dropdown-menu">
-            <li><Link to="/myComplaint">My Complaints</Link></li>
-            <li><Link to="/othersPendingComplaint">Other's Pending Complaint</Link></li>
-            <li><Link to="/othersInProgressComplaint">Other's In Progress Complaint</Link></li>
-            <li><Link to="/othersResolveComplaint">Other's Resolve Complaint</Link></li>
-          </ul>
-        </li>
-        
-          <li><Link to="/viewAllEmployeeByHODId">View All Employee</Link></li>
-          <li><Link to="/announcement">Announcement Master</Link></li>
-          <li><Link to="/viewProfile">View Profile</Link></li>
-          <li><Link to="/updateDOB">Update Date of Birth</Link></li>  
-          <li><Link to="/changePassword">Change Password</Link></li>
-          
+            <li><Link to="/allEmployeeKppStatus">Employees KPP Status</Link></li>
+
+
+            <li className="dropdown">
+              <a className="dropdown-toggle" data-toggle="dropdown" href="#">Cumulative Master
+                <span className="caret"></span></a>
+              <ul className="dropdown-menu">
+
+                <li><Link to="/viewHoDCumulativeKpp">View HOD Cumulative Kpp</Link></li>
+                <li><Link to="/viewEmployeeCumulativeKpp">View Employee Cumulative Kpp</Link></li>
+
+              </ul>
+            </li>
+
+
+
+            <li className="dropdown">
+              <a className="dropdown-toggle" data-toggle="dropdown" href="#">Complaint Management
+                <span className="caret"></span></a>
+              <ul className="dropdown-menu">
+                <li><Link to="/myComplaint">My Complaints</Link></li>
+                <li><Link to="/othersPendingComplaint">Other's Pending Complaint</Link></li>
+                <li><Link to="/othersInProgressComplaint">Other's In Progress Complaint</Link></li>
+                <li><Link to="/othersResolveComplaint">Other's Resolve Complaint</Link></li>
+              </ul>
+            </li>
+
+            <li><Link to="/viewAllEmployeeByHODId">View All Employee</Link></li>
+            <li><Link to="/announcement">Announcement Master</Link></li>
+            <li><Link to="/viewProfile">View Profile</Link></li>
+            <li><Link to="/updateDOB">Update Date of Birth</Link></li>
+            <li><Link to="/changePassword">Change Password</Link></li>
+
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li><a href="#">Welcome: {Cookies.get('empEId')}</a></li>
@@ -91,7 +101,7 @@ function App() {
         </div>
       </nav>
       <Routes>
-      <Route exact path="/" element={<AddHodKppRatingsComponent />}></Route>
+        <Route exact path="/" element={<AddHodKppRatingsComponent />}></Route>
         <Route exact path="/addHodKpp" element={<AddHodKppRatingsComponent />}></Route>
         <Route exact path="/allEmployeeKppStatus" element={<AllEmployeeKppStatusComponent />}></Route>
         <Route exact path="/updateEmployeeKpp" element={<EmplyeeUpdateKppRatingsComponent />}></Route>

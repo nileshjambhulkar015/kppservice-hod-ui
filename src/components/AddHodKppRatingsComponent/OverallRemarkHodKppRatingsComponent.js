@@ -18,13 +18,13 @@ const OverallRemarkHodKppRatingsComponent = () => {
     const [totalEmpOverallAchieve, setTotalEmpOverallAchieve] = useState('');
     const [totalEmpOverallTaskComp, setTotalEmpOverallTaskComp] = useState('');
 
-    
+
     const [hodEmpId, setHodEmpId] = useState('');
     const [totalHodAchivedWeight, setTotalHodAchivedWeight] = useState('');
     const [totalHodOverallAchieve, setTotalHodOverallAchieve] = useState('');
     const [totalHodOverallTaskComp, setTotalHodOverallTaskComp] = useState('');
-   
-    
+
+
     const [gmEmpId, setGmEmpId] = useState('');
     const [totalGmAchivedWeight, setTotalGmAchivedWeight] = useState('');
     const [totalGmOverallAchieve, setTotalGmOverallAchieve] = useState('');
@@ -34,7 +34,7 @@ const OverallRemarkHodKppRatingsComponent = () => {
     const [totalOverallPercentage, setTotalOverallPercentage] = useState();
 
     const [empKppFeedback, setEmpKppFeedback] = useState();
-    
+
     const [totalAchivedWeight, setTotalAchivedWeight] = useState('');
     const [totalOverAllAchive, setTotalOverAllAchive] = useState('');
     const [totalOverallTaskComp, setTotalOverallTaskComp] = useState('');
@@ -42,7 +42,7 @@ const OverallRemarkHodKppRatingsComponent = () => {
     const [selectedFile, setSelectedFile] = useState()
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
- 
+
 
     const [financialYears, setFinancialYears] = useState([])
 
@@ -54,45 +54,6 @@ const OverallRemarkHodKppRatingsComponent = () => {
         return format.replace('YYYY', y).replace('MM', m).replace('DD', d)
     }
 
-
-
-    /*    const sumTotalAchivedWeight = (empKpps) => {
-            const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empAchivedWeight), 0).toFixed(1);
-            setTotalAchivedWeight(sum)
-            return sum;
-        }
-    
-    
-        const getAvgTotalOverallRatings = (empKpps) => {
-            const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.overallRatings || 0), 0).toFixed(1);
-            const totalKpps = kppDetailsResponses?.length || 1;
-            setTotalOverallRatings((sum / totalKpps).toFixed(1))
-            return (sum / totalKpps).toFixed(1);
-        }
-    
-        const getAvgTotalOverallPercetage = (empKpps) => {
-            const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.overallPercentage || 0), 0).toFixed(1);
-            const totalKpps = kppDetailsResponses?.length || 1;
-            setTotalOverallPercentage((sum / totalKpps).toFixed(1))
-            return (sum / totalKpps).toFixed(1);
-        }
-    
-    
-        const sumTotalOverAllAchive = (empKpps) => {
-            const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallAchieve), 0);
-            const totalKpps = kppDetailsResponses?.length || 1;
-            setTotalOverAllAchive((sum / totalKpps).toFixed(1))
-            return (sum).toFixed(1);
-            //return (sum/totalKpps).toFixed(1);
-        }
-        const sumTotalOverallTaskComp = (empKpps) => {
-            const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empOverallTaskComp), 0);
-            const totalKpps = kppDetailsResponses?.length || 1;
-            setTotalOverallTaskComp((sum / totalKpps).toFixed(1))
-            return (sum).toFixed(1);
-            //return (sum/totalKpps).toFixed(1);
-        }*/
-
     useEffect(() => {
 
 
@@ -100,10 +61,12 @@ const OverallRemarkHodKppRatingsComponent = () => {
         FinancialYearService.ddAllFinancialYear().then((res) => {
             setFinancialYears(res.data);
             setFinYearId(res.data?.[0].finYearId)
+            Cookies.set('finYear', res.data?.[0].finYear);
         });
 
         FinancialYearService.getFinancialYearById(1).then((res) => {
             setFinYear(res.data.finYear)
+            Cookies.set('finYear', res.data.finYear);
         });
 
         EmployeeKppsService.getHODKPPDetailsYearly().then((res) => {
@@ -123,12 +86,12 @@ const OverallRemarkHodKppRatingsComponent = () => {
             setTotalEmpAchivedWeight(res.data.totalEmpAchivedWeight)
             setTotalEmpOverallAchieve(res.data.totalEmpOverallAchieve)
             setTotalEmpOverallTaskComp(res.data.totalEmpOverallTaskComp)
-            
+
             setHodEmpId(res.data.hodEmpId)
             setTotalHodAchivedWeight(res.data.totalHodAchivedWeight)
             setTotalHodOverallAchieve(res.data.totalHodOverallAchieve)
             setTotalHodOverallTaskComp(res.data.totalHodOverallTaskComp)
-            
+
             setGmEmpId(res.data.gmEmpId)
             setTotalGmAchivedWeight(res.data.totalGmAchivedWeight)
             setTotalGmOverallAchieve(res.data.totalGmOverallAchieve)
@@ -179,10 +142,10 @@ const OverallRemarkHodKppRatingsComponent = () => {
                         let roleId = Cookies.get('roleId');
                         let deptId = Cookies.get('deptId');
                         let desigId = Cookies.get('desigId');
-                        console.log("values?.fields :", kppDetailsResponses?.totalEmpAchivedWeight)
 
-        
-                        const payload = { "kppUpdateRequests": values?.fields,"finYear":finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp,  "hodEmpId":hodEmpId,"totalHodAchivedWeight":totalHodAchivedWeight,"totalHodOverallAchieve":totalHodOverallAchieve,"totalHodOverallTaskComp":totalHodOverallTaskComp,"gmEmpId":gmEmpId,"totalGmAchivedWeight":totalGmAchivedWeight,"totalGmOverallAchieve":totalGmOverallAchieve,"totalGmOverallTaskComp":totalGmOverallTaskComp,"avgTotalOverallRating":totalOverallRatings,"avgTotalOverallPer":totalOverallPercentage,ekppMonth, ekppStatus, empRemark, evidence };
+
+
+                        const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, ekppStatus, empRemark, evidence };
 
 
                         FreezeCumulativeService.saveEmployeeKppFeedbackDetails(payload).then(res => {
@@ -214,7 +177,7 @@ const OverallRemarkHodKppRatingsComponent = () => {
                                 [field]: e.target.value || '',
 
                             }
-                         
+
 
 
 
@@ -243,7 +206,7 @@ const OverallRemarkHodKppRatingsComponent = () => {
 
                                     <thead>
                                         <tr>
-                                            <td colSpan={21} className="text-center"><h3>HOD KEY PERFORMANCE INDICATORS (KPIs) for financial Year {finYear}</h3></td>
+                                            <td colSpan={21} className="text-center"><h3>HOD KEY PERFORMANCE INDICATORS (KPIs) for FINANCIAL YEAR {finYear}</h3></td>
                                         </tr>
                                         <tr>
                                             <th rowSpan={2} className="text-center">Sr No</th>
@@ -289,16 +252,16 @@ const OverallRemarkHodKppRatingsComponent = () => {
                                                     <td className='text-center'> {kppResponse.gmOverallTaskComp}</td>
 
                                                     <td className='col-sm-4'>
-                                                        
-                                                        <textarea  rows="5" className="form-control"
-                                                        name={`${index}.empKppFeedback`}
-                                    
-                                                        defaultValue={values?.fields?.[index]?.empKppFeedback}
-                                                    
-                                                        onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.empKppFeedback)}
-                                                   />
-                                                    
-                                                        </td>
+
+                                                        <textarea rows="5" className="form-control"
+                                                            name={`${index}.empKppFeedback`}
+
+                                                            defaultValue={values?.fields?.[index]?.empKppFeedback}
+
+                                                            onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.empKppFeedback)}
+                                                        />
+
+                                                    </td>
 
 
 

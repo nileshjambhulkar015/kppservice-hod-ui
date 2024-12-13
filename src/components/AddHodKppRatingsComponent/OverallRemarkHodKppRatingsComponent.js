@@ -100,10 +100,10 @@ const OverallRemarkHodKppRatingsComponent = () => {
             //average % need to be set
             setTotalOverallRatings(res.data.totalOverallRatings)
             setTotalOverallPercentage(res.data.totalOverallPercentage)
-
-            setKppMasterResponses(res.data);
             setEmpRemark(res.data.empRemark)
-            setKppDetailsResponses(res.data.kppStatusDetails)
+
+            setKppMasterResponses(res.data.responseData);           
+            setKppDetailsResponses(res.data.responseData.kppStatusDetails)
         });
 
         EmployeeKppsService.getEvidenceFileDetails(ekppMonth).then((res) => {

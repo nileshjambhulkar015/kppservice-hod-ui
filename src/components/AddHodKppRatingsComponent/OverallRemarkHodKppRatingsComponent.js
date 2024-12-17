@@ -5,8 +5,8 @@ import { useState } from 'react';
 import EmployeeKppsService from '../../services/EmployeeKppsService';
 import Cookies from 'js-cookie';
 import { BASE_URL_API } from '../../services/URLConstants';
-import FinancialYearService from '../../services/FinancialYearService';
 import FreezeCumulativeService from '../../services/FreezeCumulativeService';
+import OverallKppFeedbackService from '../../services/OverallKppFeedbackService';
 
 const OverallRemarkHodKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
@@ -56,18 +56,13 @@ const OverallRemarkHodKppRatingsComponent = () => {
 
     useEffect(() => {
 
-
-
-        FinancialYearService.ddAllFinancialYear().then((res) => {
+        OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
             setFinancialYears(res.data);
             setFinYearId(res.data?.[0].finYearId)
+            setFinYear(res.data?.[0].finYear)
+         
             Cookies.set('finYear', res.data?.[0].finYear);
-        });
-
-        FinancialYearService.getFinancialYearById(1).then((res) => {
-            setFinYear(res.data.finYear)
-            Cookies.set('finYear', res.data.finYear);
-        });
+        });       
 
         EmployeeKppsService.getHODKPPDetailsYearly().then((res) => {
 
@@ -78,11 +73,8 @@ const OverallRemarkHodKppRatingsComponent = () => {
                 // Format to YYYY-MM-DD
                 const formattedDate = newDate.toISOString().split('T')[0];
                 setEkppMonth(formattedDate);
-
-
-
-
             }
+
             setTotalEmpAchivedWeight(res.data.totalEmpAchivedWeight)
             setTotalEmpOverallAchieve(res.data.totalEmpOverallAchieve)
             setTotalEmpOverallTaskComp(res.data.totalEmpOverallTaskComp)
@@ -143,7 +135,7 @@ const OverallRemarkHodKppRatingsComponent = () => {
                         const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, ekppStatus, empRemark, evidence };
 
 
-                        FreezeCumulativeService.saveEmployeeKppFeedbackDetails(payload).then(res => {
+                        OverallKppFeedbackService.saveEmployeeKppFeedbackDetails(payload).then(res => {
                             if (res.data.success) {
                                 alert(res.data.responseMessage);
                                 //  EmployeeKppsService.getKPPDetails().then((res) => {

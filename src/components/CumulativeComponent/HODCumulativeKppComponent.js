@@ -209,11 +209,6 @@ export default function HODCumulativeKppComponent() {
                 />
                 )}
             </div>
-
-
-
-
-
         </div>
 
     );

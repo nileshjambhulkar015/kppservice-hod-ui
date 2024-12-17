@@ -102,7 +102,7 @@ const OverallRemarkHodKppRatingsComponent = () => {
             setTotalOverallPercentage(res.data.totalOverallPercentage)
             setEmpRemark(res.data.empRemark)
 
-            setKppMasterResponses(res.data.responseData);           
+            setKppMasterResponses(res.data.responseData);
             setKppDetailsResponses(res.data.responseData.kppStatusDetails)
         });
 
@@ -122,16 +122,12 @@ const OverallRemarkHodKppRatingsComponent = () => {
             <div className="row">
                 <Formik initialValues={{
                     fields: kppDetailsResponses,
-                    totalEmpAchivedWeight: 0,
+                    totalEmpAchivedWeight: 0,  //want to set value for this
                     totalEmpOverallAchieve: 0,
                     totalEmpOverallTaskComp: 0,
                     totalOverallRatings: 0,
-                    totalOverallPercentage: 0,
-                    empId: Cookies.get('empId'),
-                    empEId: Cookies.get('empEId'),
-                    roleId: Cookies.get('roleId'),
-                    deptId: Cookies.get('deptId'),
-                    desigId: Cookies.get('desigId')
+                    totalOverallPercentage: 0
+    
                 }}
                     enableReinitialize={true}
                     onSubmit={(values) => {
@@ -141,9 +137,8 @@ const OverallRemarkHodKppRatingsComponent = () => {
                         let empEId = Cookies.get('empEId');
                         let roleId = Cookies.get('roleId');
                         let deptId = Cookies.get('deptId');
-                        let desigId = Cookies.get('desigId');
-
-
+                        let desigId = Cookies.get('desigId');  
+                    
 
                         const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, ekppStatus, empRemark, evidence };
 
@@ -172,15 +167,10 @@ const OverallRemarkHodKppRatingsComponent = () => {
 
                                 ...kppDetailsResponses[i],
 
-
                                 "empKppFeedback": empKppFeedback,
                                 [field]: e.target.value || '',
 
                             }
-
-
-
-
 
                             setFieldValue("fields", kppDetailsResponses)
                         };

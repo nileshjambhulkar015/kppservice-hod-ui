@@ -32,7 +32,7 @@ class EmployeeKppsService {
        getHODKPPDetailsYearly() {
        
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+`/employee-kpp-status/yearly-kpp?empId=${Cookies.get('empId')}&finYear=${Cookies.get('finYear')}`)
+            return axios.get(BASE_URL_API+`/employee-kpp-status/yearly-kpp?empId=${Cookies.get('empId')}&finYear=2024-25`)
           
         } else {
             alert("You need to login first")

@@ -60,9 +60,9 @@ const OverallRemarkHodKppRatingsComponent = () => {
             setFinancialYears(res.data);
             setFinYearId(res.data?.[0].finYearId)
             setFinYear(res.data?.[0].finYear)
-         
+
             Cookies.set('finYear', res.data?.[0].finYear);
-        });       
+        });
 
         EmployeeKppsService.getHODKPPDetailsYearly().then((res) => {
 
@@ -74,11 +74,11 @@ const OverallRemarkHodKppRatingsComponent = () => {
                 const formattedDate = newDate.toISOString().split('T')[0];
                 setEkppMonth(formattedDate);
             }
-console.log("res.data. : ", res.data)
-          setTotalEmpAchivedWeight(res.data.responseData.totalEmpAchivedWeight)
+
+            setTotalEmpAchivedWeight(res.data.responseData.totalEmpAchivedWeight)
             setTotalEmpOverallAchieve(res.data.responseData.totalEmpOverallAchieve)
             setTotalEmpOverallTaskComp(res.data.responseData.totalEmpOverallTaskComp)
- 
+
             setHodEmpId(res.data.responseData.hodEmpId)
             setTotalHodAchivedWeight(res.data.responseData.totalHodAchivedWeight)
             setTotalHodOverallAchieve(res.data.responseData.totalHodOverallAchieve)
@@ -119,7 +119,7 @@ console.log("res.data. : ", res.data)
                     totalEmpOverallTaskComp: 0,
                     totalOverallRatings: 0,
                     totalOverallPercentage: 0
-    
+
                 }}
                     enableReinitialize={true}
                     onSubmit={(values) => {
@@ -129,22 +129,55 @@ console.log("res.data. : ", res.data)
                         let empEId = Cookies.get('empEId');
                         let roleId = Cookies.get('roleId');
                         let deptId = Cookies.get('deptId');
-                        let desigId = Cookies.get('desigId');  
-                    
+                        let desigId = Cookies.get('desigId');
+
+                        console.log("empId: ", empId)
+
+
+                        console.log("kppDetailsResponses : ", kppDetailsResponses)
+
 
                         const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, ekppStatus, empRemark, evidence };
 
-console.log("payload : ", payload)
+                        console.log("payload : ", payload)
                         OverallKppFeedbackService.saveEmployeeKppFeedbackDetails(payload).then(res => {
                             if (res.data.success) {
                                 alert(res.data.responseMessage);
-                                //  EmployeeKppsService.getKPPDetails().then((res) => {
+
                                 EmployeeKppsService.getHODKPPDetailsYearly().then((res) => {
-                                    setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
-                                    setKppMasterResponses(res.data);
+
+                                    if (null != res.data.ekppMonth) {
+                                        setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
+                                    } else {
+                                        const newDate = new Date();
+                                        // Format to YYYY-MM-DD
+                                        const formattedDate = newDate.toISOString().split('T')[0];
+                                        setEkppMonth(formattedDate);
+                                    }
+
+                                    setTotalEmpAchivedWeight(res.data.responseData.totalEmpAchivedWeight)
+                                    setTotalEmpOverallAchieve(res.data.responseData.totalEmpOverallAchieve)
+                                    setTotalEmpOverallTaskComp(res.data.responseData.totalEmpOverallTaskComp)
+
+                                    setHodEmpId(res.data.responseData.hodEmpId)
+                                    setTotalHodAchivedWeight(res.data.responseData.totalHodAchivedWeight)
+                                    setTotalHodOverallAchieve(res.data.responseData.totalHodOverallAchieve)
+                                    setTotalHodOverallTaskComp(res.data.responseData.totalHodOverallTaskComp)
+
+                                    setGmEmpId(res.data.responseData.gmEmpId)
+                                    setTotalGmAchivedWeight(res.data.responseData.totalGmAchivedWeight)
+                                    setTotalGmOverallAchieve(res.data.responseData.totalGmOverallAchieve)
+                                    setTotalGmOverallTaskComp(res.data.responseData.totalGmOverallTaskComp)
+
+                                    //average % need to be set
+                                    setTotalOverallRatings(res.data.responseData.totalOverallRatings)
+                                    setTotalOverallPercentage(res.data.responseData.totalOverallPercentage)
                                     setEmpRemark(res.data.empRemark)
-                                    setKppDetailsResponses(res.data.kppStatusDetails)
+
+                                    setKppMasterResponses(res.data.responseData);
+                                    setKppDetailsResponses(res.data.responseData.kppStatusDetails)
                                 });
+
                             } else {
                                 alert(res.data.responseMessage);
                             }
@@ -163,6 +196,7 @@ console.log("payload : ", payload)
                                 [field]: e.target.value || '',
 
                             }
+
 
                             setFieldValue("fields", kppDetailsResponses)
                         };
@@ -204,7 +238,8 @@ console.log("payload : ", payload)
                                             <th rowSpan={2} className="text-center">FIRST APPRIASEE OVERALL ACHIEVEMENT</th>
                                             <th rowSpan={2} className="text-center">FIRST APPRIASEE % OF TOTAL TASK COMPLETED</th>
 
-                                            <th rowSpan={2} className="text-center">Overall KPP Remark</th>
+                                            <th rowSpan={2} className="text-center">Overall HOD KPP Feedback</th>
+                                            <th rowSpan={2} className="text-center">Overall GM KPP Feedback</th>
 
                                         </tr>
                                         <tr className="text-center">
@@ -235,7 +270,7 @@ console.log("payload : ", payload)
 
                                                     <td className='col-sm-4'>
 
-                                                        <textarea rows="5" className="form-control"
+                                                        <textarea rows="3" className="form-control"
                                                             name={`${index}.empKppFeedback`}
 
                                                             defaultValue={values?.fields?.[index]?.empKppFeedback}
@@ -243,11 +278,11 @@ console.log("payload : ", payload)
                                                             onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.empKppFeedback)}
                                                         />
 
+
                                                     </td>
-
-
-
-
+                                                    <td className='col-sm-4'>
+                                                        {kppResponse.gmKppFeedback}
+                                                    </td>
                                                 </tr>
                                         )}
                                         <tr className="text-justify">
@@ -269,17 +304,6 @@ console.log("payload : ", payload)
                                         </tr>
                                     </tbody>
                                 </table>
-
-
-
-
-
-
-
-
-
-
-
                                 <div className="row">
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>

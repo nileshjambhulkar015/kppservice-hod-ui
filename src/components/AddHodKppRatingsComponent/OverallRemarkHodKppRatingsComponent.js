@@ -74,24 +74,24 @@ const OverallRemarkHodKppRatingsComponent = () => {
                 const formattedDate = newDate.toISOString().split('T')[0];
                 setEkppMonth(formattedDate);
             }
+console.log("res.data. : ", res.data)
+          setTotalEmpAchivedWeight(res.data.responseData.totalEmpAchivedWeight)
+            setTotalEmpOverallAchieve(res.data.responseData.totalEmpOverallAchieve)
+            setTotalEmpOverallTaskComp(res.data.responseData.totalEmpOverallTaskComp)
+ 
+            setHodEmpId(res.data.responseData.hodEmpId)
+            setTotalHodAchivedWeight(res.data.responseData.totalHodAchivedWeight)
+            setTotalHodOverallAchieve(res.data.responseData.totalHodOverallAchieve)
+            setTotalHodOverallTaskComp(res.data.responseData.totalHodOverallTaskComp)
 
-            setTotalEmpAchivedWeight(res.data.totalEmpAchivedWeight)
-            setTotalEmpOverallAchieve(res.data.totalEmpOverallAchieve)
-            setTotalEmpOverallTaskComp(res.data.totalEmpOverallTaskComp)
-
-            setHodEmpId(res.data.hodEmpId)
-            setTotalHodAchivedWeight(res.data.totalHodAchivedWeight)
-            setTotalHodOverallAchieve(res.data.totalHodOverallAchieve)
-            setTotalHodOverallTaskComp(res.data.totalHodOverallTaskComp)
-
-            setGmEmpId(res.data.gmEmpId)
-            setTotalGmAchivedWeight(res.data.totalGmAchivedWeight)
-            setTotalGmOverallAchieve(res.data.totalGmOverallAchieve)
-            setTotalGmOverallTaskComp(res.data.totalGmOverallTaskComp)
+            setGmEmpId(res.data.responseData.gmEmpId)
+            setTotalGmAchivedWeight(res.data.responseData.totalGmAchivedWeight)
+            setTotalGmOverallAchieve(res.data.responseData.totalGmOverallAchieve)
+            setTotalGmOverallTaskComp(res.data.responseData.totalGmOverallTaskComp)
 
             //average % need to be set
-            setTotalOverallRatings(res.data.totalOverallRatings)
-            setTotalOverallPercentage(res.data.totalOverallPercentage)
+            setTotalOverallRatings(res.data.responseData.totalOverallRatings)
+            setTotalOverallPercentage(res.data.responseData.totalOverallPercentage)
             setEmpRemark(res.data.empRemark)
 
             setKppMasterResponses(res.data.responseData);
@@ -134,7 +134,7 @@ const OverallRemarkHodKppRatingsComponent = () => {
 
                         const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, ekppStatus, empRemark, evidence };
 
-
+console.log("payload : ", payload)
                         OverallKppFeedbackService.saveEmployeeKppFeedbackDetails(payload).then(res => {
                             if (res.data.success) {
                                 alert(res.data.responseMessage);

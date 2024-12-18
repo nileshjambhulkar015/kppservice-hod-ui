@@ -57,11 +57,15 @@ const OverallRemarkHodKppRatingsComponent = () => {
     useEffect(() => {
 
         OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
+            if(null != res.data && res.data.length>0){
             setFinancialYears(res.data);
-            setFinYearId(res.data?.[0].finYearId)
-            setFinYear(res.data?.[0].finYear)
-
-            Cookies.set('finYear', res.data?.[0].finYear);
+           // setFinYearId(res.data?.[0].finYearId)
+            setFinYear(res.data?.[0]?.finYear)
+            Cookies.set('overallKppFinYear', res.data?.[0].finYear);
+        } else
+        {
+            console.log("Value not set");
+        }
         });
 
         EmployeeKppsService.getHODKPPDetailsYearly().then((res) => {
@@ -75,27 +79,28 @@ const OverallRemarkHodKppRatingsComponent = () => {
                 setEkppMonth(formattedDate);
             }
 
-            setTotalEmpAchivedWeight(res.data.responseData.totalEmpAchivedWeight)
-            setTotalEmpOverallAchieve(res.data.responseData.totalEmpOverallAchieve)
-            setTotalEmpOverallTaskComp(res.data.responseData.totalEmpOverallTaskComp)
+            setFinYear(res.data.responseData?.finYear)
+            setTotalEmpAchivedWeight(res.data.responseData?.totalEmpAchivedWeight)
+            setTotalEmpOverallAchieve(res.data.responseData?.totalEmpOverallAchieve)
+            setTotalEmpOverallTaskComp(res.data.responseData?.totalEmpOverallTaskComp)
 
-            setHodEmpId(res.data.responseData.hodEmpId)
-            setTotalHodAchivedWeight(res.data.responseData.totalHodAchivedWeight)
-            setTotalHodOverallAchieve(res.data.responseData.totalHodOverallAchieve)
-            setTotalHodOverallTaskComp(res.data.responseData.totalHodOverallTaskComp)
+            setHodEmpId(res.data.responseData?.hodEmpId)
+            setTotalHodAchivedWeight(res.data.responseData?.totalHodAchivedWeight)
+            setTotalHodOverallAchieve(res.data.responseData?.totalHodOverallAchieve)
+            setTotalHodOverallTaskComp(res.data.responseData?.totalHodOverallTaskComp)
 
-            setGmEmpId(res.data.responseData.gmEmpId)
-            setTotalGmAchivedWeight(res.data.responseData.totalGmAchivedWeight)
-            setTotalGmOverallAchieve(res.data.responseData.totalGmOverallAchieve)
-            setTotalGmOverallTaskComp(res.data.responseData.totalGmOverallTaskComp)
+            setGmEmpId(res.data.responseData?.gmEmpId)
+            setTotalGmAchivedWeight(res.data.responseData?.totalGmAchivedWeight)
+            setTotalGmOverallAchieve(res.data.responseData?.totalGmOverallAchieve)
+            setTotalGmOverallTaskComp(res.data.responseData?.totalGmOverallTaskComp)
 
             //average % need to be set
-            setTotalOverallRatings(res.data.responseData.totalOverallRatings)
-            setTotalOverallPercentage(res.data.responseData.totalOverallPercentage)
-            setEmpRemark(res.data.empRemark)
+            setTotalOverallRatings(res.data.responseData?.totalOverallRatings)
+            setTotalOverallPercentage(res.data.responseData?.totalOverallPercentage)
+            setEmpRemark(res.data?.empRemark)
 
             setKppMasterResponses(res.data.responseData);
-            setKppDetailsResponses(res.data.responseData.kppStatusDetails)
+            setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
         });
 
         EmployeeKppsService.getEvidenceFileDetails(ekppMonth).then((res) => {
@@ -211,7 +216,7 @@ const OverallRemarkHodKppRatingsComponent = () => {
                                             {
                                                 financialYears.map(
                                                     financialYear =>
-                                                        <option key={financialYear.finYearId} value={financialYear.finYearId}>{financialYear.finYear}</option>
+                                                        <option key={financialYear?.finYearId} value={financialYear?.finYearId}>{financialYear?.finYear}</option>
                                                 )
                                             };
 

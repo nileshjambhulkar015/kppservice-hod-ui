@@ -100,6 +100,40 @@ const OverallkHodKppFeedbackComponent = () => {
 
     useEffect(() => {
 
+        OverallKppFeedbackService.getHODKPPDetailsYearly(finYear).then((res) => {
+            if (null != res.data.ekppMonth) {
+                setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
+            } else {
+                const newDate = new Date();
+                // Format to YYYY-MM-DD
+                const formattedDate = newDate.toISOString().split('T')[0];
+                setEkppMonth(formattedDate);
+            }
+
+            setFinYear(res.data.responseData?.finYear)
+            setTotalEmpAchivedWeight(res.data.responseData?.totalEmpAchivedWeight)
+            setTotalEmpOverallAchieve(res.data.responseData?.totalEmpOverallAchieve)
+            setTotalEmpOverallTaskComp(res.data.responseData?.totalEmpOverallTaskComp)
+
+            setHodEmpId(res.data.responseData?.hodEmpId)
+            setTotalHodAchivedWeight(res.data.responseData?.totalHodAchivedWeight)
+            setTotalHodOverallAchieve(res.data.responseData?.totalHodOverallAchieve)
+            setTotalHodOverallTaskComp(res.data.responseData?.totalHodOverallTaskComp)
+
+            setGmEmpId(res.data.responseData?.gmEmpId)
+            setTotalGmAchivedWeight(res.data.responseData?.totalGmAchivedWeight)
+            setTotalGmOverallAchieve(res.data.responseData?.totalGmOverallAchieve)
+            setTotalGmOverallTaskComp(res.data.responseData?.totalGmOverallTaskComp)
+
+            //average % need to be set
+            setTotalOverallRatings(res.data.responseData?.totalOverallRatings)
+            setTotalOverallPercentage(res.data.responseData?.totalOverallPercentage)
+            setEmpRemark(res.data?.empRemark)
+
+            setKppMasterResponses(res.data.responseData);
+            setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
+        });
+
         OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
             if(null != res.data && res.data.length>0){
             setFinancialYears(res.data);
@@ -314,6 +348,30 @@ const OverallkHodKppFeedbackComponent = () => {
                                         </tr>
                                     </tbody>
                                 </table>
+
+                                 <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="empKppStatus">Key Strengths :</label>
+                                    <div className="col-sm-6">
+                                        <label htmlFor="empKppStatus">{kppMasterResponses?.empKeyStrength}</label>
+                                    </div>
+                                </div>
+
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="gmKppStatus">Area of Improvement :</label>
+                                    <div className="col-sm-6">
+                                        <label htmlFor="empKppStatus">{kppMasterResponses?.empAreaOfImprovement}</label>
+                                    </div>
+                                </div>
+
+                                
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="gmKppStatus">Training & Development Needs :</label>
+                                    <div className="col-sm-6">
+                                        <label htmlFor="empKppStatus">{kppMasterResponses?.empTrainginDevelopmentNeeds}</label>
+                                    </div>
+                                </div>
+
                                 <div className="row">
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>

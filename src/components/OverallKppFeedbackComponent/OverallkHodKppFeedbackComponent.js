@@ -58,99 +58,63 @@ const OverallkHodKppFeedbackComponent = () => {
         setFinYear(value)
     }
 
-    const showYearlyKpp = () => {
-        console.log("Afetr change : ",finYear)
-        OverallKppFeedbackService.getHODKPPDetailsYearly(finYear).then((res) => {
-            if (null != res.data.ekppMonth) {
-                setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
-            } else {
-                const newDate = new Date();
-                // Format to YYYY-MM-DD
-                const formattedDate = newDate.toISOString().split('T')[0];
-                setEkppMonth(formattedDate);
-            }
-
-            setFinYear(res.data.responseData?.finYear)
-            setTotalEmpAchivedWeight(res.data.responseData?.totalEmpAchivedWeight)
-            setTotalEmpOverallAchieve(res.data.responseData?.totalEmpOverallAchieve)
-            setTotalEmpOverallTaskComp(res.data.responseData?.totalEmpOverallTaskComp)
-
-            setHodEmpId(res.data.responseData?.hodEmpId)
-            setTotalHodAchivedWeight(res.data.responseData?.totalHodAchivedWeight)
-            setTotalHodOverallAchieve(res.data.responseData?.totalHodOverallAchieve)
-            setTotalHodOverallTaskComp(res.data.responseData?.totalHodOverallTaskComp)
-
-            setGmEmpId(res.data.responseData?.gmEmpId)
-            setTotalGmAchivedWeight(res.data.responseData?.totalGmAchivedWeight)
-            setTotalGmOverallAchieve(res.data.responseData?.totalGmOverallAchieve)
-            setTotalGmOverallTaskComp(res.data.responseData?.totalGmOverallTaskComp)
-
-            //average % need to be set
-            setTotalOverallRatings(res.data.responseData?.totalOverallRatings)
-            setTotalOverallPercentage(res.data.responseData?.totalOverallPercentage)
-            setEmpRemark(res.data?.empRemark)
-
-            setKppMasterResponses(res.data.responseData);
-            setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
-        });
-
-       
-
-    }
-
-    useEffect(() => {
-
-        OverallKppFeedbackService.getHODKPPDetailsYearly(finYear).then((res) => {
-            if (null != res.data.ekppMonth) {
-                setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
-            } else {
-                const newDate = new Date();
-                // Format to YYYY-MM-DD
-                const formattedDate = newDate.toISOString().split('T')[0];
-                setEkppMonth(formattedDate);
-            }
-
-            setFinYear(res.data.responseData?.finYear)
-            setTotalEmpAchivedWeight(res.data.responseData?.totalEmpAchivedWeight)
-            setTotalEmpOverallAchieve(res.data.responseData?.totalEmpOverallAchieve)
-            setTotalEmpOverallTaskComp(res.data.responseData?.totalEmpOverallTaskComp)
-
-            setHodEmpId(res.data.responseData?.hodEmpId)
-            setTotalHodAchivedWeight(res.data.responseData?.totalHodAchivedWeight)
-            setTotalHodOverallAchieve(res.data.responseData?.totalHodOverallAchieve)
-            setTotalHodOverallTaskComp(res.data.responseData?.totalHodOverallTaskComp)
-
-            setGmEmpId(res.data.responseData?.gmEmpId)
-            setTotalGmAchivedWeight(res.data.responseData?.totalGmAchivedWeight)
-            setTotalGmOverallAchieve(res.data.responseData?.totalGmOverallAchieve)
-            setTotalGmOverallTaskComp(res.data.responseData?.totalGmOverallTaskComp)
-
-            //average % need to be set
-            setTotalOverallRatings(res.data.responseData?.totalOverallRatings)
-            setTotalOverallPercentage(res.data.responseData?.totalOverallPercentage)
-            setEmpRemark(res.data?.empRemark)
-
-            setKppMasterResponses(res.data.responseData);
-            setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
-        });
-
+   
+    useEffect(()=>{
         OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
             if(null != res.data && res.data.length>0){
             setFinancialYears(res.data);
-           // setFinYearId(res.data?.[0].finYearId)
             setFinYear(res.data?.[0]?.finYear)
-            Cookies.set('overallKppFinYear', res.data?.[0].finYear);
         } else
         {
             console.log("Value not set");
         }
         });
-    }, []);
+    },[]);
+
+    useEffect(() => {
+        
+      
+
+        OverallKppFeedbackService.getHODKPPDetailsYearly(finYear).then((res) => {
+            if (null != res.data.ekppMonth) {
+                setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
+            } else {
+                const newDate = new Date();
+                // Format to YYYY-MM-DD
+                const formattedDate = newDate.toISOString().split('T')[0];
+                setEkppMonth(formattedDate);
+            }
+
+           // setFinYear(res.data.responseData?.finYear)
+            setTotalEmpAchivedWeight(res.data.responseData?.totalEmpAchivedWeight)
+            setTotalEmpOverallAchieve(res.data.responseData?.totalEmpOverallAchieve)
+            setTotalEmpOverallTaskComp(res.data.responseData?.totalEmpOverallTaskComp)
+
+            setHodEmpId(res.data.responseData?.hodEmpId)
+            setTotalHodAchivedWeight(res.data.responseData?.totalHodAchivedWeight)
+            setTotalHodOverallAchieve(res.data.responseData?.totalHodOverallAchieve)
+            setTotalHodOverallTaskComp(res.data.responseData?.totalHodOverallTaskComp)
+
+            setGmEmpId(res.data.responseData?.gmEmpId)
+            setTotalGmAchivedWeight(res.data.responseData?.totalGmAchivedWeight)
+            setTotalGmOverallAchieve(res.data.responseData?.totalGmOverallAchieve)
+            setTotalGmOverallTaskComp(res.data.responseData?.totalGmOverallTaskComp)
+
+            //average % need to be set
+            setTotalOverallRatings(res.data.responseData?.totalOverallRatings)
+            setTotalOverallPercentage(res.data.responseData?.totalOverallPercentage)
+            setEmpRemark(res.data?.empRemark)
+
+            setKppMasterResponses(res.data.responseData);
+            setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
+        });
+
+    }, [finYear]);
 
 
 
 
-
+console.log("kppDetailsResponses : ", kppDetailsResponses)
     return (
         <div className='container-fluid'>
             <div className="row">
@@ -242,6 +206,7 @@ const OverallkHodKppFeedbackComponent = () => {
 
                             setFieldValue("fields", kppDetailsResponses)
                         };
+                        console.log("values : ", values)
                         return (
                             <Form className="form-horizontal">
 
@@ -259,7 +224,7 @@ const OverallkHodKppFeedbackComponent = () => {
 
                                         </select>
                                     </div>
-                                     <button type="button" className="btn btn-primary" onClick={() => showYearlyKpp()}>Search</button>
+                                  
                                 </div>
                              
                                 <table className="table table-bordered" >
@@ -295,7 +260,9 @@ const OverallkHodKppFeedbackComponent = () => {
                                     </thead>
                                     <tbody>
                                         {values?.fields?.map(
+                                        
                                             (kppResponse, index) =>
+
                                                 <tr key={kppResponse.kppId} className="text-justify">
                                                     <td className='text-center'>{index + 1}</td>
                                                     <td>{kppResponse.kppObjective}</td>
@@ -317,7 +284,7 @@ const OverallkHodKppFeedbackComponent = () => {
                                                         <textarea rows="3" className="form-control"
                                                             name={`${index}.empKppFeedback`}
 
-                                                            defaultValue={values?.fields?.[index]?.empKppFeedback}
+                                                            value={values?.fields?.[index]?.empKppFeedback|| ''}
 
                                                             onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.empKppFeedback)}
                                                         />

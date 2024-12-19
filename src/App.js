@@ -2,11 +2,11 @@ import Cookies from 'js-cookie';
 import React from "react";
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import AddHodKppRatingsComponent from "./components/AddHodKppRatingsComponent/AddHodKppRatingsComponent";
-import OverallRemarkHodKppRatingsComponent from "./components/AddHodKppRatingsComponent/OverallRemarkHodKppRatingsComponent";
+
 import AllEmployeeKppStatusComponent from "./components/EmplyeeUpdateKppRatingsComponent/AllEmployeeKppStatusComponent"
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import EmplyeeUpdateKppRatingsComponent from "./components/EmplyeeUpdateKppRatingsComponent/EmplyeeUpdateKppRatingsComponent";
-
+import OverallkHodKppFeedbackComponent from "./components/OverallKppFeedbackComponent/OverallkHodKppFeedbackComponent"
 
 import ViewAllEmployeeCumulativeComponent from './components/CumulativeComponent/ViewAllEmployeeCumulativeComponent';
 import SingleEmployeeCumulativeComponent from './components/CumulativeComponent/SingleEmployeeCumulativeComponent';
@@ -55,8 +55,8 @@ function App() {
               <a className="dropdown-toggle" data-toggle="dropdown" href="#">KPP Master
                 <span className="caret"></span></a>
               <ul className="dropdown-menu">
-                <li><Link to="/addHodKpp">Add Hod KPP</Link></li>
-                <li><Link to="/overallRemarkHODKpp">Add Overall Feedback</Link></li>
+                <li><Link to="/addHodKpp">Current Month Hod KPP</Link></li>
+                <li><Link to="/overallHODKppFeedback">Add Yearly KPP Feedback</Link></li>
               </ul>
             </li>
 
@@ -116,7 +116,7 @@ function App() {
         <Route exact path="/othersPendingComplaint" element={<OthersPendingComplaintComponent />}></Route>
         <Route exact path="/othersInProgressComplaint" element={<OthersInProgressComplaintComponent />}></Route>
         <Route exact path="/othersResolveComplaint" element={<OthersResolveComplaintComponent />}></Route>
-        <Route exact path="/overallRemarkHODKpp" element={<OverallRemarkHodKppRatingsComponent />}></Route>
+        <Route exact path="/overallHODKppFeedback" element={<OverallkHodKppFeedbackComponent />}></Route>
         <Route exact path="/meetingMaster" element={<MeetingMasterComponent />}></Route>
         <Route exact path="/updateDOB" element={<UpdateDoBComponent />}></Route>
         <Route exact path="/announcement" element={<AnnouncementComponent />}></Route>

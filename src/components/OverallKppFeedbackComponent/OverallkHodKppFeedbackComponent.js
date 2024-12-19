@@ -8,7 +8,7 @@ import { BASE_URL_API } from '../../services/URLConstants';
 import FreezeCumulativeService from '../../services/FreezeCumulativeService';
 import OverallKppFeedbackService from '../../services/OverallKppFeedbackService';
 
-const OverallRemarkHodKppRatingsComponent = () => {
+const OverallkHodKppFeedbackComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
     const [empRemark, setEmpRemark] = useState('');
     const [finYearId, setFinYearId] = useState('');
@@ -54,22 +54,13 @@ const OverallRemarkHodKppRatingsComponent = () => {
         return format.replace('YYYY', y).replace('MM', m).replace('DD', d)
     }
 
-    useEffect(() => {
+    const handleFinYearChange = (value) => {
+        setFinYear(value)
+    }
 
-        OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
-            if(null != res.data && res.data.length>0){
-            setFinancialYears(res.data);
-           // setFinYearId(res.data?.[0].finYearId)
-            setFinYear(res.data?.[0]?.finYear)
-            Cookies.set('overallKppFinYear', res.data?.[0].finYear);
-        } else
-        {
-            console.log("Value not set");
-        }
-        });
-
-        EmployeeKppsService.getHODKPPDetailsYearly().then((res) => {
-
+    const showYearlyKpp = () => {
+        console.log("Afetr change : ",finYear)
+        OverallKppFeedbackService.getHODKPPDetailsYearly(finYear).then((res) => {
             if (null != res.data.ekppMonth) {
                 setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
             } else {
@@ -103,10 +94,22 @@ const OverallRemarkHodKppRatingsComponent = () => {
             setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
         });
 
-        EmployeeKppsService.getEvidenceFileDetails(ekppMonth).then((res) => {
+       
 
-            setEvidenceFileName(res.data.responseData.evFileName);
+    }
 
+    useEffect(() => {
+
+        OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
+            if(null != res.data && res.data.length>0){
+            setFinancialYears(res.data);
+           // setFinYearId(res.data?.[0].finYearId)
+            setFinYear(res.data?.[0]?.finYear)
+            Cookies.set('overallKppFinYear', res.data?.[0].finYear);
+        } else
+        {
+            console.log("Value not set");
+        }
         });
     }, []);
 
@@ -128,28 +131,28 @@ const OverallRemarkHodKppRatingsComponent = () => {
                 }}
                     enableReinitialize={true}
                     onSubmit={(values) => {
-                        let ekppStatus = "In-Progress";
+                        let empKppStatus = "In-Progress";
                         let evidence = "evidence added";
                         let empId = Cookies.get('empId');
                         let empEId = Cookies.get('empEId');
                         let roleId = Cookies.get('roleId');
                         let deptId = Cookies.get('deptId');
                         let desigId = Cookies.get('desigId');
-
+                       
                         console.log("empId: ", empId)
 
 
                         console.log("kppDetailsResponses : ", kppDetailsResponses)
 
 
-                        const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, ekppStatus, empRemark, evidence };
+                        const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, empKppStatus, empRemark, evidence };
 
                         console.log("payload : ", payload)
                         OverallKppFeedbackService.saveEmployeeKppFeedbackDetails(payload).then(res => {
                             if (res.data.success) {
                                 alert(res.data.responseMessage);
 
-                                EmployeeKppsService.getHODKPPDetailsYearly().then((res) => {
+                                OverallKppFeedbackService.getHODKPPDetailsYearly(finYear).then((res) => {
 
                                     if (null != res.data.ekppMonth) {
                                         setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
@@ -160,27 +163,27 @@ const OverallRemarkHodKppRatingsComponent = () => {
                                         setEkppMonth(formattedDate);
                                     }
 
-                                    setTotalEmpAchivedWeight(res.data.responseData.totalEmpAchivedWeight)
-                                    setTotalEmpOverallAchieve(res.data.responseData.totalEmpOverallAchieve)
-                                    setTotalEmpOverallTaskComp(res.data.responseData.totalEmpOverallTaskComp)
+                                    setTotalEmpAchivedWeight(res.data.responseData?.totalEmpAchivedWeight)
+                                    setTotalEmpOverallAchieve(res.data.responseData?.totalEmpOverallAchieve)
+                                    setTotalEmpOverallTaskComp(res.data.responseData?.totalEmpOverallTaskComp)
 
-                                    setHodEmpId(res.data.responseData.hodEmpId)
-                                    setTotalHodAchivedWeight(res.data.responseData.totalHodAchivedWeight)
-                                    setTotalHodOverallAchieve(res.data.responseData.totalHodOverallAchieve)
-                                    setTotalHodOverallTaskComp(res.data.responseData.totalHodOverallTaskComp)
+                                    setHodEmpId(res.data.responseData?.hodEmpId)
+                                    setTotalHodAchivedWeight(res.data.responseData?.totalHodAchivedWeight)
+                                    setTotalHodOverallAchieve(res.data.responseData?.totalHodOverallAchieve)
+                                    setTotalHodOverallTaskComp(res.data.responseData?.totalHodOverallTaskComp)
 
-                                    setGmEmpId(res.data.responseData.gmEmpId)
-                                    setTotalGmAchivedWeight(res.data.responseData.totalGmAchivedWeight)
-                                    setTotalGmOverallAchieve(res.data.responseData.totalGmOverallAchieve)
-                                    setTotalGmOverallTaskComp(res.data.responseData.totalGmOverallTaskComp)
+                                    setGmEmpId(res.data.responseData?.gmEmpId)
+                                    setTotalGmAchivedWeight(res.data.responseData?.totalGmAchivedWeight)
+                                    setTotalGmOverallAchieve(res.data.responseData?.totalGmOverallAchieve)
+                                    setTotalGmOverallTaskComp(res.data.responseData?.totalGmOverallTaskComp)
 
                                     //average % need to be set
-                                    setTotalOverallRatings(res.data.responseData.totalOverallRatings)
-                                    setTotalOverallPercentage(res.data.responseData.totalOverallPercentage)
-                                    setEmpRemark(res.data.empRemark)
+                                    setTotalOverallRatings(res.data.responseData?.totalOverallRatings)
+                                    setTotalOverallPercentage(res.data.responseData?.totalOverallPercentage)
+                                    setEmpRemark(res.data?.empRemark)
 
                                     setKppMasterResponses(res.data.responseData);
-                                    setKppDetailsResponses(res.data.responseData.kppStatusDetails)
+                                    setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
                                 });
 
                             } else {
@@ -211,8 +214,8 @@ const OverallRemarkHodKppRatingsComponent = () => {
                                 <div className="form-group">
                                     <label className="control-label col-sm-2" htmlFor="deptName">Financial Year:</label>
                                     <div className="col-sm-2">
-                                        <select className="form-control" id="deptId" onChange={(e) => setFinYearId(e.target.value)}>
-
+                                       
+                                        <select className="form-control" id="finYear" onChange={(e) => handleFinYearChange(e.target.value)}>
                                             {
                                                 financialYears.map(
                                                     financialYear =>
@@ -222,7 +225,9 @@ const OverallRemarkHodKppRatingsComponent = () => {
 
                                         </select>
                                     </div>
+                                     <button type="button" className="btn btn-primary" onClick={() => showYearlyKpp()}>Search</button>
                                 </div>
+                             
                                 <table className="table table-bordered" >
 
                                     <thead>
@@ -325,4 +330,4 @@ const OverallRemarkHodKppRatingsComponent = () => {
         </div>
     );
 }
-export default OverallRemarkHodKppRatingsComponent;
+export default OverallkHodKppFeedbackComponent;

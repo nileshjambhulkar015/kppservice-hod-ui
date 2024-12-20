@@ -58,63 +58,62 @@ const OverallkHodKppFeedbackComponent = () => {
         setFinYear(value)
     }
 
-   
-    useEffect(()=>{
-        OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
-            if(null != res.data && res.data.length>0){
-            setFinancialYears(res.data);
-            setFinYear(res.data?.[0]?.finYear)
-        } else
-        {
-            console.log("Value not set");
-        }
-        });
-    },[]);
 
     useEffect(() => {
-        
-      
-
-        OverallKppFeedbackService.getHODKPPDetailsYearly(finYear).then((res) => {
-            if (null != res.data.ekppMonth) {
-                setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
+        OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
+            if (null != res.data && res.data.length > 0) {
+                setFinancialYears(res.data);
+                setFinYear(res.data?.[0]?.finYear)
             } else {
-                const newDate = new Date();
-                // Format to YYYY-MM-DD
-                const formattedDate = newDate.toISOString().split('T')[0];
-                setEkppMonth(formattedDate);
+                console.log("Value not set");
             }
-
-           // setFinYear(res.data.responseData?.finYear)
-            setTotalEmpAchivedWeight(res.data.responseData?.totalEmpAchivedWeight)
-            setTotalEmpOverallAchieve(res.data.responseData?.totalEmpOverallAchieve)
-            setTotalEmpOverallTaskComp(res.data.responseData?.totalEmpOverallTaskComp)
-
-            setHodEmpId(res.data.responseData?.hodEmpId)
-            setTotalHodAchivedWeight(res.data.responseData?.totalHodAchivedWeight)
-            setTotalHodOverallAchieve(res.data.responseData?.totalHodOverallAchieve)
-            setTotalHodOverallTaskComp(res.data.responseData?.totalHodOverallTaskComp)
-
-            setGmEmpId(res.data.responseData?.gmEmpId)
-            setTotalGmAchivedWeight(res.data.responseData?.totalGmAchivedWeight)
-            setTotalGmOverallAchieve(res.data.responseData?.totalGmOverallAchieve)
-            setTotalGmOverallTaskComp(res.data.responseData?.totalGmOverallTaskComp)
-
-            //average % need to be set
-            setTotalOverallRatings(res.data.responseData?.totalOverallRatings)
-            setTotalOverallPercentage(res.data.responseData?.totalOverallPercentage)
-            setEmpRemark(res.data?.empRemark)
-
-            setKppMasterResponses(res.data.responseData);
-            setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
         });
+    }, []);
+
+    useEffect(() => {
+
+        if (finYear) {
+            OverallKppFeedbackService.getHODKPPDetailsYearly(finYear).then((res) => {
+                if (null != res.data.ekppMonth) {
+                    setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
+                } else {
+                    const newDate = new Date();
+                    // Format to YYYY-MM-DD
+                    const formattedDate = newDate.toISOString().split('T')[0];
+                    setEkppMonth(formattedDate);
+                }
+
+                // setFinYear(res.data.responseData?.finYear)
+                setTotalEmpAchivedWeight(res.data.responseData?.totalEmpAchivedWeight)
+                setTotalEmpOverallAchieve(res.data.responseData?.totalEmpOverallAchieve)
+                setTotalEmpOverallTaskComp(res.data.responseData?.totalEmpOverallTaskComp)
+
+                setHodEmpId(res.data.responseData?.hodEmpId)
+                setTotalHodAchivedWeight(res.data.responseData?.totalHodAchivedWeight)
+                setTotalHodOverallAchieve(res.data.responseData?.totalHodOverallAchieve)
+                setTotalHodOverallTaskComp(res.data.responseData?.totalHodOverallTaskComp)
+
+                setGmEmpId(res.data.responseData?.gmEmpId)
+                setTotalGmAchivedWeight(res.data.responseData?.totalGmAchivedWeight)
+                setTotalGmOverallAchieve(res.data.responseData?.totalGmOverallAchieve)
+                setTotalGmOverallTaskComp(res.data.responseData?.totalGmOverallTaskComp)
+
+                //average % need to be set
+                setTotalOverallRatings(res.data.responseData?.totalOverallRatings)
+                setTotalOverallPercentage(res.data.responseData?.totalOverallPercentage)
+                setEmpRemark(res.data?.empRemark)
+
+                setKppMasterResponses(res.data.responseData);
+                setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
+            });
+        }
 
     }, [finYear]);
 
 
 
 
-console.log("kppDetailsResponses : ", kppDetailsResponses)
+    console.log("kppDetailsResponses : ", kppDetailsResponses)
     return (
         <div className='container-fluid'>
             <div className="row">
@@ -136,7 +135,7 @@ console.log("kppDetailsResponses : ", kppDetailsResponses)
                         let roleId = Cookies.get('roleId');
                         let deptId = Cookies.get('deptId');
                         let desigId = Cookies.get('desigId');
-                       
+
                         console.log("empId: ", empId)
 
 
@@ -213,7 +212,7 @@ console.log("kppDetailsResponses : ", kppDetailsResponses)
                                 <div className="form-group">
                                     <label className="control-label col-sm-2" htmlFor="deptName">Financial Year:</label>
                                     <div className="col-sm-2">
-                                       
+
                                         <select className="form-control" id="finYear" onChange={(e) => handleFinYearChange(e.target.value)}>
                                             {
                                                 financialYears.map(
@@ -224,9 +223,9 @@ console.log("kppDetailsResponses : ", kppDetailsResponses)
 
                                         </select>
                                     </div>
-                                  
+
                                 </div>
-                             
+
                                 <table className="table table-bordered" >
 
                                     <thead>
@@ -260,7 +259,7 @@ console.log("kppDetailsResponses : ", kppDetailsResponses)
                                     </thead>
                                     <tbody>
                                         {values?.fields?.map(
-                                        
+
                                             (kppResponse, index) =>
 
                                                 <tr key={kppResponse.kppId} className="text-justify">
@@ -284,7 +283,7 @@ console.log("kppDetailsResponses : ", kppDetailsResponses)
                                                         <textarea rows="3" className="form-control"
                                                             name={`${index}.empKppFeedback`}
 
-                                                            value={values?.fields?.[index]?.empKppFeedback|| ''}
+                                                            value={values?.fields?.[index]?.empKppFeedback || ''}
 
                                                             onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.empKppFeedback)}
                                                         />
@@ -316,7 +315,7 @@ console.log("kppDetailsResponses : ", kppDetailsResponses)
                                     </tbody>
                                 </table>
 
-                                 <div className="form-group">
+                                <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="empKppStatus">Key Strengths :</label>
                                     <div className="col-sm-6">
                                         <label htmlFor="empKppStatus">{kppMasterResponses?.empKeyStrength}</label>
@@ -331,7 +330,7 @@ console.log("kppDetailsResponses : ", kppDetailsResponses)
                                     </div>
                                 </div>
 
-                                
+
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="gmKppStatus">Training & Development Needs :</label>
                                     <div className="col-sm-6">

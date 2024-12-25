@@ -6,7 +6,7 @@ import AddHodKppRatingsComponent from "./components/AddHodKppRatingsComponent/Ad
 import AllEmployeeKppStatusComponent from "./components/EmplyeeUpdateKppRatingsComponent/AllEmployeeKppStatusComponent"
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import EmplyeeUpdateKppRatingsComponent from "./components/EmplyeeUpdateKppRatingsComponent/EmplyeeUpdateKppRatingsComponent";
-import OverallkHodKppFeedbackComponent from "./components/OverallKppFeedbackComponent/OverallkHodKppFeedbackComponent"
+import OverallHodKppFeedbackComponent from "./components/OverallKppFeedbackComponent/OverallHodKppFeedbackComponent"
 
 import ViewAllEmployeeCumulativeComponent from './components/CumulativeComponent/ViewAllEmployeeCumulativeComponent';
 import SingleEmployeeCumulativeComponent from './components/CumulativeComponent/SingleEmployeeCumulativeComponent';
@@ -22,6 +22,8 @@ import UpdateDoBComponent from './components/UpdateDoBComponent/UpdateDoBCompone
 import AnnouncementComponent from "./components/AnnouncementComponent/AnnouncementComponent";
 import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
 import HODCumulativeKppComponent from './components/CumulativeComponent/HODCumulativeKppComponent';
+import OverallEmployeeKppFeedbackComponent from './components/OverallKppFeedbackComponent/OverallEmployeeKppFeedbackComponent';
+import AllEmployeeKppFeedbackStatusComponent from './components/OverallKppFeedbackComponent/AllEmployeeKppFeedbackStatusComponent';
 
 function App() {
   //remove cookies when click on logout
@@ -60,7 +62,16 @@ function App() {
               </ul>
             </li>
 
-            <li><Link to="/allEmployeeKppStatus">Employees KPP Status</Link></li>
+            <li className="dropdown">
+            <a className="dropdown-toggle" data-toggle="dropdown" href="#">Employees KPP Status
+              <span className="caret"></span></a>
+            <ul className="dropdown-menu">
+              <li><Link to="/allEmployeeKppStatus">Monthly KPP Status</Link></li>
+              <li><Link to="/allemployeeKppFeedback">Add Yearly Employee KPP Feedback</Link></li>
+            </ul>
+          </li>
+
+         
 
 
             <li className="dropdown">
@@ -116,7 +127,11 @@ function App() {
         <Route exact path="/othersPendingComplaint" element={<OthersPendingComplaintComponent />}></Route>
         <Route exact path="/othersInProgressComplaint" element={<OthersInProgressComplaintComponent />}></Route>
         <Route exact path="/othersResolveComplaint" element={<OthersResolveComplaintComponent />}></Route>
-        <Route exact path="/overallHODKppFeedback" element={<OverallkHodKppFeedbackComponent />}></Route>
+        <Route exact path="/overallHODKppFeedback" element={<OverallHodKppFeedbackComponent />}></Route>
+
+        <Route exact path="/overallemployeekppfeedback" element={<OverallEmployeeKppFeedbackComponent />} ></Route>
+        <Route exact path="/allemployeeKppFeedback" element={<AllEmployeeKppFeedbackStatusComponent />} ></Route>
+        
         <Route exact path="/meetingMaster" element={<MeetingMasterComponent />}></Route>
         <Route exact path="/updateDOB" element={<UpdateDoBComponent />}></Route>
         <Route exact path="/announcement" element={<AnnouncementComponent />}></Route>

@@ -6,9 +6,13 @@ import EmployeeKppsService from '../../services/EmployeeKppsService';
 import Cookies from 'js-cookie';
 import { BASE_URL_API } from '../../services/URLConstants';
 import FreezeCumulativeService from '../../services/FreezeCumulativeService';
-import OverallKppFeedbackService from '../../services/OverallKppFeedbackService';
+import OverallEmployeeKppFeedbackService from '../../services/OverallEmployeeKppFeedbackService';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const OverallkHodKppFeedbackComponent = () => {
+
+const OverallEmployeeKppFeedbackComponent = () => {
+
+    const navigate = useNavigate();
     const [ekppMonth, setEkppMonth] = useState('');
     const [empRemark, setEmpRemark] = useState('');
     const [finYearId, setFinYearId] = useState('');
@@ -43,6 +47,12 @@ const OverallkHodKppFeedbackComponent = () => {
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
 
+    const [empKeyStrength, setEmpKeyStrength] = useState();
+    const [empAreaOfImprovement, setEmpAreaOfImprovement] = useState();
+    const [empTrainginDevelopmentNeeds, setEmpTrainginDevelopmentNeeds] = useState();
+    const [remark, setRemark] = useState();
+
+    const [hodRemark, setHodRemark] = useState();
 
     const [financialYears, setFinancialYears] = useState([])
 
@@ -58,22 +68,23 @@ const OverallkHodKppFeedbackComponent = () => {
         setFinYear(value)
     }
 
+    const navigateToAllHodKppFeedbackStatusComponent = () => {
+
+        Cookies.remove('empIdForKppFeedback');
+        Cookies.remove('empEIdForKppFeedback');
+        Cookies.remove('empFinYearForKppFeedback');
+        Cookies.remove('empRoleIdForKppFeedback');
+        Cookies.remove('empDeptIdForKppFeedback');
+        Cookies.remove('empDesigIdForKppFeedback');
+
+        navigate(`/allemployeekppfeedback`, { replace: true })
+
+    }
 
     useEffect(() => {
-        OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
-            if (null != res.data && res.data.length > 0) {
-                setFinancialYears(res.data);
-                setFinYear(res.data?.[0]?.finYear)
-            } else {
-                console.log("Value not set");
-            }
-        });
-    }, []);
-
-    useEffect(() => {
-
+        setFinYear(Cookies.get('empFinYearForKppFeedback'))
         if (finYear) {
-            OverallKppFeedbackService.getHODKPPDetailsYearly(finYear).then((res) => {
+            OverallEmployeeKppFeedbackService.getEmployeeKPPDetailsYearly().then((res) => {
                 if (null != res.data.ekppMonth) {
                     setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
                 } else {
@@ -92,6 +103,7 @@ const OverallkHodKppFeedbackComponent = () => {
                 setTotalHodAchivedWeight(res.data.responseData?.totalHodAchivedWeight)
                 setTotalHodOverallAchieve(res.data.responseData?.totalHodOverallAchieve)
                 setTotalHodOverallTaskComp(res.data.responseData?.totalHodOverallTaskComp)
+                setHodRemark(res.data.responseData?.hodRemark)
 
                 setGmEmpId(res.data.responseData?.gmEmpId)
                 setTotalGmAchivedWeight(res.data.responseData?.totalGmAchivedWeight)
@@ -103,8 +115,14 @@ const OverallkHodKppFeedbackComponent = () => {
                 setTotalOverallPercentage(res.data.responseData?.totalOverallPercentage)
                 setEmpRemark(res.data?.empRemark)
 
+                setEmpKeyStrength(res.data.responseData?.empKeyStrength)
+                setEmpAreaOfImprovement(res.data.responseData?.empAreaOfImprovement)
+                setEmpTrainginDevelopmentNeeds(res.data.responseData?.empTrainginDevelopmentNeeds)
+                setRemark(res.data.responseData?.remark)
+
                 setKppMasterResponses(res.data.responseData);
                 setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
+
             });
         }
 
@@ -128,28 +146,23 @@ const OverallkHodKppFeedbackComponent = () => {
                 }}
                     enableReinitialize={true}
                     onSubmit={(values) => {
-                        let empKppStatus = "In-Progress";
+                        let empKppStatus = "Approved";
+                        let gmKppStatus = "Approved";
                         let evidence = "evidence added";
-                        let empId = Cookies.get('empId');
-                        let empEId = Cookies.get('empEId');
-                        let roleId = Cookies.get('roleId');
-                        let deptId = Cookies.get('deptId');
-                        let desigId = Cookies.get('desigId');
+                        let empId = Cookies.get('empIdForKppFeedback');
+                        let empEId = Cookies.get('empEIdForKppFeedback');
+                        let roleId = Cookies.get('empRoleIdForKppFeedback');
+                        let deptId = Cookies.get('empDeptIdForKppFeedback');
+                        let desigId = Cookies.get('empDesigIdForKppFeedback');
 
-                        console.log("empId: ", empId)
-
-
-                        console.log("kppDetailsResponses : ", kppDetailsResponses)
-
-
-                        const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, empKppStatus, empRemark, evidence };
+                        const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, empKppStatus, gmKppStatus, empRemark, evidence, empKeyStrength, empAreaOfImprovement, empTrainginDevelopmentNeeds, hodRemark };
 
                         console.log("payload : ", payload)
-                        OverallKppFeedbackService.saveEmployeeKppFeedbackDetails(payload).then(res => {
+                        OverallEmployeeKppFeedbackService.updateHODFeedbackForEmployee(payload).then(res => {
                             if (res.data.success) {
                                 alert(res.data.responseMessage);
 
-                                OverallKppFeedbackService.getHODKPPDetailsYearly(finYear).then((res) => {
+                                OverallEmployeeKppFeedbackService.getEmployeeKPPDetailsYearly(finYear).then((res) => {
 
                                     if (null != res.data.ekppMonth) {
                                         setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
@@ -179,8 +192,13 @@ const OverallkHodKppFeedbackComponent = () => {
                                     setTotalOverallPercentage(res.data.responseData?.totalOverallPercentage)
                                     setEmpRemark(res.data?.empRemark)
 
+                                    setEmpKeyStrength(res.data.responseData?.empKeyStrength)
+                                    setEmpAreaOfImprovement(res.data.responseData?.empAreaOfImprovement)
+                                    setEmpTrainginDevelopmentNeeds(res.data.responseData?.empTrainginDevelopmentNeeds)
+
                                     setKppMasterResponses(res.data.responseData);
                                     setKppDetailsResponses(res.data.responseData?.kppStatusDetails)
+
                                 });
 
                             } else {
@@ -191,13 +209,13 @@ const OverallkHodKppFeedbackComponent = () => {
 
                     }}>
                     {({ values, setFieldValue }) => {
-                        const handleTodoChange = (e, i, kppId, empKppFeedback) => {
+                        const handleTodoChange = (e, i, kppId, hodKppFeedback) => {
                             const field = e.target.name?.split(".")[1];
                             kppDetailsResponses[i] = {
 
                                 ...kppDetailsResponses[i],
 
-                                "empKppFeedback": empKppFeedback,
+                                "hodKppFeedback": hodKppFeedback,
                                 [field]: e.target.value || '',
 
                             }
@@ -205,23 +223,14 @@ const OverallkHodKppFeedbackComponent = () => {
 
                             setFieldValue("fields", kppDetailsResponses)
                         };
-                        console.log("values : ", values)
+
                         return (
                             <Form className="form-horizontal">
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-2" htmlFor="deptName">Financial Year:</label>
                                     <div className="col-sm-2">
-
-                                        <select className="form-control" id="finYear" onChange={(e) => handleFinYearChange(e.target.value)}>
-                                            {
-                                                financialYears.map(
-                                                    financialYear =>
-                                                        <option key={financialYear?.finYearId} value={financialYear?.finYearId}>{financialYear?.finYear}</option>
-                                                )
-                                            };
-
-                                        </select>
+                                        {Cookies.get('empFinYearForKppFeedback')}
                                     </div>
 
                                 </div>
@@ -230,7 +239,7 @@ const OverallkHodKppFeedbackComponent = () => {
 
                                     <thead>
                                         <tr>
-                                            <td colSpan={21} className="text-center"><h3>HOD KEY PERFORMANCE INDICATORS (KPIs) for FINANCIAL YEAR {finYear}</h3></td>
+                                            <td colSpan={21} className="text-center"><h3>EMPLOYEE KEY PERFORMANCE INDICATORS (KPIs) for FINANCIAL YEAR {finYear}</h3></td>
                                         </tr>
                                         <tr>
                                             <th rowSpan={2} className="text-center">Sr No</th>
@@ -246,6 +255,7 @@ const OverallkHodKppFeedbackComponent = () => {
                                             <th rowSpan={2} className="text-center">FIRST APPRIASEE OVERALL ACHIEVEMENT</th>
                                             <th rowSpan={2} className="text-center">FIRST APPRIASEE % OF TOTAL TASK COMPLETED</th>
 
+                                            <th rowSpan={2} className="text-center">Overall Employee KPP Feedback</th>
                                             <th rowSpan={2} className="text-center">Overall HOD KPP Feedback</th>
                                             <th rowSpan={2} className="text-center">Overall GM KPP Feedback</th>
 
@@ -277,22 +287,18 @@ const OverallkHodKppFeedbackComponent = () => {
                                                     <td className='text-center'>{kppResponse.gmAchivedWeight} </td>
                                                     <td className='text-center'>  {kppResponse.gmOverallAchieve}</td>
                                                     <td className='text-center'> {kppResponse.gmOverallTaskComp}</td>
-
+                                                    <td className='text-center'> {kppResponse.empKppFeedback}</td>
                                                     <td className='col-sm-4'>
-
                                                         <textarea rows="3" className="form-control"
-                                                            name={`${index}.empKppFeedback`}
+                                                            name={`${index}.hodKppFeedback`}
 
-                                                            value={values?.fields?.[index]?.empKppFeedback || ''}
+                                                            value={values?.fields?.[index]?.hodKppFeedback || ''}
 
-                                                            onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.empKppFeedback)}
+                                                            onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.hodKppFeedback)}
                                                         />
-
-
                                                     </td>
-                                                    <td className='col-sm-4'>
-                                                        {kppResponse.gmKppFeedback}
-                                                    </td>
+
+                                                    <td className='text-center'> {kppResponse.gmKppFeedback}</td>
                                                 </tr>
                                         )}
                                         <tr className="text-justify">
@@ -318,7 +324,7 @@ const OverallkHodKppFeedbackComponent = () => {
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="empKppStatus">Key Strengths :</label>
                                     <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.empKeyStrength}</label>
+                                        <textarea rows="3" className="form-control" id="empKeyStrength" name="empKeyStrength" defaultValue={empKeyStrength} placeholder="Enter Key Strength here" onChange={(e) => setEmpKeyStrength(e.target.value)} />
                                     </div>
                                 </div>
 
@@ -326,7 +332,7 @@ const OverallkHodKppFeedbackComponent = () => {
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="gmKppStatus">Area of Improvement :</label>
                                     <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.empAreaOfImprovement}</label>
+                                        <textarea row="5" className="form-control" id="empAreaOfImprovement" name="empAreaOfImprovement" defaultValue={empAreaOfImprovement} placeholder="Enter Area of improvement here" onChange={(e) => setEmpAreaOfImprovement(e.target.value)} />
                                     </div>
                                 </div>
 
@@ -334,7 +340,24 @@ const OverallkHodKppFeedbackComponent = () => {
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="gmKppStatus">Training & Development Needs :</label>
                                     <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.empTrainginDevelopmentNeeds}</label>
+                                        <textarea row="5" className="form-control" id="empTrainginDevelopmentNeeds" name="empTrainginDevelopmentNeeds" defaultValue={empTrainginDevelopmentNeeds} placeholder="Enter Training And Development requires here" onChange={(e) => setEmpTrainginDevelopmentNeeds(e.target.value)} />
+                                    </div>
+                                </div>
+
+
+<div className="form-group">
+<label className="control-label col-sm-4" htmlFor="hodRemark">Eligibility for promotion ( Department Head Comments) :</label>
+<div className="col-sm-6">
+    <textarea row="5" className="form-control" id="hodRemark" name="remark" defaultValue={hodRemark} placeholder="Enter Eligibility for Promotion here" onChange={(e) => setHodRemark(e.target.value)} />
+</div>
+</div>
+
+
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="remark">Eligibility for Promotion ( Management Comments) :</label>
+                                    <div className="col-sm-6">
+                                       {remark}
                                     </div>
                                 </div>
 
@@ -342,7 +365,8 @@ const OverallkHodKppFeedbackComponent = () => {
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>
                                         <a href={BASE_URL_API + `/report/in-progress-hod-kpp-status?empId=${Cookies.get('empId')}`}>
-                                            <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}>  Download</button></a>
+                                            <button type="button" className="btn btn-success col-sm-offset-1" disabled={kppMasterResponses?.empKppStatus === "Pending"}>  Download</button></a>
+                                        <button type="submit" className="btn btn-success col-sm-offset-1" onClick={() => navigateToAllHodKppFeedbackStatusComponent()}> Back</button>
                                     </div>
                                 </div>
                             </Form>
@@ -354,4 +378,4 @@ const OverallkHodKppFeedbackComponent = () => {
         </div>
     );
 }
-export default OverallkHodKppFeedbackComponent;
+export default OverallEmployeeKppFeedbackComponent;

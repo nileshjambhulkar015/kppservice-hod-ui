@@ -145,9 +145,8 @@ const OverallEmployeeKppFeedbackComponent = () => {
 
                 }}
                     enableReinitialize={true}
-                    onSubmit={(values) => {
-                        let empKppStatus = "Approved";
-                        let gmKppStatus = "Approved";
+                    onSubmit={(values) => {                        
+                        let hodKppStatus = "In-Progress";
                         let evidence = "evidence added";
                         let empId = Cookies.get('empIdForKppFeedback');
                         let empEId = Cookies.get('empEIdForKppFeedback');
@@ -155,7 +154,7 @@ const OverallEmployeeKppFeedbackComponent = () => {
                         let deptId = Cookies.get('empDeptIdForKppFeedback');
                         let desigId = Cookies.get('empDesigIdForKppFeedback');
 
-                        const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, empKppStatus, gmKppStatus, empRemark, evidence, empKeyStrength, empAreaOfImprovement, empTrainginDevelopmentNeeds, hodRemark };
+                        const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, hodKppStatus, empRemark, evidence, empKeyStrength, empAreaOfImprovement, empTrainginDevelopmentNeeds, hodRemark };
 
                         console.log("payload : ", payload)
                         OverallEmployeeKppFeedbackService.updateHODFeedbackForEmployee(payload).then(res => {

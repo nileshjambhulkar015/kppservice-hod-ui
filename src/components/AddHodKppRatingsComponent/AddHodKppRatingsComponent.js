@@ -186,6 +186,7 @@ const AddHodKppRatingsComponent = () => {
                                 "desigId": Cookies.get('desigId'),
                                 "empOverallTaskComp": field === "empOverallAchieve" && !!e.target.value ? (Number(e.target.value) / 5 * 100).toFixed(1) : 0,
                                 "empAchivedWeight": field === "empOverallAchieve" && !!e.target.value ? ((kppOverallWeightage * (Number(e.target.value) / 5 * 100).toFixed(1)) / 100).toFixed(1) : 0,
+                              //2 is becaused involves HOD and GM in approval
                                 "overallRatings": field === "empOverallAchieve" && !!e.target.value ?  ((Number(gmOverallAchieve)+(Number(e.target.value)))  / 2).toFixed(1) : 0,
                                 "overallPercentage": field === "empOverallAchieve" && !!e.target.value ? ((((Number(gmOverallAchieve)+(Number(e.target.value)))  / 2)/5)*100).toFixed(1) : 0,
                                 

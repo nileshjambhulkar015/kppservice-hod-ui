@@ -12,7 +12,7 @@ const OverallHodKppFeedbackComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
     const [empRemark, setEmpRemark] = useState('');
     const [finYearId, setFinYearId] = useState('');
-    const [finYear, setFinYear] = useState('');
+
 
     const [totalEmpAchivedWeight, setTotalEmpAchivedWeight] = useState('');
     const [totalEmpOverallAchieve, setTotalEmpOverallAchieve] = useState('');
@@ -43,7 +43,7 @@ const OverallHodKppFeedbackComponent = () => {
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
 
-
+    const [finYear, setFinYear] = useState('');
     const [financialYears, setFinancialYears] = useState([])
 
     const YYYY_MM_DD_Formater = (date, format = 'YYYY-MM-DD') => {
@@ -59,16 +59,16 @@ const OverallHodKppFeedbackComponent = () => {
     }
 
 
-    useEffect(() => {
-        OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
-            if (null != res.data && res.data.length > 0) {
-                setFinancialYears(res.data);
-                setFinYear(res.data?.[0]?.finYear)
-            } else {
-                console.log("Value not set");
-            }
-        });
-    }, []);
+        useEffect(() => {
+            OverallKppFeedbackService.ddAllFinancialYear().then((res) => {
+                if (null != res.data && res.data.length > 0) {
+                    setFinancialYears(res.data);
+                    setFinYear(res.data?.[0]?.finYear)
+                } else {
+                    console.log("Value not set");
+                }
+            });
+        }, []);
 
     useEffect(() => {
 
